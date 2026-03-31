@@ -1,0 +1,366 @@
+[
+  {
+    "country": "CHILE",
+    "year": 2000,
+    "grid_name": "SF-19-Y-D",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2007,
+    "grid_name": "SF-19-Z-A",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2022,
+    "grid_name": "SK-19-V-C",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2004,
+    "grid_name": "SK-18-X-A",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2008,
+    "grid_name": "SK-19-V-A",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 1998,
+    "grid_name": "SG-19-Y-C",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2011,
+    "grid_name": "SI-19-Y-C",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2024,
+    "grid_name": "SM-18-X-A",
+    "satellite": "L9",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2009,
+    "grid_name": "SF-19-Z-B",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 1997,
+    "grid_name": "SJ-18-Z-C",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 1997,
+    "grid_name": "SJ-19-Y-A",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2015,
+    "grid_name": "SN-19-V-D",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2007,
+    "grid_name": "SN-19-Z-C",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2004,
+    "grid_name": "SF-19-Y-C",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2012,
+    "grid_name": "SI-19-Y-D",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2009,
+    "grid_name": "SF-19-Z-C",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 1996,
+    "grid_name": "SL-19-Y-A",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2021,
+    "grid_name": "SE-19-Y-D",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 1997,
+    "grid_name": "SI-19-V-B",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2004,
+    "grid_name": "SL-18-Z-D",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2011,
+    "grid_name": "SN-19-Z-D",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2003,
+    "grid_name": "SI-19-Y-B",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2009,
+    "grid_name": "SK-18-X-B",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2006,
+    "grid_name": "SH-19-Y-B",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 1996,
+    "grid_name": "SF-19-Z-D",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2017,
+    "grid_name": "SJ-18-X-B",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2011,
+    "grid_name": "SN-19-Z-B",
+    "satellite": "L7",
+    "black_list": [
+      "LE07_226098_20110414",
+      "LE07_225098_20110407",
+      "LE07_225098_20110117",
+      "LE07_226098_20110921",
+      "LE07_226098_20110209",
+      "LE07_226098_20110124",
+      "LE07_225098_20110306",
+      "LE07_225098_20110202",
+      "LE07_225098_20110829",
+      "LE07_226098_20111226"
+    ],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2012,
+    "grid_name": "SI-18-Z-B",
+    "satellite": "L7",
+    "black_list": [
+      "LE07_001084_20121220",
+      "LE07_001084_20121001",
+      "LE07_001084_20120915",
+      "LE07_001084_20120510",
+      "LE07_001084_20120323",
+      "LE07_001084_20120103"
+    ],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 1998,
+    "grid_name": "SN-18-X-C",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2003,
+    "grid_name": "SG-19-Y-D",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2017,
+    "grid_name": "SG-19-V-B",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2025,
+    "grid_name": "SN-19-Y-B",
+    "satellite": "L8",
+    "black_list": [
+      "LC08_228098_20250120",
+      "LC08_227098_20250419"
+    ],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2013,
+    "grid_name": "SG-12-Z-D",
+    "satellite": "L8",
+    "black_list": [
+      "LC08_026079_20130707"
+    ],
+    "USETILEMASK": false
+  },
+  {
+    "country": "CHILE",
+    "year": 2022,
+    "grid_name": "SF-19-X-A",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2022,
+    "grid_name": "SI-19-V-A",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2023,
+    "grid_name": "SJ-19-Y-C",
+    "satellite": "L9",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2019,
+    "grid_name": "SL-18-V-D",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2022,
+    "grid_name": "SH-19-Y-A",
+    "satellite": "L8",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2003,
+    "grid_name": "SN-19-Y-D",
+    "satellite": "L7",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2025,
+    "grid_name": "SN-19-X-C",
+    "satellite": "L9",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2000,
+    "grid_name": "SL-18-Y-D",
+    "satellite": "L5",
+    "black_list": [],
+    "USETILEMASK": true
+  },
+  {
+    "country": "CHILE",
+    "year": 2015,
+    "grid_name": "SM-18-X-C",
+    "satellite": "L8",
+    "black_list": [
+      "LC08_232094_20150513",
+      "LC08_232094_20150801",
+      "LC08_232094_20150817",
+      "LC08_232095_20150817"
+    ],
+    "USETILEMASK": true
+  }
+]
