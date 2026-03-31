@@ -7,8 +7,9 @@ information to satellite imagery. These supplementary bands enhance classificati
 and analysis by providing topographic context and spatial texture measures.
 
 Functions:
-- getSlope(): Adds terrain slope from ALOS DEM
+- getSlope(), getElevation(), getAspect(), getTpi(): Terrain from ALOS DEM
 - getEntropyG(): Adds texture measure from green band
+- promoteMedianToBaseName(): Collapse ``*_median`` stats to a single band name
 
 These functions are typically applied to mosaics before classification to
 incorporate additional information beyond spectral reflectance.
@@ -17,6 +18,63 @@ Dependencies: earthengine-api, JAXA ALOS DEM
 """
 
 import ee
+
+
+def _aw3d30_dem():
+    """ALOS World 3D 30 m DEM (meters), AVE band."""
+    return ee.Image("JAXA/ALOS/AW3D30_V1_1").select("AVE")
+
+
+def promoteMedianToBaseName(mosaic, variable_names):
+    """
+    For each base name in variable_names, copy ``{name}_median`` to ``{name}`` and drop all
+    ``{name}_*`` mosaic statistics so the stack matches a single band per index (chile otro).
+    """
+    stats_suffixes = [
+        "_median_dry",
+        "_median_wet",
+        "_median",
+        "_min",
+        "_max",
+        "_amp",
+        "_stdDev",
+    ]
+    drop_list = []
+    for v in variable_names:
+        for s in stats_suffixes:
+            drop_list.append(v + s)
+    drop = ee.List(drop_list)
+    out = mosaic
+    for v in variable_names:
+        out = out.addBands(out.select(v + "_median").rename(v))
+    keep = out.bandNames().removeAll(drop)
+    return out.select(keep)
+
+
+def getElevation(image):
+    """Elevation (m a.s.l.) from AW3D30, int16."""
+    elev = _aw3d30_dem().int16().rename("elevation")
+    return image.addBands(elev)
+
+
+def getAspect(image):
+    """Terrain aspect in degrees × 100 (0–36000), uint16."""
+    aspect = ee.Terrain.aspect(_aw3d30_dem())\
+        .multiply(100)\
+        .uint16()\
+        .rename("aspect")
+    return image.addBands(aspect)
+
+
+def getTpi(image):
+    """
+    Topographic Position Index: DEM minus focal mean (meters), int16.
+    Uses ee.Image.focalMean(radius, kernelType, units) — radius 6 px, square kernel.
+    """
+    dem = _aw3d30_dem()
+    mean_local = dem.focalMean(6, "square", "pixels")
+    tpi = dem.subtract(mean_local).int16().rename("tpi")
+    return image.addBands(tpi)
 
 
 def getSlope(image):
@@ -145,14 +203,12 @@ def getSlope(image):
         Tadono, T., et al. (2014). "Precise Global DEM Generation by ALOS PRISM."
         ISPRS Annals of Photogrammetry, Remote Sensing and Spatial Information Sciences.
     """
-    # Load ALOS World 3D 30m Digital Elevation Model
-    # AVE band contains average elevation in meters above sea level
-    terrain = ee.Image("JAXA/ALOS/AW3D30_V1_1").select("AVE")
+    dem = _aw3d30_dem()
 
     # Calculate slope in degrees using GEE terrain algorithm
     # Multiply by 100 to scale degrees to integers (e.g., 15.5° → 1550)
     # Convert to 16-bit integer for efficient storage
-    slope = ee.Terrain.slope(terrain)\
+    slope = ee.Terrain.slope(dem)\
         .multiply(100)\
         .int16()\
         .rename('slope')

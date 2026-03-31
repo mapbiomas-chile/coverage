@@ -14,6 +14,9 @@ Categories:
 - Vegetation Indices: NDVI, EVI, EVI2, SAVI, PRI, GCVI
 - Water Indices: NDWI, MNDWI
 - Urban/Built-up Indices: NDBI, UI, BU, EBBI
+- Bare soil (peer-reviewed): MBI — Modified Bare Soil Index (Nguyen et al., 2021;
+  Land 10(3):231; DOI 10.3390/land10030231). Implemented in getMBI(); see that
+  function’s docstring for the exact equation and citation.
 - Other: CAI (Cellulose Absorption), Hall indices (forest structure)
 
 Dependencies: earthengine-api
@@ -114,6 +117,95 @@ def getNDBI(image):
         .add(1)  # Shift range from [-1,1] to [0,2]
 
     return image.addBands(srcImg=ndbi, overwrite=True)
+
+
+def getNDMI(image):
+    """
+    Normalized Difference Moisture Index (NDMI), Gao (1996).
+
+    Spectral definition: NDMI = (NIR - SWIR1) / (NIR + SWIR1), using the short-wave
+    infrared band paired with NIR for canopy moisture / water content.
+
+    Reference: Gao, B.-C. (1996). NDWI — A normalized difference water index for remote
+    sensing of vegetation liquid water from space. Remote Sensing of Environment, 58(3),
+    257-266. (NDMI as NIR vs SWIR moisture index; band pairing matches common Landsat use.)
+
+    The +1 offset matches local storage convention (see getNDVI, getNDBI); subtract 1
+    after divideBy10000 scaling if the raw [-1, 1] index is needed.
+    """
+    exp = 'float(b("nir") - b("swir1")) / (b("nir") + b("swir1"))'
+
+    ndmi = image.expression(exp)\
+        .rename(["ndmi"])\
+        .add(1)
+
+    return image.addBands(srcImg=ndmi, overwrite=True)
+
+
+def getNDSI(image):
+    """
+    Normalized Difference Snow Index: (green - swir1) / (green + swir1), +1 offset like NDVI.
+    """
+    exp = 'float(b("green") - b("swir1")) / (b("green") + b("swir1"))'
+
+    ndsi = image.expression(exp)\
+        .rename(["ndsi"])\
+        .add(1)
+
+    return image.addBands(srcImg=ndsi, overwrite=True)
+
+
+def getMBI(image):
+    """
+    Modified Bare Soil Index (MBI) — definición del artículo de referencia del equipo.
+
+    Referencia obligatoria (implementación alineada a este trabajo):
+
+        Nguyen, C.T.; Chidthaisong, A.; Kieu Diem, P.; Huo, L.-Z. (2021).
+        A Modified Bare Soil Index to Identify Bare Land Features during Agricultural
+        Fallow-Period in Southeast Asia Using Landsat 8. *Land* **10** (3), 231.
+        DOI: https://doi.org/10.3390/land10030231
+        (MDPI / acceso abierto.)
+
+    En el paper el acrónimo MBI significa **Modified Bare Soil Index** (suelo desnudo
+    en barbecho agrícola), no “built-up”. Objetivo: separar suelo desnudo de vegetación,
+    agua y superficies urbanas usando NIR, SWIR1 y SWIR2 de Landsat 8 OLI en
+    reflectancia de superficie.
+
+    Ecuaciones (Sección 2.3 del artículo):
+
+        (1)  BI  = (SWIR1 - SWIR2) / (SWIR1 + SWIR2)
+
+        (2)  MBI = (SWIR1 - SWIR2 - NIR) / (SWIR1 + SWIR2 + NIR) + f,   con f = 0.5
+
+    Mapeo Landsat 8 OLI (coincide con nombres de banda estandarizados en este repo:
+    ``getBandNames`` → ``nir``, ``swir1``, ``swir2``):
+
+        NIR → banda 5 OLI | SWIR1 → banda 6 | SWIR2 → banda 7
+
+    Rango típico citado en el artículo: aprox. -0.5 a +1.5 (suelo desnudo hacia valores
+    positivos altos). Umbral de ejemplo en el paper para bare soil: MBI > 0.27
+    (sitio #1; puede variar por región).
+
+    Implementación: ecuación (2) con f = 0.5; se añade 1e-6 al denominador solo por
+    estabilidad numérica en Earth Engine. **No** se aplica el offset +1 usado en
+    NDVI/NDBI de este módulo. Tras ``getMBI``, el flujo Chile escala la banda con
+    ``multiplyBy10000`` como el resto de índices (ver ``mapbiomas_Chile_mosaics_landsat_v1.py``).
+
+    Args:
+        image (ee.Image): Reflectancia 0–1 en bandas ``nir``, ``swir1``, ``swir2``.
+
+    Returns:
+        ee.Image: Imagen con banda ``mbi`` añadida.
+    """
+    exp = (
+        '(b("swir1") - b("swir2") - b("nir")) / '
+        '(b("swir1") + b("swir2") + b("nir") + 1e-6) + 0.5'
+    )
+
+    mbi = image.expression(exp).rename(["mbi"])
+
+    return image.addBands(srcImg=mbi, overwrite=True)
 
 
 def getUI(image):

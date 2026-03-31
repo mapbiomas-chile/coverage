@@ -103,6 +103,11 @@ def getMosaic(
                          ee.String(band).cat('_amp')
                          )
 
+    bandsMedian = bands.map(lambda band: ee.String(band).cat('_median'))
+    bandsMin = bands.map(lambda band: ee.String(band).cat('_min'))
+    bandsMax = bands.map(lambda band: ee.String(band).cat('_max'))
+    bandsStd = bands.map(lambda band: ee.String(band).cat('_stdDev'))
+
     # ========================================================================
     # DRY SEASON PROCESSING
     # ========================================================================
@@ -143,7 +148,7 @@ def getMosaic(
     # Overall median mosaic for the entire time period
     mosaic = collection.filter(
         ee.Filter.date(dateStart, dateEnd)
-    ).reduce(ee.Reducer.median())
+    ).reduce(ee.Reducer.median()).rename(bandsMedian)
 
     # Dry season median mosaic (only pixels below dry threshold)
     mosaicDry = collectionDry.reduce(ee.Reducer.median())\
@@ -153,19 +158,20 @@ def getMosaic(
     mosaicWet = collectionWet.reduce(ee.Reducer.median())\
         .rename(bandsWet)
 
-    # Minimum value mosaic across all images
-    mosaicMin = collection.reduce(ee.Reducer.min())
-
-    # Maximum value mosaic across all images
-    mosaicMax = collection.reduce(ee.Reducer.max())
+    # Minimum / maximum mosaics (raw names only for amp; then rename for export)
+    mosaicMinRaw = collection.reduce(ee.Reducer.min())
+    mosaicMaxRaw = collection.reduce(ee.Reducer.max())
 
     # Amplitude mosaic (difference between max and min)
     # High amplitude often indicates seasonal crops or deciduous vegetation
-    mosaicAmp = mosaicMax.subtract(mosaicMin)\
+    mosaicAmp = mosaicMaxRaw.subtract(mosaicMinRaw)\
         .rename(bandsAmp)
 
+    mosaicMin = mosaicMinRaw.rename(bandsMin)
+    mosaicMax = mosaicMaxRaw.rename(bandsMax)
+
     # Standard deviation mosaic (temporal variability)
-    mosaicStdDev = collection.reduce(ee.Reducer.stdDev())
+    mosaicStdDev = collection.reduce(ee.Reducer.stdDev()).rename(bandsStd)
 
     # ========================================================================
     # COMBINE ALL BANDS INTO FINAL MOSAIC
