@@ -13,8 +13,8 @@ Dependencies: earthengine-api, custom MapBiomas modules
 Recent changes (2026-03-31)
 ---------------------------
 1) JSON-driven execution:
-   - `yearsSat`/`gridNames` are overridden by `pending_tiles_group_prueba.json`.
-   - Effective processing key is (territory, grid_name, year, satellite).
+   - `gridNames` and the job list come from the JSON parameter file.
+   - One export task per JSON row; natural key is (grid_name, year, satellite).
 """
 
 import ee
@@ -53,7 +53,7 @@ ee.Initialize(project = "mapbiomas-chile")
 # JSON parameter file generated from spreadsheet
 # JSON input with READY=TRUE mosaics parameters.
 # Expected location (when running from this directory):
-paramsJsonPath = "pending_tiles_group_prueba.json"
+paramsJsonPath = "m.json"
 
 # Appended to the export asset name so jobs are not skipped when an asset without
 # this suffix already exists. Production runs: use "".
@@ -324,12 +324,13 @@ gridNames = {
     territory: sorted({p["grid_name"] for p in params})
     for territory, params in processingParamsByTerritory.items()
 }
-yearsSat = sorted({(p["year"], p["satellite"]) for params in processingParamsByTerritory.values() for p in params})
-
 print(f"Loaded {sum(len(v) for v in processingParamsByTerritory.values())} parameter rows from JSON")
 print(f"Territories: {territoryNames}")
 print(f"Unique grid count: {sum(len(v) for v in gridNames.values())}")
-print(f"Unique year-satellite pairs: {len(yearsSat)}")
+print(
+    "Export jobs (one per JSON row; unique key is grid_name + year + satellite): "
+    f"{sum(len(v) for v in processingParamsByTerritory.values())}"
+)
 
 
 def multiplyBy10000(image):
@@ -469,212 +470,209 @@ for territoryName in territoryNames:
         ee.Filter.inList('name', gridNames[territoryName])
     )
 
-    # Process each grid tile
-    for gridName in gridNames[territoryName]:
+    # One export per JSON row: unique (grid_name, year, satellite)
+    for param in processingParamsByTerritory[territoryName]:
+        gridName = param["grid_name"]
+        year = param["year"]
+        satellite = param["satellite"]
+        paramConfig = param
 
-        # Process each year and satellite combination
-        for year, satellite in yearsSat:
-            paramKey = (territoryName, gridName, year, satellite)
-            paramConfig = processingParamsIndex.get(paramKey)
-            if paramConfig is None:
-                continue
+        print(year, satellite, gridName)
 
-            print(year, satellite)
+        # Per-combination parameters from JSON
+        dateStart = paramConfig["date_start"]
+        dateEnd = paramConfig["date_end"]
+        cloudCover = paramConfig["cloud_cover"]
+
+        try:
+            # Check if this mosaic already exists in the output collection
+            alreadyInCollection = ee.ImageCollection(outputCollections[satellite]) \
+                .filterMetadata('year', 'equals', year) \
+                .filterMetadata('territory', 'equals', territoryName) \
+                .reduceColumns(ee.Reducer.toList(), ['system:index']) \
+                .get('list') \
+                .getInfo()
             
-            # Per-combination parameters from JSON
-            dateStart = paramConfig["date_start"]
-            dateEnd = paramConfig["date_end"]
-            cloudCover = paramConfig["cloud_cover"]
+            # Construct output asset name
+            outputName = 'TMP-' + territoryName + '-' + \
+                gridName + '-' + \
+                str(year) + '-' + \
+                satellite.upper() + '-' + \
+                str(version[territoryName]) + \
+                exportAssetSuffix
             
-            try:
-                # Check if this mosaic already exists in the output collection
-                alreadyInCollection = ee.ImageCollection(outputCollections[satellite]) \
-                    .filterMetadata('year', 'equals', year) \
-                    .filterMetadata('territory', 'equals', territoryName) \
-                    .reduceColumns(ee.Reducer.toList(), ['system:index']) \
-                    .get('list') \
-                    .getInfo()
+            # Skip if mosaic already exists
+            if outputName not in alreadyInCollection:
                 
-                # Construct output asset name
-                outputName = 'TMP-' + territoryName + '-' + \
-                    gridName + '-' + \
-                    str(year) + '-' + \
-                    satellite.upper() + '-' + \
-                    str(version[territoryName]) + \
-                    exportAssetSuffix
-                
-                # Skip if mosaic already exists
-                if outputName not in alreadyInCollection:
-                    
-                    # Define processing geometry with buffer
-                    grid = grids.filter(ee.Filter.eq('name', gridName))
-                    grid = ee.Feature(grid.first()).geometry()\
-                        .buffer(bufferSize).bounds()
+                # Define processing geometry with buffer
+                grid = grids.filter(ee.Filter.eq('name', gridName))
+                grid = ee.Feature(grid.first()).geometry()\
+                    .buffer(bufferSize).bounds()
 
-                    excluded = paramConfig["black_list"]
+                excluded = paramConfig["black_list"]
 
-                    # Retrieve Landsat images for this grid and year
-                    collection = getCollection(collectionIds[satellite],
-                                               dateStart=dateStart,
-                                               dateEnd=dateEnd,
-                                               cloudCover=cloudCover,
-                                               geometry=grid,
-                                               trashList=excluded
-                                               )
-
-                    # Detect which Landsat tiles (path/row) intersect this grid
-                    tiles = getTiles(collection)
-                    use_tile_mask = bool(paramConfig.get("use_tile_mask", True))
-                    # If use_tile_mask is enabled, filter only tiles with available mask assets.
-                    # Otherwise keep all tiles (so scenes are not filtered out just because the mask asset is missing).
-                    if use_tile_mask:
-                        tiles = list(
-                            filter(
-                                lambda tile: tile['id'] in allTiles,
-                                tiles
-                            )
-                        )
-
-                    subcollectionList = []
-                    
-                    if len(tiles) > 0:
-                        # Process each Landsat tile separately to apply tile-specific masks
-                        for tile in tiles:
-                            print(tile['path'], tile['row'])
-
-                            # Filter collection to this specific path/row
-                            subcollection = collection \
-                                .filterMetadata('WRS_PATH', 'equals', tile['path']) \
-                                .filterMetadata('WRS_ROW', 'equals', tile['row'])
-
-                            # Load and apply tile mask (removes edge artifacts)
-                            if use_tile_mask:
-                                tileMask = ee.Image(
-                                    '{}/{}-{}'.format(assetMasks, tile['id'], versionMasks))
-
-                                subcollection = subcollection.map(
-                                    lambda image: image.mask(tileMask).selfMask()
-                                )
-
-                            subcollectionList.append(subcollection)
-
-                        # Merge all tile subcollections into single collection
-                        collection = ee.List(subcollectionList) \
-                            .iterate(
-                                lambda subcollection, collection:
-                                    ee.ImageCollection(
-                                        collection).merge(subcollection),
-                                ee.ImageCollection([])
-                        )
-
-                        collection = ee.ImageCollection(collection)
-
-                        # Standardize band names to consistent naming convention
-                        bands = getBandNames(satellite + 'c2')
-                        collection = collection.select(
-                            bands['bandNames'],
-                            bands['newNames']
-                        )
-
-                        # Apply cloud and shadow masking
-                        collection = applyCloudAndShadowMask(collection)
-
-                        # Get spectral endmembers for Spectral Mixture Analysis (SMA)
-                        endmember = ENDMEMBERS[landsatIds[satellite]]
-
-                        # Calculate SMA fractions (vegetation, soil, shade, etc.)
-                        collection = collection.map(
-                            lambda image: image.addBands(
-                                getFractions(image, endmember))
-                        )
-
-                        # calculate SMA indexes
-                        collection = collection\
-                            .map(getNDFI)\
-                            .map(getSEFI)\
-                            .map(getWEFI)\
-                            .map(getFNS)
-
-                        # calculate Spectral indexes
-                        collection = (collection
-                            .map(divideBy10000)
-                            .map(getCAI)
-                            .map(getEVI2)
-                            .map(getGCVI)
-                            .map(getHallCover)
-                            .map(getHallHeigth)
-                            .map(getNDVI)
-                            .map(getNDWI)
-                            .map(getPRI)
-                            .map(getSAVI)
-                            .map(getNDBI)
-                            .map(getNDMI)
-                            .map(getNDSI)
-                            # MBI = Modified Bare Soil Index (Nguyen et al. 2021, Land 10:231;
-                            # DOI 10.3390/land10030231). Ver docstring de getMBI en SpectralIndexes.py.
-                            .map(getMBI)
-                            .map(multiplyBy10000)
-                        )
-
-                        # Generate annual mosaic using percentile-based compositing
-                        # Pantanal uses NDWI (water index), others use NDVI (vegetation)
-                        if territoryName in ['PANTANAL']:
-                            percentileBand = 'ndwi'
-                        else:
-                            percentileBand = 'ndvi'
-
-                        mosaic = getMosaic(collection,
-                                           percentileDry=25,      # 25th percentile (dry season)
-                                           percentileWet=75,      # 75th percentile (wet season)
-                                           percentileBand=percentileBand,
+                # Retrieve Landsat images for this grid and year
+                collection = getCollection(collectionIds[satellite],
                                            dateStart=dateStart,
-                                           dateEnd=dateEnd)
+                                           dateEnd=dateEnd,
+                                           cloudCover=cloudCover,
+                                           geometry=grid,
+                                           trashList=excluded
+                                           )
 
-                        # Single-band names for chile spec (otro): drop *_median_* stats, keep base name
-                        mosaic = promoteMedianToBaseName(
-                            mosaic, ['mbi', 'ndbi', 'ndmi', 'ndsi'])
-
-                        # Texture and topography (AW3D30)
-                        mosaic = getEntropyG(mosaic)
-                        mosaic = getAspect(mosaic)
-                        mosaic = getElevation(mosaic)
-                        mosaic = getSlope(mosaic)
-                        mosaic = getTpi(mosaic)
-
-                        mosaic = setBandTypes(mosaic, mtype="chile")
-
-                        # Unify CRS/resolution: Landsat mosaics are often UTM while AW3D30 terrain
-                        # bands use a different grid. Mixed projections frequently break Export or
-                        # server-side compositing; anchor to the Landsat median composite grid.
-                        _ref = mosaic.select("blue_median")
-                        mosaic = mosaic.reproject(crs=_ref.projection(), scale=30)
-
-                        # Add metadata properties
-                        mosaic = mosaic.set('year', year)
-                        mosaic = mosaic.set('collection', 1.0)
-                        mosaic = mosaic.set('grid_name', gridName)
-                        mosaic = mosaic.set('version', str(version[territoryName]))
-                        mosaic = mosaic.set('territory', territoryName)
-                        mosaic = mosaic.set('satellite', satellite)
-
-                        print(outputName)
-
-                        # Export mosaic to Earth Engine asset
-                        task = ee.batch.Export.image.toAsset(
-                            image=mosaic,
-                            description=outputName,
-                            assetId=outputCollections[satellite] + '/' + outputName,
-                            region=grid.coordinates().getInfo(),
-                            scale=30,              # 30-meter spatial resolution
-                            maxPixels=int(1e13)    # Maximum pixels to export
+                # Detect which Landsat tiles (path/row) intersect this grid
+                tiles = getTiles(collection)
+                use_tile_mask = bool(paramConfig.get("use_tile_mask", True))
+                # If use_tile_mask is enabled, filter only tiles with available mask assets.
+                # Otherwise keep all tiles (so scenes are not filtered out just because the mask asset is missing).
+                if use_tile_mask:
+                    tiles = list(
+                        filter(
+                            lambda tile: tile['id'] in allTiles,
+                            tiles
                         )
+                    )
 
-                        task.start()
-            except Exception as e:
-                # Handle queue limit errors
-                msg = 'Too many tasks already in the queue (3000). Please wait for some of them to complete.'
-                if str(e) == msg:
-                    raise Exception(e)
-                else:
-                    print(e)
-                    traceback.print_exc()
+                subcollectionList = []
+                
+                if len(tiles) > 0:
+                    # Process each Landsat tile separately to apply tile-specific masks
+                    for tile in tiles:
+                        print(tile['path'], tile['row'])
+
+                        # Filter collection to this specific path/row
+                        subcollection = collection \
+                            .filterMetadata('WRS_PATH', 'equals', tile['path']) \
+                            .filterMetadata('WRS_ROW', 'equals', tile['row'])
+
+                        # Load and apply tile mask (removes edge artifacts)
+                        if use_tile_mask:
+                            tileMask = ee.Image(
+                                '{}/{}-{}'.format(assetMasks, tile['id'], versionMasks))
+
+                            subcollection = subcollection.map(
+                                lambda image: image.mask(tileMask).selfMask()
+                            )
+
+                        subcollectionList.append(subcollection)
+
+                    # Merge all tile subcollections into single collection
+                    collection = ee.List(subcollectionList) \
+                        .iterate(
+                            lambda subcollection, collection:
+                                ee.ImageCollection(
+                                    collection).merge(subcollection),
+                            ee.ImageCollection([])
+                    )
+
+                    collection = ee.ImageCollection(collection)
+
+                    # Standardize band names to consistent naming convention
+                    bands = getBandNames(satellite + 'c2')
+                    collection = collection.select(
+                        bands['bandNames'],
+                        bands['newNames']
+                    )
+
+                    # Apply cloud and shadow masking
+                    collection = applyCloudAndShadowMask(collection)
+
+                    # Get spectral endmembers for Spectral Mixture Analysis (SMA)
+                    endmember = ENDMEMBERS[landsatIds[satellite]]
+
+                    # Calculate SMA fractions (vegetation, soil, shade, etc.)
+                    collection = collection.map(
+                        lambda image: image.addBands(
+                            getFractions(image, endmember))
+                    )
+
+                    # calculate SMA indexes
+                    collection = collection\
+                        .map(getNDFI)\
+                        .map(getSEFI)\
+                        .map(getWEFI)\
+                        .map(getFNS)
+
+                    # calculate Spectral indexes
+                    collection = (collection
+                        .map(divideBy10000)
+                        .map(getCAI)
+                        .map(getEVI2)
+                        .map(getGCVI)
+                        .map(getHallCover)
+                        .map(getHallHeigth)
+                        .map(getNDVI)
+                        .map(getNDWI)
+                        .map(getPRI)
+                        .map(getSAVI)
+                        .map(getNDBI)
+                        .map(getNDMI)
+                        .map(getNDSI)
+                        # MBI = Modified Bare Soil Index (Nguyen et al. 2021, Land 10:231;
+                        # DOI 10.3390/land10030231). Ver docstring de getMBI en SpectralIndexes.py.
+                        .map(getMBI)
+                        .map(multiplyBy10000)
+                    )
+
+                    # Generate annual mosaic using percentile-based compositing
+                    # Pantanal uses NDWI (water index), others use NDVI (vegetation)
+                    if territoryName in ['PANTANAL']:
+                        percentileBand = 'ndwi'
+                    else:
+                        percentileBand = 'ndvi'
+
+                    mosaic = getMosaic(collection,
+                                       percentileDry=25,      # 25th percentile (dry season)
+                                       percentileWet=75,      # 75th percentile (wet season)
+                                       percentileBand=percentileBand,
+                                       dateStart=dateStart,
+                                       dateEnd=dateEnd)
+
+                    # Single-band names for chile spec (otro): drop *_median_* stats, keep base name
+                    mosaic = promoteMedianToBaseName(
+                        mosaic, ['mbi', 'ndbi', 'ndmi', 'ndsi'])
+
+                    # Texture and topography (AW3D30)
+                    mosaic = getEntropyG(mosaic)
+                    mosaic = getAspect(mosaic)
+                    mosaic = getElevation(mosaic)
+                    mosaic = getSlope(mosaic)
+                    mosaic = getTpi(mosaic)
+
+                    mosaic = setBandTypes(mosaic, mtype="chile")
+
+                    # Unify CRS/resolution: Landsat mosaics are often UTM while AW3D30 terrain
+                    # bands use a different grid. Mixed projections frequently break Export or
+                    # server-side compositing; anchor to the Landsat median composite grid.
+                    _ref = mosaic.select("blue_median")
+                    mosaic = mosaic.reproject(crs=_ref.projection(), scale=30)
+
+                    # Add metadata properties
+                    mosaic = mosaic.set('year', year)
+                    mosaic = mosaic.set('collection', 1.0)
+                    mosaic = mosaic.set('grid_name', gridName)
+                    mosaic = mosaic.set('version', str(version[territoryName]))
+                    mosaic = mosaic.set('territory', territoryName)
+                    mosaic = mosaic.set('satellite', satellite)
+
+                    print(outputName)
+
+                    # Export mosaic to Earth Engine asset
+                    task = ee.batch.Export.image.toAsset(
+                        image=mosaic,
+                        description=outputName,
+                        assetId=outputCollections[satellite] + '/' + outputName,
+                        region=grid.coordinates().getInfo(),
+                        scale=30,              # 30-meter spatial resolution
+                        maxPixels=int(1e13)    # Maximum pixels to export
+                    )
+
+                    task.start()
+        except Exception as e:
+            # Handle queue limit errors
+            msg = 'Too many tasks already in the queue (3000). Please wait for some of them to complete.'
+            if str(e) == msg:
+                raise Exception(e)
+            else:
+                print(e)
+                traceback.print_exc()
