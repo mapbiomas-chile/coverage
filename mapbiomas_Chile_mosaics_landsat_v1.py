@@ -53,11 +53,11 @@ ee.Initialize(project = "mapbiomas-chile")
 # JSON parameter file generated from spreadsheet
 # JSON input with READY=TRUE mosaics parameters.
 # Expected location (when running from this directory):
-paramsJsonPath = "m.json"
+paramsJsonPath = "input_params_2026.json"
 
 # Appended to the export asset name so jobs are not skipped when an asset without
 # this suffix already exists. Production runs: use "".
-exportAssetSuffix = "-PRUEBA"
+exportAssetSuffix = "-PROD"
 
 # Version of the landsat masks to use
 versionMasks = '2'
@@ -89,41 +89,7 @@ dataFilter = {
 }
 
 # Grid names (1:250,000 map sheets) covering Chile
-gridNames = {
-    "CHILE": [
-        "SE-19-V-D",
-        # "SE-19-Y-B", "SE-19-Y-D", "SE-19-Z-C",
-        # "SF-19-Y-D", "SF-19-Z-C", "SF-19-Z-D", "SG-19-V-A",
-        # "SG-19-Z-A", "SG-19-Y-C", "SG-19-Y-D", "SG-19-Z-C",
-        # "SI-19-V-A", "SI-19-V-B", "SI-19-V-C", "SI-19-V-D",
-        # "SJ-19-V-B", "SJ-18-X-C", "SJ-18-X-D", "SJ-19-V-C",
-        # "SK-18-X-C", "SK-18-X-D", "SK-19-V-C", "SK-18-Z-A",
-        # "SL-18-V-D", "SL-18-X-C", "SL-18-X-D", "SL-19-V-C",
-        # "SM-18-V-B", "SM-18-X-A", "SM-18-X-B", "SM-18-V-D",
-        # "SM-19-Y-C", "SM-19-Y-D", "SN-18-V-B", "SN-18-X-A",
-        # "SN-19-X-C", "SN-18-Z-B", "SN-19-Y-A", "SN-19-Y-B",
-        # "SF-19-V-B", "SF-19-X-A", "SF-19-V-D", "SF-19-X-C",
-        # "SF-19-Y-B", "SF-19-Z-A", "SF-19-Z-B", "SF-19-Y-C",
-        # "SG-19-V-B", "SG-19-X-A", "SG-19-X-B", "SG-19-V-C",
-        # "SG-19-V-D", "SG-19-X-C", "SG-19-Y-A", "SG-19-Y-B",
-        # "SH-19-V-A", "SH-19-V-B", "SH-19-V-C", "SH-19-V-D",
-        # "SH-19-Y-A", "SH-19-Y-B", "SH-19-Y-C", "SH-19-Y-D",
-        # "SI-18-Z-B", "SI-19-Y-A", "SI-19-Y-B", "SI-18-Z-D",
-        # "SI-19-Y-C", "SI-19-Y-D", "SJ-18-X-B", "SJ-19-V-A",
-        # "SJ-18-Z-B", "SJ-19-Y-A", "SJ-18-Z-C", "SJ-18-Z-D",
-        # "SJ-19-Y-C", "SK-18-X-A", "SK-18-X-B", "SK-19-V-A",
-        # "SK-18-Z-B", "SK-19-Y-A", "SK-18-Z-C", "SK-18-Z-D",
-        # "SK-19-Y-C", "SL-18-X-A", "SL-18-X-B", "SL-19-V-A",
-        # "SL-18-Y-B", "SL-18-Z-A", "SL-18-Z-B", "SL-19-Y-A",
-        # "SL-18-Y-D", "SL-18-Z-C", "SL-18-Z-D", "SL-19-Y-C",
-        # "SM-18-X-C", "SM-18-X-D", "SM-18-Y-B", "SM-18-Z-A",
-        # "SM-18-Z-B", "SM-18-Y-D", "SM-18-Z-C", "SM-18-Z-D",
-        # "SN-18-X-B", "SN-19-V-A", "SN-19-V-B", "SN-19-X-A",
-        # "SN-18-X-C", "SN-18-X-D", "SN-19-V-C", "SN-19-V-D",
-        # "SN-19-Z-A", "SN-19-Z-B", "SN-19-Y-C", "SN-19-Y-D",
-        # "SN-19-Z-C", "SN-19-Z-D"
-    ],
-}
+gridNames = { "CHILE": [] }
 
 # Google Earth Engine Collection IDs for Landsat satellites (Collection 2, Tier 1, Level 2)
 collectionIds = {
@@ -157,72 +123,7 @@ bufferSize = 100
 
 # Year and satellite combinations to process
 # Format: [year, satellite_code]
-yearsSat = [
-    #[2025, 'l9'],
-     [2024, 'l8'],
-     [2024, 'l9'],
-     [2023, 'l9'],
-    # [2023, 'l8'],
-    # [2022, 'l8'],
-    # [2021, 'l8'], 
-    # [2020, 'l8'], 
-    # [2019, 'l8'],
-    # [2018, 'l8'], 
-    # [2017, 'l8'], 
-    # [2016, 'l8'],
-    # [2015, 'l8'], 
-    # [2014, 'l8'], 
-    # [2013, 'l8'],
-    # [2011, 'l5'], 
-    # [2010, 'l5'], 
-    # [2009, 'l5'],
-    # [2008, 'l5'], 
-    # [2007, 'l5'], 
-    # [2006, 'l5'],
-    # [2005, 'l5'], 
-    # [2004, 'l5'], 
-    # [2003, 'l5'],
-    # [2002, 'l5'], 
-    # [2001, 'l5'], 
-    # [2000, 'l5'],
-    # [1999, 'l5'], 
-    # [1998, 'l5'], 
-    # [1997, 'l5'],
-    # [1996, 'l5'], 
-    # [1995, 'l5'], 
-    # [1994, 'l5'],
-    # [1993, 'l5'], 
-    # [1992, 'l5'], 
-    # [1991, 'l5'],
-    # [1990, 'l5'], 
-    # [1989, 'l5'], 
-    # [1988, 'l5'],
-    # [1987, 'l5'], 
-    # [1986, 'l5'], 
-    # [1985, 'l5'],
-    # [2003, 'l7'],
-    # [2002, 'l7'], 
-    # [2001, 'l7'], 
-    # [2000, 'l7'],
-    # [2021, 'l7'],
-    # [2020, 'l7'], 
-    # [2019, 'l7'], 
-    # [2018, 'l7'],
-    # [2017, 'l7'], 
-    # [2016, 'l7'], 
-    # [2015, 'l7'],
-    # [2014, 'l7'], 
-    # [2013, 'l7'],
-    # [2012, 'l7'], 
-    # [2011, 'l7'], 
-    # [2010, 'l7'], 
-    # [2009, 'l7'],
-    # [2008, 'l7'], 
-    # [2007, 'l7'], 
-    # [2006, 'l7'],
-    # [2005, 'l7'], 
-    # [2004, 'l7'], 
-]
+yearsSat = []
 
 
 def parse_iso_date(value, fallback):
