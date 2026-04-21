@@ -234,7 +234,8 @@ BAND_NAMES = {
     
     'l5_urban': {
         'bandNames': ['B1', 'B2', 'B3', 'B4', 'B5', 'B7', 'pixel_qa', 'B6', 'B4_1', 'B5_1', 'B6_1'],
-        'newNames': LANDSAT_NEW_NAMES + ['swir1_dn', 'nir_dn', 'tir_dn']
+        #'newNames': LANDSAT_NEW_NAMES + ['swir1_dn', 'nir_dn', 'tir_dn']
+        'newNames': LANDSAT_NEW_NAMES + ['nir_dn', 'swir1_dn', 'tir_dn']
         # Landsat 5 for urban analysis with additional DN bands
         # Standard 8 bands + 3 Digital Number (DN) bands:
         # B4_1 -> nir_dn: NIR in DN for EBBI calculation
@@ -244,14 +245,16 @@ BAND_NAMES = {
     },
     'l7_urban': {
         'bandNames': ['B1', 'B2', 'B3', 'B4', 'B5', 'B7', 'pixel_qa', 'B6', 'B4_1', 'B5_1', 'B6_VCID_2'],
-        'newNames': LANDSAT_NEW_NAMES + ['swir1_dn', 'nir_dn', 'tir_dn']
+        #'newNames': LANDSAT_NEW_NAMES + ['swir1_dn', 'nir_dn', 'tir_dn']
+        'newNames': LANDSAT_NEW_NAMES + ['nir_dn', 'swir1_dn', 'tir_dn']
         # Landsat 7 for urban analysis with additional DN bands
         # B6_VCID_2: Thermal high gain in DN
         # Similar structure to l5_urban
     },
     'l8_urban': {
         'bandNames': ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'pixel_qa', 'B11', 'B5_1', 'B6_1', 'B11_1'],
-        'newNames': LANDSAT_NEW_NAMES + ['swir1_dn', 'nir_dn', 'tir_dn']
+       #'newNames': LANDSAT_NEW_NAMES + ['swir1_dn', 'nir_dn', 'tir_dn']
+        'newNames': LANDSAT_NEW_NAMES + ['nir_dn', 'swir1_dn', 'tir_dn']
         # Landsat 8 for urban analysis with additional DN bands
         # B5_1 -> nir_dn: NIR in DN
         # B6_1 -> swir1_dn: SWIR1 in DN
