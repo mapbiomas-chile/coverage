@@ -17,7 +17,6 @@ classification_test/          ← parent directory (repo root)
 |------|-------------|
 | `test_tile_selection.js` | Paste into the [Earth Engine Code Editor](https://code.earthengine.google.com/) and run. |
 
-A sibling implementation also exists in [Lissettecs/gee-test-tiles](https://github.com/Lissettecs/gee-test-tiles); this copy is maintained here for classification / coverage workflows.
 
 ---
 
