@@ -2,7 +2,7 @@
 
 Earth Engine script to **select representative MGRS test tiles** over Chile, using the MapBiomas Chile tile grid (Collection 3) and the reference LULC classification (Collection 2).
 
-This folder is part of the [mapbiomas-chile/coverage](https://github.com/mapbiomas-chile/coverage) repository.
+This folder is part of the [mapbiomas-chile/coverage](https://github.com/mapbiomas-chile/coverage) repository, at path `classification_test/test_tile_selection/`.
 
 | File | Description |
 |------|-------------|
