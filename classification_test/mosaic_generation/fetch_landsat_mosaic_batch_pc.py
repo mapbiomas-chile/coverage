@@ -31,7 +31,9 @@ Composite note:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+import threading
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
@@ -63,6 +65,7 @@ class TileJob:
     skip_existing: bool
     log_file: Path
     verbose: bool
+    quiet: bool
 
 
 def parse_args() -> argparse.Namespace:
@@ -151,6 +154,21 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Minimal console output; detail goes to --log-dir files",
     )
+    p.add_argument(
+        "--progress-interval",
+        type=float,
+        default=15.0,
+        help="Seconds between progress-table prints (0 disables; default 15)",
+    )
+    p.add_argument(
+        "--stream-worker-logs",
+        action="store_true",
+        help=(
+            "Stream each worker's logs to console (interleaved, prefixed by [TILE]). "
+            "Off by default to keep the progress table readable; per-tile logs always "
+            "go to --log-dir."
+        ),
+    )
     p.add_argument("--dry-run", action="store_true", help="List tiles and exit")
     return p.parse_args()
 
@@ -194,6 +212,7 @@ def build_jobs(args: argparse.Namespace, tile_ids: list[str]) -> list[TileJob]:
     slug = datetime_slug(args.datetime)
     log_dir = args.log_dir or (args.data_dir / "logs" / slug)
     log_dir.mkdir(parents=True, exist_ok=True)
+    worker_quiet = not args.stream_worker_logs
     jobs: list[TileJob] = []
     for tile in tile_ids:
         jobs.append(
@@ -210,6 +229,7 @@ def build_jobs(args: argparse.Namespace, tile_ids: list[str]) -> list[TileJob]:
                 skip_existing=args.skip_existing,
                 log_file=tile_log_path(log_dir, tile),
                 verbose=args.verbose,
+                quiet=worker_quiet,
             )
         )
     return jobs
@@ -219,9 +239,9 @@ def run_tile_job(job: TileJob) -> dict:
     """Worker entry point (picklable)."""
     t0 = time.perf_counter()
     try:
-        # quiet=False so worker logs stream to the parent stdout in real time
-        # (fork inherits stdout). Each line is prefixed with [TILE] so multi-worker
-        # interleaving stays readable. Detail also goes to the per-tile log_file.
+        # When quiet=True (default), per-worker logs go only to job.log_file so the
+        # parent's progress table stays readable. With --stream-worker-logs they
+        # also stream to the inherited stdout, prefixed by [TILE].
         result = process_mgrs_tile(
             job.tile,
             datetime_range=job.datetime_range,
@@ -235,7 +255,7 @@ def run_tile_job(job: TileJob) -> dict:
             skip_existing=job.skip_existing,
             log_file=job.log_file,
             verbose=job.verbose,
-            quiet=False,
+            quiet=job.quiet,
         )
     except Exception as exc:
         result = {
@@ -253,6 +273,131 @@ def append_manifest(manifest_path: Path, record: dict) -> None:
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     with manifest_path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def _tail_log_line(log_file: Path, *, max_bytes: int = 8192) -> str:
+    """Return the last non-empty line of a log file (best-effort, never raises)."""
+    try:
+        with log_file.open("rb") as fh:
+            fh.seek(0, 2)
+            size = fh.tell()
+            fh.seek(max(0, size - max_bytes))
+            chunk = fh.read().decode("utf-8", errors="replace")
+    except FileNotFoundError:
+        return "(no log yet)"
+    except OSError:
+        return "(log unreadable)"
+    lines = [ln.rstrip() for ln in chunk.splitlines() if ln.strip()]
+    return lines[-1] if lines else "(empty log)"
+
+
+def _file_size_mib(path: Path) -> float | None:
+    try:
+        return path.stat().st_size / (1024 * 1024)
+    except FileNotFoundError:
+        return None
+
+
+def _log_age_s(log_file: Path, fallback: float) -> float:
+    try:
+        return max(0.0, time.time() - log_file.stat().st_mtime)
+    except FileNotFoundError:
+        return fallback
+
+
+class BatchProgress:
+    """
+    Background heartbeat that prints a compact status table for in-flight tiles.
+
+    Detects "running" by the presence of the worker's per-tile log file. Tails
+    each running tile's log to show the latest phase / heartbeat line and the
+    growing GeoTIFF size when the write phase starts.
+    """
+
+    def __init__(self, jobs: list[TileJob], *, interval_s: float):
+        self.interval_s = interval_s
+        self.total = len(jobs)
+        self.tiles: dict[str, dict] = {
+            job.tile: {
+                "log_file": job.log_file,
+                "out_path": job.out_path,
+                "finished": False,
+            }
+            for job in jobs
+        }
+        self.done_count = 0
+        self.batch_start = time.time()
+        self._stop = threading.Event()
+        self._lock = threading.Lock()
+        self._thread: threading.Thread | None = None
+
+    def start(self) -> None:
+        if self.interval_s <= 0 or self.total == 0:
+            return
+        self._thread = threading.Thread(
+            target=self._loop, name="batch-progress", daemon=True
+        )
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=2.0)
+
+    def mark_done(self, tile: str) -> None:
+        with self._lock:
+            info = self.tiles.get(tile)
+            if info is not None and not info["finished"]:
+                info["finished"] = True
+                self.done_count += 1
+
+    def _loop(self) -> None:
+        while not self._stop.wait(self.interval_s):
+            try:
+                self._print_status()
+            except Exception:
+                # Never let the progress thread kill the batch
+                pass
+
+    def _print_status(self) -> None:
+        log = get_logger()
+        with self._lock:
+            running = []
+            pending: list[str] = []
+            for tile, info in self.tiles.items():
+                if info["finished"]:
+                    continue
+                if info["log_file"].exists():
+                    running.append((tile, info))
+                else:
+                    pending.append(tile)
+            done = self.done_count
+            total = self.total
+
+        if not running and not pending:
+            return
+
+        wall = time.time() - self.batch_start
+        log.info("─" * 72)
+        log.info(
+            "Progress @ %5.0fs wall:  %d/%d done  |  %d running  |  %d pending",
+            wall,
+            done,
+            total,
+            len(running),
+            len(pending),
+        )
+        for tile, info in sorted(running, key=lambda kv: kv[0]):
+            elapsed = _log_age_s(info["log_file"], fallback=wall)
+            tail = _tail_log_line(info["log_file"])
+            size = _file_size_mib(info["out_path"])
+            size_str = f"  tif={size:5.0f}MiB" if size is not None else ""
+            # Trim very long lines so the table stays scannable
+            if len(tail) > 110:
+                tail = tail[:107] + "…"
+            log.info("  %-6s  %5.0fs%s  | %s", tile, elapsed, size_str, tail)
+        if pending:
+            log.info("  pending: %s", ", ".join(sorted(pending)))
 
 
 def main() -> int:
@@ -279,11 +424,22 @@ def main() -> int:
     log.info("=" * 56)
     log.info("Batch Landsat mosaic run")
     log.info("Tiles: %s (%d)", ", ".join(tile_ids), len(tile_ids))
-    log.info("Workers: %d  datetime: %s  max_scenes: %d  composite: %s", args.workers, args.datetime, args.max_scenes, args.composite)
+    log.info(
+        "Workers: %d  datetime: %s  max_scenes: %d  composite: %s",
+        args.workers, args.datetime, args.max_scenes, args.composite,
+    )
     log.info("Data dir: %s", args.data_dir)
     log.info("Per-tile logs: %s", log_dir)
     log.info("Batch log: %s", batch_log)
     log.info("Manifest: %s", manifest)
+    if args.progress_interval > 0 and not args.dry_run:
+        log.info(
+            "Progress table every %.0fs (use `tail -f %s/<TILE>.log` for live per-tile detail)",
+            args.progress_interval,
+            log_dir,
+        )
+    if args.stream_worker_logs:
+        log.info("Streaming worker logs to console (interleaved, prefixed by [TILE])")
 
     if args.dry_run:
         log.info("Dry-run — planned outputs:")
@@ -310,57 +466,71 @@ def main() -> int:
     t0 = time.perf_counter()
     log.info("Submitting %d job(s) to process pool …", len(jobs))
 
-    with ProcessPoolExecutor(max_workers=max(1, args.workers)) as pool:
-        futures = {pool.submit(run_tile_job, job): job for job in jobs}
-        done = 0
-        for fut in as_completed(futures):
-            job = futures[fut]
-            done += 1
-            try:
-                result = fut.result()
-            except Exception as exc:
-                result = {
-                    "tile": job.tile,
-                    "status": "error",
-                    "error": f"worker crashed: {exc}",
-                    "out_path": str(job.out_path),
-                    "log_file": str(job.log_file),
-                }
-            append_manifest(manifest, result)
+    progress = BatchProgress(jobs, interval_s=args.progress_interval)
+    progress.start()
 
-            status = result.get("status")
-            if status == "ok":
-                ok += 1
-                cov = result.get("coverage_pct", "?")
-                stac = result.get("timing_stac_search_s", "?")
-                cog = result.get("timing_cog_read_composite_s", "?")
-                io_mb = result.get("io_read_bytes")
-                io_s = f" read={io_mb / (1024 * 1024):.0f}MiB" if io_mb else ""
-                log.info(
-                    "[%d/%d] OK %s  coverage=%s%%  stac=%ss cog=%ss%s  total=%ss  log=%s",
-                    done,
-                    len(jobs),
-                    job.tile,
-                    cov,
-                    stac,
-                    cog,
-                    io_s,
-                    result.get("elapsed_s"),
-                    job.log_file,
-                )
-            elif status == "skipped":
-                skipped += 1
-                log.info("[%d/%d] SKIP %s  (exists)  log=%s", done, len(jobs), job.tile, job.log_file)
-            else:
-                err += 1
-                log.error(
-                    "[%d/%d] ERR %s  %s  log=%s",
-                    done,
-                    len(jobs),
-                    job.tile,
-                    result.get("error", result),
-                    job.log_file,
-                )
+    try:
+        with ProcessPoolExecutor(max_workers=max(1, args.workers)) as pool:
+            futures = {pool.submit(run_tile_job, job): job for job in jobs}
+            done = 0
+            for fut in as_completed(futures):
+                job = futures[fut]
+                done += 1
+                try:
+                    result = fut.result()
+                except Exception as exc:
+                    result = {
+                        "tile": job.tile,
+                        "status": "error",
+                        "error": f"worker crashed: {exc}",
+                        "out_path": str(job.out_path),
+                        "log_file": str(job.log_file),
+                    }
+                progress.mark_done(job.tile)
+                append_manifest(manifest, result)
+
+                status = result.get("status")
+                if status == "ok":
+                    ok += 1
+                    cov = result.get("coverage_pct", "?")
+                    stac = result.get("timing_stac_search_s", "?")
+                    cog = result.get("timing_cog_read_composite_s", "?")
+                    write = result.get("timing_write_geotiff_s", "?")
+                    io_mb = result.get("io_read_bytes")
+                    io_s = f" read={io_mb / (1024 * 1024):.0f}MiB" if io_mb else ""
+                    out_size = _file_size_mib(job.out_path)
+                    out_s = f" tif={out_size:.0f}MiB" if out_size is not None else ""
+                    log.info(
+                        "[%d/%d] OK   %-6s  cov=%s%%  stac=%ss  cog=%ss  write=%ss%s%s  total=%ss",
+                        done,
+                        len(jobs),
+                        job.tile,
+                        cov,
+                        stac,
+                        cog,
+                        write,
+                        io_s,
+                        out_s,
+                        result.get("elapsed_s"),
+                    )
+                elif status == "skipped":
+                    skipped += 1
+                    log.info(
+                        "[%d/%d] SKIP %-6s  (output exists)",
+                        done, len(jobs), job.tile,
+                    )
+                else:
+                    err += 1
+                    log.error(
+                        "[%d/%d] ERR  %-6s  %s  log=%s",
+                        done,
+                        len(jobs),
+                        job.tile,
+                        result.get("error", result),
+                        job.log_file,
+                    )
+    finally:
+        progress.stop()
 
     elapsed = round(time.perf_counter() - t0, 1)
     log.info(
