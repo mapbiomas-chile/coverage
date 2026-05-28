@@ -66,22 +66,32 @@ from fetch_landsat_mosaic_pc import (
 
 
 @contextmanager
-def measure_net_recv_bytes():
+def measure_proc_recv_bytes():
     """
-    System-wide network bytes received delta around a block.
+    Per-process bytes received via read() syscalls (Linux only, via
+    /proc/<pid>/io read_chars — psutil exposes it as Process.io_counters().read_chars).
 
-    Accurate for a probe machine when no other traffic is active; counts
-    every byte pulled from Azure via HTTPS for the current operation.
+    `read_chars` counts bytes pulled into the process from any fd (sockets, pipes,
+    disk). For COG reads via GDAL/libcurl this is dominated by HTTPS socket recvs,
+    so it's an accurate per-worker network counter — unlike system-wide
+    net_io_counters which gets contaminated by other parallel workers.
+
+    Falls back gracefully if psutil or read_chars is unavailable (non-Linux).
     """
     box: dict[str, int | None] = {"delta": None}
     try:
         import psutil
 
-        before = psutil.net_io_counters().bytes_recv
+        proc = psutil.Process()
+        ctr = proc.io_counters()
+        before = getattr(ctr, "read_chars", None)
+        if before is None:
+            yield box
+            return
         yield box
-        after = psutil.net_io_counters().bytes_recv
+        after = proc.io_counters().read_chars
         box["delta"] = after - before
-    except ImportError:
+    except (ImportError, AttributeError, OSError):
         yield box
 from mosaic_logging import get_logger, resolve_log_level, setup_logging
 
@@ -224,7 +234,7 @@ def fetch_assets_serial(
             asset_t0 = time.perf_counter()
             err_msg = "ok"
             try:
-                with measure_net_recv_bytes() as io_box:
+                with measure_proc_recv_bytes() as io_box:
                     arr = read_cog_to_grid(href, f"EPSG:{epsg}", transform, width, height)
                 stack[s_idx, b_idx] = arr
                 bytes_read = io_box.get("delta") or 0

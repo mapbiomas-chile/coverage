@@ -1,56 +1,29 @@
 #!/usr/bin/env bash
-# Parallel Landsat SR mosaic test — 6 MGRS tiles via Planetary Computer.
+# Parallel Landsat SR mosaic test — N MGRS tiles via Planetary Computer.
 #
-# Two backends share the same tile list / params:
+# Each tile is launched as a SEPARATE heavyweight Python subprocess
+# (`python fetch_landsat_serial_pc.py --mgrs <TILE> …`). No Python-level
+# pool, no fork, no threads — bash backgrounds N processes at a time and
+# waits on them.
 #
-#   stackstac (default) → fetch_landsat_mosaic_batch_pc.py
-#       N tiles in parallel, each tile via stackstac + Dask (multi-threaded
-#       intra-tile). Parent prints a progress table every 15 s; per-tile
-#       detail goes to logs/<slug>/<TILE>.log.
+# Per-tile metrics (MiB/s, bytes, etc.) come from the serial script's
+# per-process counter (psutil read_chars), so each tile's numbers are its
+# own (not contaminated by sibling processes).
 #
-#   serial              → fetch_landsat_serial_batch_pc.py
-#       N tiles in parallel, each tile fetched band-by-band (rasterio +
-#       WarpedVRT, one HTTPS request at a time). Worker logs stream live
-#       to stdout prefixed by [TILE]; per-tile detail in
-#       logs/<slug>/log_<TILE>_<slug>.log.
+# Worker logs stream to the inherited stdout with [TILE] prefix and to
+# per-tile log/CSV files under --data-dir.
 #
 # Usage:
-#   ./run_mosaic_parallel_test.sh                    # stackstac backend
-#   ./run_mosaic_parallel_test.sh stackstac          # explicit stackstac
-#   ./run_mosaic_parallel_test.sh serial             # serial-by-band backend
-#
-#   # Any extra args after the backend keyword are forwarded to the python script:
-#   ./run_mosaic_parallel_test.sh stackstac --dry-run
-#   ./run_mosaic_parallel_test.sh serial --skip-existing -v
-#   ./run_mosaic_parallel_test.sh stackstac --progress-interval 5
+#   ./run_mosaic_parallel_test.sh                # default tiles & params
+#   ./run_mosaic_parallel_test.sh -v             # forward extra flags to python
+#   ./run_mosaic_parallel_test.sh --max-cloud 10
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-BACKEND="${1:-stackstac}"
-if [[ "$BACKEND" == "stackstac" || "$BACKEND" == "serial" ]]; then
-    shift || true
-else
-    BACKEND="stackstac"
-fi
-
-case "$BACKEND" in
-    stackstac)
-        PY_SCRIPT="fetch_landsat_mosaic_batch_pc.py"
-        DATA_DIR="${HOME}/data/mosaic_parallel_test"
-        ;;
-    serial)
-        PY_SCRIPT="fetch_landsat_serial_batch_pc.py"
-        DATA_DIR="${HOME}/data/mosaic_parallel_test_serial"
-        ;;
-    *)
-        echo "Unknown backend: $BACKEND  (use 'stackstac' or 'serial')" >&2
-        exit 2
-        ;;
-esac
-
+DATA_DIR="${HOME}/data/mosaic_parallel_test"
 TILES="18FXH,18GXP,18HYD,19HCD,19JCJ,19KDU"
 WORKERS=6
 DATETIME="2024-01-01/2024-03-31"
@@ -60,38 +33,71 @@ SLUG="${DATETIME//\//_}"
 mkdir -p "$DATA_DIR"
 CONSOLE_LOG="${DATA_DIR}/console_$(date +%Y%m%d_%H%M%S).log"
 
-echo "Backend:     $BACKEND  ($PY_SCRIPT)"
-echo "Output dir:  $DATA_DIR"
-echo "Tiles:       $TILES"
-echo "Workers:     $WORKERS"
-echo "Datetime:    $DATETIME"
-echo "Console log: $CONSOLE_LOG"
-echo
+EXTRA_ARGS=("$@")
 
-python -u "$PY_SCRIPT" \
-  --tiles "$TILES" \
-  --workers "$WORKERS" \
-  --datetime "$DATETIME" \
-  --max-scenes "$MAX_SCENES" \
-  --composite median \
-  --data-dir "$DATA_DIR" \
-  "$@" \
-  2>&1 | tee "$CONSOLE_LOG"
+run_tile() {
+    local TILE="$1"
+    python -u fetch_landsat_serial_pc.py \
+        --mgrs "$TILE" \
+        --datetime "$DATETIME" \
+        --max-scenes "$MAX_SCENES" \
+        --composite median \
+        --data-dir "$DATA_DIR" \
+        "${EXTRA_ARGS[@]}"
+}
 
-echo
-echo "Done. Outputs under: $DATA_DIR"
-case "$BACKEND" in
-    stackstac)
-        echo "  GeoTIFFs:  ${DATA_DIR}/${SLUG}/mgrs_*_landsat_sr.tif"
-        echo "  Manifest:  ${DATA_DIR}/manifest_${SLUG}.jsonl"
-        echo "  Batch log: ${DATA_DIR}/batch_${SLUG}.log"
-        echo "  Tile logs: ${DATA_DIR}/logs/${SLUG}/<TILE>.log"
-        ;;
-    serial)
-        echo "  GeoTIFFs:    ${DATA_DIR}/${SLUG}/mgrs_*_${SLUG}.tif"
-        echo "  Manifest:    ${DATA_DIR}/manifest_serial_batch_${SLUG}.jsonl"
-        echo "  Batch log:   ${DATA_DIR}/batch_serial_${SLUG}.log"
-        echo "  Tile logs:   ${DATA_DIR}/logs/${SLUG}/log_<TILE>_${SLUG}.log"
-        echo "  Tile metrics ${DATA_DIR}/metrics/${SLUG}/metrics_<TILE>_${SLUG}.csv"
-        ;;
-esac
+main() {
+    echo "Data dir:    $DATA_DIR"
+    echo "Tiles:       $TILES"
+    echo "Workers:     $WORKERS (max concurrent independent python subprocesses)"
+    echo "Datetime:    $DATETIME"
+    echo "Console log: $CONSOLE_LOG"
+    echo "Extra args:  ${EXTRA_ARGS[*]:-(none)}"
+    echo
+
+    IFS=',' read -ra TILE_ARRAY <<< "$TILES"
+    local N_TILES=${#TILE_ARRAY[@]}
+
+    local T_START
+    T_START=$(date +%s)
+    local PIDS=()
+    local PID_TILES=()
+
+    for TILE in "${TILE_ARRAY[@]}"; do
+        while [[ $(jobs -r -p | wc -l) -ge $WORKERS ]]; do
+            sleep 0.5
+        done
+        echo "[bash $(date +%H:%M:%S)] Launching $TILE …"
+        run_tile "$TILE" &
+        PIDS+=("$!")
+        PID_TILES+=("$TILE")
+    done
+
+    local FAIL=0
+    local IDX=0
+    for PID in "${PIDS[@]}"; do
+        local TILE="${PID_TILES[$IDX]}"
+        if wait "$PID"; then
+            echo "[bash $(date +%H:%M:%S)] $TILE (PID $PID) OK"
+        else
+            local RC=$?
+            echo "[bash $(date +%H:%M:%S)] $TILE (PID $PID) FAILED rc=$RC"
+            FAIL=$((FAIL + 1))
+        fi
+        IDX=$((IDX + 1))
+    done
+
+    local T_END
+    T_END=$(date +%s)
+    local ELAPSED=$((T_END - T_START))
+    echo
+    echo "Done — ${N_TILES} tile(s), ${FAIL} failure(s), wall=${ELAPSED}s"
+    echo "Outputs under: $DATA_DIR"
+    echo "  GeoTIFF:  ${DATA_DIR}/mgrs_<TILE>_${SLUG}.tif"
+    echo "  Log:      ${DATA_DIR}/log_<TILE>_${SLUG}.log"
+    echo "  Metrics:  ${DATA_DIR}/metrics_<TILE>_${SLUG}.csv"
+    return "$FAIL"
+}
+
+main 2>&1 | tee "$CONSOLE_LOG"
+exit "${PIPESTATUS[0]}"

@@ -2,49 +2,68 @@
 """
 Batch Landsat C2 L2 SR mosaics for MGRS 100 km tiles (parallel workers).
 
-Tile bounds and UTM EPSG are derived from MGRS codes via the mgrs library
-(same grid as fetch_landsat_mosaic_pc.py — no GeoJSON catalog required).
+Each worker processes ONE MGRS tile using the same serial band-by-band read
+path as fetch_landsat_serial_pc.py (rasterio + WarpedVRT, one HTTPS request
+at a time per tile). Different tiles run in parallel.
+
+Process model:
+    - Workers are spawned with multiprocessing context "spawn" → each worker
+      is a fresh Python interpreter (no fork/copy-on-write of parent state).
+      Heavy, isolated processes — not threads — so GDAL state and per-process
+      I/O counters stay clean and independent across workers.
+
+Metrics:
+    - Per-asset bytes are measured per-process via psutil read_chars (Linux
+      /proc/<pid>/io), which counts bytes read from sockets by THIS worker.
+      So per-asset MiB/s is accurate per tile, not contaminated by other
+      parallel workers (unlike a system-wide net counter).
+
+Live visibility:
+    - Each worker streams its full per-(scene, asset) progress log to the
+      inherited stdout, prefixed by [TILE]. Full detail is also written to
+      the per-tile log file.
+
+Per-tile outputs (under --data-dir):
+    <slug>/mgrs_<TILE>_landsat_sr.tif        7-band float32 SR mosaic
+    logs/<slug>/<TILE>.log                   per-tile log (serial-style)
+    metrics/<slug>/metrics_<TILE>.csv        per-asset timing CSV
 
 Usage:
-    # Dry-run: validate tiles and list planned outputs
-    python fetch_landsat_mosaic_batch_pc.py \\
-        --tiles 19HCD,18GXR --dry-run
-
-    # Test 2 tiles, 2 workers (verbose per-tile logs under data/landsat_mosaic/logs/)
-    python fetch_landsat_mosaic_batch_pc.py --tiles 19HCD,18GXR --workers 2
-
-    # Q1 2024, 5 scenes, median (recommended)
     python fetch_landsat_mosaic_batch_pc.py \\
         --tiles 18FXH,18GXP,18HYD,19HCD,19JCJ,19KDU \\
+        --workers 6 \\
         --datetime 2024-01-01/2024-03-31 \\
         --max-scenes 5 \\
-        --workers 6 \\
         --data-dir ~/data/mosaic_parallel_test
-
-Composite note:
-    **median** (default) — standard for seasonal Landsat mosaics; robust to clouds
-    and outliers (MapBiomas / USGS CDR style).
-    **mean** — smoother but clouds/outliers pull values; use only if you pre-filter
-    heavily or mask clouds per scene.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import multiprocessing as mp
 import sys
-import threading
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 
 from fetch_landsat_mosaic_pc import (
+    COLLECTION,
     DEFAULT_DATETIME,
+    MGRS_TILE_SIZE_KM,
     epsg_from_mgrs_tile,
     mgrs_tile_bbox_wgs84,
     normalize_mgrs_tile,
-    process_mgrs_tile,
+    open_catalog,
+    select_scenes,
+    wrs_path_row,
+)
+from fetch_landsat_serial_pc import (
+    composite_and_write,
+    datetime_slug,
+    fetch_assets_serial,
+    save_metrics,
 )
 from mosaic_logging import get_logger, resolve_log_level, setup_logging
 
@@ -61,16 +80,22 @@ class TileJob:
     diverse_paths: bool
     composite: str
     resolution: float
-    out_path: Path
-    skip_existing: bool
+    epsg: int | None
+    mgrs_size_km: float
+    out_tif: Path
     log_file: Path
+    metrics_csv: Path
+    skip_existing: bool
     verbose: bool
-    quiet: bool
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Parallel Landsat SR mosaics for Chile MGRS tiles via Planetary Computer",
+        description=(
+            "Parallel Landsat C2 L2 SR mosaics for MGRS tiles "
+            "(one tile per worker, serial band-by-band reads via rasterio+WarpedVRT)."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument(
         "--tiles",
@@ -82,6 +107,12 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help="Process at most N tiles from --tiles list (0 = all)",
+    )
+    p.add_argument(
+        "--workers",
+        type=int,
+        default=2,
+        help="Parallel worker processes (one tile per worker at a time)",
     )
     p.add_argument(
         "--datetime",
@@ -108,16 +139,17 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--resolution", type=float, default=30.0)
     p.add_argument(
+        "--epsg",
+        type=int,
+        default=None,
+        help="Override UTM EPSG for all tiles (default: per-tile from MGRS)",
+    )
+    p.add_argument("--mgrs-size-km", type=float, default=MGRS_TILE_SIZE_KM)
+    p.add_argument(
         "--data-dir",
         type=Path,
         default=DEFAULT_DATA_DIR,
         help=f"Output directory (default: {DEFAULT_DATA_DIR})",
-    )
-    p.add_argument(
-        "--workers",
-        type=int,
-        default=2,
-        help="Parallel worker processes (one tile per worker at a time)",
     )
     p.add_argument(
         "--skip-existing",
@@ -128,46 +160,19 @@ def parse_args() -> argparse.Namespace:
         "--manifest",
         type=Path,
         default=None,
-        help="JSONL manifest path (default: <data-dir>/manifest_<datetime>.jsonl)",
-    )
-    p.add_argument(
-        "--log-dir",
-        type=Path,
-        default=None,
-        help="Per-tile verbose logs (default: <data-dir>/logs/<period>/)",
-    )
-    p.add_argument(
-        "--batch-log",
-        type=Path,
-        default=None,
-        help="Main batch run log file (default: <data-dir>/batch_<period>.log)",
+        help="JSONL manifest path (default: <data-dir>/manifest_<slug>.jsonl)",
     )
     p.add_argument(
         "-v",
         "--verbose",
         action="store_true",
-        help="DEBUG in worker tile logs",
+        help="DEBUG in worker logs",
     )
     p.add_argument(
         "-q",
         "--quiet",
         action="store_true",
-        help="Minimal console output; detail goes to --log-dir files",
-    )
-    p.add_argument(
-        "--progress-interval",
-        type=float,
-        default=15.0,
-        help="Seconds between progress-table prints (0 disables; default 15)",
-    )
-    p.add_argument(
-        "--stream-worker-logs",
-        action="store_true",
-        help=(
-            "Stream each worker's logs to console (interleaved, prefixed by [TILE]). "
-            "Off by default to keep the progress table readable; per-tile logs always "
-            "go to --log-dir."
-        ),
+        help="Minimal parent console output; per-tile logs always written",
     )
     p.add_argument("--dry-run", action="store_true", help="List tiles and exit")
     return p.parse_args()
@@ -178,7 +183,6 @@ def parse_tile_ids(tiles_arg: str) -> list[str]:
     parts = [p.strip() for p in tiles_arg.split(",") if p.strip()]
     if not parts:
         raise ValueError("--tiles must list at least one MGRS id (e.g. 19HCD,18GXR)")
-
     ids: list[str] = []
     seen: set[str] = set()
     for part in parts:
@@ -194,27 +198,17 @@ def parse_tile_ids(tiles_arg: str) -> list[str]:
     return ids
 
 
-def datetime_slug(datetime_range: str) -> str:
-    return datetime_range.replace("/", "_").replace(":", "")
-
-
-def output_path(data_dir: Path, tile: str, datetime_range: str) -> Path:
-    slug = datetime_slug(datetime_range)
-    return data_dir / slug / f"mgrs_{tile}_landsat_sr.tif"
-
-
-def tile_log_path(log_dir: Path, tile: str) -> Path:
-    return log_dir / f"{tile}.log"
-
-
-def build_jobs(args: argparse.Namespace, tile_ids: list[str]) -> list[TileJob]:
-    args.data_dir.mkdir(parents=True, exist_ok=True)
+def build_jobs(args: argparse.Namespace, tiles: list[str]) -> list[TileJob]:
     slug = datetime_slug(args.datetime)
-    log_dir = args.log_dir or (args.data_dir / "logs" / slug)
-    log_dir.mkdir(parents=True, exist_ok=True)
-    worker_quiet = not args.stream_worker_logs
+    data_dir = args.data_dir.expanduser()
+    tif_dir = data_dir / slug
+    log_dir = data_dir / "logs" / slug
+    metrics_dir = data_dir / "metrics" / slug
+    for d in (tif_dir, log_dir, metrics_dir):
+        d.mkdir(parents=True, exist_ok=True)
+
     jobs: list[TileJob] = []
-    for tile in tile_ids:
+    for tile in tiles:
         jobs.append(
             TileJob(
                 tile=tile,
@@ -225,48 +219,178 @@ def build_jobs(args: argparse.Namespace, tile_ids: list[str]) -> list[TileJob]:
                 diverse_paths=not args.no_diverse_paths,
                 composite=args.composite,
                 resolution=args.resolution,
-                out_path=output_path(args.data_dir, tile, args.datetime),
+                epsg=args.epsg,
+                mgrs_size_km=args.mgrs_size_km,
+                out_tif=tif_dir / f"mgrs_{tile}_landsat_sr.tif",
+                log_file=log_dir / f"{tile}.log",
+                metrics_csv=metrics_dir / f"metrics_{tile}.csv",
                 skip_existing=args.skip_existing,
-                log_file=tile_log_path(log_dir, tile),
                 verbose=args.verbose,
-                quiet=worker_quiet,
             )
         )
     return jobs
 
 
-def run_tile_job(job: TileJob) -> dict:
-    """Worker entry point (picklable)."""
-    t0 = time.perf_counter()
+def process_tile(job: TileJob) -> dict:
+    """
+    Worker entry point: STAC + serial COG reads + composite+write for ONE tile.
+
+    Logs go to the per-tile log file AND to the inherited stdout, with each
+    line prefixed by [TILE] so the parent process sees live progress from many
+    workers interleaved.
+    """
+    setup_logging(
+        level=resolve_log_level(verbose=job.verbose, quiet=False),
+        log_file=job.log_file,
+        tile=job.tile,
+        console=True,
+    )
+    log = get_logger()
+    t_worker = time.perf_counter()
+
     try:
-        # When quiet=True (default), per-worker logs go only to job.log_file so the
-        # parent's progress table stays readable. With --stream-worker-logs they
-        # also stream to the inherited stdout, prefixed by [TILE].
-        result = process_mgrs_tile(
-            job.tile,
-            datetime_range=job.datetime_range,
-            max_cloud=job.max_cloud,
-            platform=job.platform,
-            max_scenes=job.max_scenes,
-            diverse_paths=job.diverse_paths,
-            resolution=job.resolution,
-            composite=job.composite,
-            out_path=job.out_path,
-            skip_existing=job.skip_existing,
-            log_file=job.log_file,
-            verbose=job.verbose,
-            quiet=job.quiet,
+        if job.skip_existing and job.out_tif.is_file():
+            log.info("Skip — output already exists: %s", job.out_tif)
+            return {
+                "tile": job.tile,
+                "status": "skipped",
+                "out_tif": str(job.out_tif),
+                "log_file": str(job.log_file),
+                "elapsed_s": round(time.perf_counter() - t_worker, 2),
+            }
+
+        log.info("=" * 60)
+        log.info("Landsat C2 L2 SR mosaic — tile %s", job.tile)
+        log.info(
+            "datetime=%s  max_scenes=%d  composite=%s  resolution=%.0fm",
+            job.datetime_range,
+            job.max_scenes,
+            job.composite,
+            job.resolution,
         )
+        log.info("Output:      %s", job.out_tif)
+        log.info("Log file:    %s", job.log_file)
+        log.info("Metrics CSV: %s", job.metrics_csv)
+
+        log.info("─" * 56)
+        log.info("Phase 1/3: STAC search")
+        bbox = mgrs_tile_bbox_wgs84(job.tile, size_km=job.mgrs_size_km)
+        epsg = job.epsg if job.epsg is not None else epsg_from_mgrs_tile(job.tile)
+        log.info("BBox WGS84: %s", bbox)
+        log.info("UTM EPSG:%d", epsg)
+
+        catalog = open_catalog()
+        query: dict = {"eo:cloud_cover": {"lt": job.max_cloud}}
+        if job.platform != "any":
+            query["platform"] = {"eq": job.platform}
+
+        t0 = time.perf_counter()
+        items_all = list(
+            catalog.search(
+                collections=[COLLECTION],
+                bbox=list(bbox),
+                datetime=job.datetime_range,
+                query=query,
+                max_items=max(100, job.max_scenes * 15),
+            ).items()
+        )
+        stac_s = time.perf_counter() - t0
+        log.info("STAC: %d candidate(s) in %.2fs", len(items_all), stac_s)
+        if not items_all:
+            log.error("No scenes found.")
+            return {
+                "tile": job.tile,
+                "status": "error",
+                "error": "no scenes found in STAC search",
+                "out_tif": str(job.out_tif),
+                "log_file": str(job.log_file),
+                "elapsed_s": round(time.perf_counter() - t_worker, 2),
+            }
+
+        items = select_scenes(items_all, job.max_scenes, diverse_paths=job.diverse_paths)
+        paths = {wrs_path_row(it) for it in items}
+        log.info("Selected %d scene(s) across %d WRS path/row:", len(items), len(paths))
+        for i, it in enumerate(items, 1):
+            cc = it.properties.get("eo:cloud_cover", "?")
+            dt = it.properties.get("datetime", "?")
+            path, row = wrs_path_row(it)
+            log.info(
+                "  [%d/%d] %s  path/row=%s/%s  cloud=%s%%  %s",
+                i, len(items), it.id, path, row, cc, dt,
+            )
+
+        log.info("─" * 56)
+        log.info("Phase 2/3: Serial COG reads (one HTTPS request at a time)")
+        stack, timings, target_meta, cog_s, bytes_total = fetch_assets_serial(
+            items, bbox, epsg, job.resolution,
+        )
+
+        log.info("─" * 56)
+        log.info("Phase 3/3: Composite + write GeoTIFF")
+        comp_write_s, output_bytes = composite_and_write(
+            stack, target_meta, job.out_tif, composite=job.composite,
+        )
+
+        save_metrics(job.metrics_csv, timings)
+
+        total_s = stac_s + cog_s + comp_write_s
+        total_mb = bytes_total / (1024 * 1024)
+        log.info("=" * 60)
+        log.info("Summary — tile %s", job.tile)
+        log.info("  STAC search:        %7.2fs", stac_s)
+        log.info(
+            "  COG reads (serial): %7.2fs   %.1f MiB    %.1f MiB/s avg",
+            cog_s, total_mb, total_mb / cog_s if cog_s > 0 else 0,
+        )
+        log.info(
+            "  composite + write:  %7.2fs   out=%.1f MiB",
+            comp_write_s, output_bytes / (1024 * 1024),
+        )
+        log.info("  total:              %7.2fs", total_s)
+        if timings:
+            secs = sorted(t.seconds for t in timings)
+            rates = sorted(t.mb_per_s for t in timings if t.bytes_read > 0)
+            log.info(
+                "  per-asset seconds:  min=%.2f  median=%.2f  max=%.2f",
+                secs[0], secs[len(secs) // 2], secs[-1],
+            )
+            if rates:
+                log.info(
+                    "  per-asset MiB/s:    min=%.2f  median=%.2f  max=%.2f",
+                    rates[0], rates[len(rates) // 2], rates[-1],
+                )
+            errs = [t for t in timings if t.http_status != "ok"]
+            if errs:
+                log.warning("  %d asset(s) failed — see CSV", len(errs))
+
+        return {
+            "tile": job.tile,
+            "status": "ok",
+            "out_tif": str(job.out_tif),
+            "log_file": str(job.log_file),
+            "metrics_csv": str(job.metrics_csv),
+            "n_scenes": len(items),
+            "n_assets": len(timings),
+            "epsg": epsg,
+            "stac_search_s": round(stac_s, 2),
+            "cog_read_s": round(cog_s, 2),
+            "composite_write_s": round(comp_write_s, 2),
+            "total_s": round(total_s, 2),
+            "bytes_read": bytes_total,
+            "output_bytes": output_bytes,
+            "elapsed_s": round(time.perf_counter() - t_worker, 2),
+        }
+
     except Exception as exc:
-        result = {
+        log.exception("Tile %s failed: %s", job.tile, exc)
+        return {
             "tile": job.tile,
             "status": "error",
-            "out_path": str(job.out_path),
+            "error": f"{type(exc).__name__}: {exc}",
+            "out_tif": str(job.out_tif),
             "log_file": str(job.log_file),
-            "error": str(exc),
+            "elapsed_s": round(time.perf_counter() - t_worker, 2),
         }
-    result["elapsed_s"] = round(time.perf_counter() - t0, 1)
-    return result
 
 
 def append_manifest(manifest_path: Path, record: dict) -> None:
@@ -275,145 +399,21 @@ def append_manifest(manifest_path: Path, record: dict) -> None:
         fh.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def _tail_log_line(log_file: Path, *, max_bytes: int = 8192) -> str:
-    """Return the last non-empty line of a log file (best-effort, never raises)."""
-    try:
-        with log_file.open("rb") as fh:
-            fh.seek(0, 2)
-            size = fh.tell()
-            fh.seek(max(0, size - max_bytes))
-            chunk = fh.read().decode("utf-8", errors="replace")
-    except FileNotFoundError:
-        return "(no log yet)"
-    except OSError:
-        return "(log unreadable)"
-    lines = [ln.rstrip() for ln in chunk.splitlines() if ln.strip()]
-    return lines[-1] if lines else "(empty log)"
-
-
-def _file_size_mib(path: Path) -> float | None:
-    try:
-        return path.stat().st_size / (1024 * 1024)
-    except FileNotFoundError:
-        return None
-
-
-def _log_age_s(log_file: Path, fallback: float) -> float:
-    try:
-        return max(0.0, time.time() - log_file.stat().st_mtime)
-    except FileNotFoundError:
-        return fallback
-
-
-class BatchProgress:
-    """
-    Background heartbeat that prints a compact status table for in-flight tiles.
-
-    Detects "running" by the presence of the worker's per-tile log file. Tails
-    each running tile's log to show the latest phase / heartbeat line and the
-    growing GeoTIFF size when the write phase starts.
-    """
-
-    def __init__(self, jobs: list[TileJob], *, interval_s: float):
-        self.interval_s = interval_s
-        self.total = len(jobs)
-        self.tiles: dict[str, dict] = {
-            job.tile: {
-                "log_file": job.log_file,
-                "out_path": job.out_path,
-                "finished": False,
-            }
-            for job in jobs
-        }
-        self.done_count = 0
-        self.batch_start = time.time()
-        self._stop = threading.Event()
-        self._lock = threading.Lock()
-        self._thread: threading.Thread | None = None
-
-    def start(self) -> None:
-        if self.interval_s <= 0 or self.total == 0:
-            return
-        self._thread = threading.Thread(
-            target=self._loop, name="batch-progress", daemon=True
-        )
-        self._thread.start()
-
-    def stop(self) -> None:
-        self._stop.set()
-        if self._thread is not None:
-            self._thread.join(timeout=2.0)
-
-    def mark_done(self, tile: str) -> None:
-        with self._lock:
-            info = self.tiles.get(tile)
-            if info is not None and not info["finished"]:
-                info["finished"] = True
-                self.done_count += 1
-
-    def _loop(self) -> None:
-        while not self._stop.wait(self.interval_s):
-            try:
-                self._print_status()
-            except Exception:
-                # Never let the progress thread kill the batch
-                pass
-
-    def _print_status(self) -> None:
-        log = get_logger()
-        with self._lock:
-            running = []
-            pending: list[str] = []
-            for tile, info in self.tiles.items():
-                if info["finished"]:
-                    continue
-                if info["log_file"].exists():
-                    running.append((tile, info))
-                else:
-                    pending.append(tile)
-            done = self.done_count
-            total = self.total
-
-        if not running and not pending:
-            return
-
-        wall = time.time() - self.batch_start
-        log.info("─" * 72)
-        log.info(
-            "Progress @ %5.0fs wall:  %d/%d done  |  %d running  |  %d pending",
-            wall,
-            done,
-            total,
-            len(running),
-            len(pending),
-        )
-        for tile, info in sorted(running, key=lambda kv: kv[0]):
-            elapsed = _log_age_s(info["log_file"], fallback=wall)
-            tail = _tail_log_line(info["log_file"])
-            size = _file_size_mib(info["out_path"])
-            size_str = f"  tif={size:5.0f}MiB" if size is not None else ""
-            # Trim very long lines so the table stays scannable
-            if len(tail) > 110:
-                tail = tail[:107] + "…"
-            log.info("  %-6s  %5.0fs%s  | %s", tile, elapsed, size_str, tail)
-        if pending:
-            log.info("  pending: %s", ", ".join(sorted(pending)))
-
-
 def main() -> int:
     args = parse_args()
     try:
-        tile_ids = parse_tile_ids(args.tiles)
+        tiles = parse_tile_ids(args.tiles)
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
     if args.limit > 0:
-        tile_ids = tile_ids[: args.limit]
+        tiles = tiles[: args.limit]
 
     slug = datetime_slug(args.datetime)
-    manifest = args.manifest or (args.data_dir / f"manifest_{slug}.jsonl")
-    log_dir = args.log_dir or (args.data_dir / "logs" / slug)
-    batch_log = args.batch_log or (args.data_dir / f"batch_{slug}.log")
+    data_dir = args.data_dir.expanduser()
+    data_dir.mkdir(parents=True, exist_ok=True)
+    manifest = args.manifest or (data_dir / f"manifest_{slug}.jsonl")
+    batch_log = data_dir / f"batch_{slug}.log"
 
     setup_logging(
         level=resolve_log_level(verbose=args.verbose, quiet=args.quiet),
@@ -421,127 +421,100 @@ def main() -> int:
     )
     log = get_logger()
 
-    log.info("=" * 56)
-    log.info("Batch Landsat mosaic run")
-    log.info("Tiles: %s (%d)", ", ".join(tile_ids), len(tile_ids))
+    log.info("=" * 60)
+    log.info("Batch Landsat mosaic run (one tile per worker, serial band-by-band)")
+    log.info("Tiles (%d): %s", len(tiles), ", ".join(tiles))
     log.info(
         "Workers: %d  datetime: %s  max_scenes: %d  composite: %s",
         args.workers, args.datetime, args.max_scenes, args.composite,
     )
-    log.info("Data dir: %s", args.data_dir)
-    log.info("Per-tile logs: %s", log_dir)
+    log.info("Data dir: %s", data_dir)
     log.info("Batch log: %s", batch_log)
     log.info("Manifest: %s", manifest)
-    if args.progress_interval > 0 and not args.dry_run:
-        log.info(
-            "Progress table every %.0fs (use `tail -f %s/<TILE>.log` for live per-tile detail)",
-            args.progress_interval,
-            log_dir,
-        )
-    if args.stream_worker_logs:
-        log.info("Streaming worker logs to console (interleaved, prefixed by [TILE])")
+    log.info("Per-tile logs:    %s", data_dir / "logs" / slug)
+    log.info("Per-tile metrics: %s", data_dir / "metrics" / slug)
+
+    jobs = build_jobs(args, tiles)
 
     if args.dry_run:
         log.info("Dry-run — planned outputs:")
-        for t in tile_ids:
-            bbox = mgrs_tile_bbox_wgs84(t)
-            epsg = epsg_from_mgrs_tile(t)
-            out = output_path(args.data_dir, t, args.datetime)
-            tlog = tile_log_path(log_dir, t)
+        for j in jobs:
             log.info(
-                "  %s  EPSG:%d  bbox=%.4f,%.4f,%.4f,%.4f → %s  (log: %s)",
-                t,
-                epsg,
-                *bbox,
-                out,
-                tlog,
+                "  %s → %s  (log: %s, metrics: %s)",
+                j.tile, j.out_tif, j.log_file, j.metrics_csv,
             )
         return 0
 
     if manifest.exists():
         manifest.unlink()
 
-    jobs = build_jobs(args, tile_ids)
-    ok = skipped = err = 0
+    ok = err = skipped = 0
     t0 = time.perf_counter()
-    log.info("Submitting %d job(s) to process pool …", len(jobs))
+    log.info("Submitting %d job(s) to %d worker(s) [spawn, fresh interpreter per worker] …",
+             len(jobs), args.workers)
+    log.info(
+        "(Worker logs stream to stdout below, prefixed by [TILE]. "
+        "Full detail per tile in its log file.)"
+    )
 
-    progress = BatchProgress(jobs, interval_s=args.progress_interval)
-    progress.start()
+    # mp_context="spawn" → each worker is a fresh Python interpreter (no fork
+    # copy-on-write of parent state). This guarantees heavy, isolated processes
+    # so per-process counters (psutil read_chars) and GDAL state stay clean.
+    ctx = mp.get_context("spawn")
+    with ProcessPoolExecutor(max_workers=max(1, args.workers), mp_context=ctx) as pool:
+        futures = {pool.submit(process_tile, job): job for job in jobs}
+        done = 0
+        for fut in as_completed(futures):
+            job = futures[fut]
+            done += 1
+            try:
+                result = fut.result()
+            except Exception as exc:
+                result = {
+                    "tile": job.tile,
+                    "status": "error",
+                    "error": f"worker crashed: {exc}",
+                    "out_tif": str(job.out_tif),
+                    "log_file": str(job.log_file),
+                }
+            append_manifest(manifest, result)
 
-    try:
-        with ProcessPoolExecutor(max_workers=max(1, args.workers)) as pool:
-            futures = {pool.submit(run_tile_job, job): job for job in jobs}
-            done = 0
-            for fut in as_completed(futures):
-                job = futures[fut]
-                done += 1
-                try:
-                    result = fut.result()
-                except Exception as exc:
-                    result = {
-                        "tile": job.tile,
-                        "status": "error",
-                        "error": f"worker crashed: {exc}",
-                        "out_path": str(job.out_path),
-                        "log_file": str(job.log_file),
-                    }
-                progress.mark_done(job.tile)
-                append_manifest(manifest, result)
-
-                status = result.get("status")
-                if status == "ok":
-                    ok += 1
-                    cov = result.get("coverage_pct", "?")
-                    stac = result.get("timing_stac_search_s", "?")
-                    cog = result.get("timing_cog_read_composite_s", "?")
-                    write = result.get("timing_write_geotiff_s", "?")
-                    io_mb = result.get("io_read_bytes")
-                    io_s = f" read={io_mb / (1024 * 1024):.0f}MiB" if io_mb else ""
-                    out_size = _file_size_mib(job.out_path)
-                    out_s = f" tif={out_size:.0f}MiB" if out_size is not None else ""
-                    log.info(
-                        "[%d/%d] OK   %-6s  cov=%s%%  stac=%ss  cog=%ss  write=%ss%s%s  total=%ss",
-                        done,
-                        len(jobs),
-                        job.tile,
-                        cov,
-                        stac,
-                        cog,
-                        write,
-                        io_s,
-                        out_s,
-                        result.get("elapsed_s"),
-                    )
-                elif status == "skipped":
-                    skipped += 1
-                    log.info(
-                        "[%d/%d] SKIP %-6s  (output exists)",
-                        done, len(jobs), job.tile,
-                    )
-                else:
-                    err += 1
-                    log.error(
-                        "[%d/%d] ERR  %-6s  %s  log=%s",
-                        done,
-                        len(jobs),
-                        job.tile,
-                        result.get("error", result),
-                        job.log_file,
-                    )
-    finally:
-        progress.stop()
+            status = result.get("status")
+            if status == "ok":
+                ok += 1
+                mib = (result.get("bytes_read") or 0) / (1024 * 1024)
+                log.info(
+                    "[%d/%d] OK   %-6s  stac=%ss  cog=%ss  write=%ss  "
+                    "total=%ss  read=%.0fMiB",
+                    done, len(jobs), job.tile,
+                    result.get("stac_search_s"),
+                    result.get("cog_read_s"),
+                    result.get("composite_write_s"),
+                    result.get("total_s"),
+                    mib,
+                )
+            elif status == "skipped":
+                skipped += 1
+                log.info(
+                    "[%d/%d] SKIP %-6s  (output exists)",
+                    done, len(jobs), job.tile,
+                )
+            else:
+                err += 1
+                log.error(
+                    "[%d/%d] ERR  %-6s  %s  log=%s",
+                    done, len(jobs), job.tile,
+                    result.get("error", result),
+                    job.log_file,
+                )
 
     elapsed = round(time.perf_counter() - t0, 1)
+    log.info("=" * 60)
     log.info(
-        "Done — ok=%d skipped=%d errors=%d total=%d wall=%ss manifest=%s",
-        ok,
-        skipped,
-        err,
-        len(jobs),
-        elapsed,
-        manifest,
+        "Done — ok=%d skipped=%d errors=%d total=%d wall=%ss",
+        ok, skipped, err, len(jobs), elapsed,
     )
+    log.info("Manifest: %s", manifest)
     return 1 if err else 0
 
 
