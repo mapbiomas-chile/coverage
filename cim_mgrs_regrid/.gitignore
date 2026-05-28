@@ -1,0 +1,23 @@
+# Local inputs (spreadsheet / Drive export) — never commit
+data/
+*.xlsx
+*.xls
+*.tsv
+
+# Generated outputs (JSON params, crosswalk tables, GEE exports)
+output/
+*.parquet
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE / OS
+.vscode/
+.DS_Store
+Thumbs.db
