@@ -5,6 +5,14 @@ Spatial regridding from **CIM 1:250,000** cells to **Chile MGRS tiles (Collectio
 **Tracked on GitHub:** Python code, tests, and documentation.  
 **Not tracked:** parameter spreadsheets, generated JSON, crosswalk tables, or GEE exports (`data/` and `output/` are in `.gitignore`).
 
+## Generated outputs (shared)
+
+Pre-built artifacts (e.g. `cim_mgrs_xwalk.csv`, `input_params.json`) are stored on Google Drive:
+
+**[MapBiomas Chile — cim_mgrs_regrid outputs](https://drive.google.com/drive/folders/1BeW5ib22RTfZaS-sWTchVfOg-TLDhMNF?usp=drive_link)**
+
+Download them into local `output/` if you do not want to regenerate with the scripts below.
+
 ## Earth Engine assets
 
 | Role | Asset |
@@ -59,7 +67,7 @@ cim_mgrs_regrid/
   scripts/           # CLI
   tests/             # pytest (no GEE)
   data/              # local inputs (gitignored)
-  output/            # JSON, crosswalk CSV (gitignored)
+  output/            # JSON, crosswalk CSV (gitignored; copies on Drive)
 ```
 
 ## Related code (coverage repo)
