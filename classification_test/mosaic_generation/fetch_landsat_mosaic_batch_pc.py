@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-Batch Landsat C2 L2 SR mosaics for Chile MGRS tiles (parallel workers).
+Batch Landsat C2 L2 SR mosaics for MGRS 100 km tiles (parallel workers).
 
-Reads tile ids from chile_sentinel_tiles.geojson (property "Name", e.g. 19HCD),
-composites multiple scenes per tile (default: median of 5 diverse WRS paths),
-writes one GeoTIFF per tile under --data-dir.
+Tile bounds and UTM EPSG are derived from MGRS codes via the mgrs library
+(same grid as fetch_landsat_mosaic_pc.py — no GeoJSON catalog required).
 
 Usage:
-    # Dry-run: list tiles
-    python fetch_landsat_mosaic_batch_pc.py --dry-run
+    # Dry-run: validate tiles and list planned outputs
+    python fetch_landsat_mosaic_batch_pc.py \\
+        --tiles 19HCD,18GXR --dry-run
 
     # Test 2 tiles, 2 workers (verbose per-tile logs under data/landsat_mosaic/logs/)
     python fetch_landsat_mosaic_batch_pc.py --tiles 19HCD,18GXR --workers 2
 
-    # Subset of catalog, Q1 2024, 5 scenes, median (recommended)
+    # Q1 2024, 5 scenes, median (recommended)
     python fetch_landsat_mosaic_batch_pc.py \\
-        --tiles-file /mnt/e/mapbiomas/coverage/mosaic/chile_sentinel_tiles.geojson \\
+        --tiles 18FXH,18GXP,18HYD,19HCD,19JCJ,19KDU \\
         --datetime 2024-01-01/2024-03-31 \\
         --max-scenes 5 \\
-        --workers 4 \\
-        --data-dir /mnt/e/mapbiomas/coverage/data/landsat_mosaic
+        --workers 6 \\
+        --data-dir ~/data/mosaic_parallel_test
 
 Composite note:
     **median** (default) — standard for seasonal Landsat mosaics; robust to clouds
@@ -31,7 +31,6 @@ Composite note:
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -40,11 +39,13 @@ from pathlib import Path
 
 from fetch_landsat_mosaic_pc import (
     DEFAULT_DATETIME,
+    epsg_from_mgrs_tile,
+    mgrs_tile_bbox_wgs84,
+    normalize_mgrs_tile,
     process_mgrs_tile,
 )
 from mosaic_logging import get_logger, resolve_log_level, setup_logging
 
-DEFAULT_TILES_FILE = Path("/mnt/e/mapbiomas/coverage/mosaic/chile_sentinel_tiles.geojson")
 DEFAULT_DATA_DIR = Path("/mnt/e/mapbiomas/coverage/data/landsat_mosaic")
 
 
@@ -69,17 +70,16 @@ def parse_args() -> argparse.Namespace:
         description="Parallel Landsat SR mosaics for Chile MGRS tiles via Planetary Computer",
     )
     p.add_argument(
-        "--tiles-file",
-        type=Path,
-        default=DEFAULT_TILES_FILE,
-        help=f"GeoJSON FeatureCollection with properties.Name = MGRS id (default: {DEFAULT_TILES_FILE})",
+        "--tiles",
+        required=True,
+        help="Comma-separated MGRS 100 km tile ids (e.g. 19HCD,18GXR). Bounds/EPSG via mgrs library.",
     )
     p.add_argument(
-        "--tiles",
-        default="",
-        help="Comma-separated tile ids to process (default: all in --tiles-file)",
+        "--limit",
+        type=int,
+        default=0,
+        help="Process at most N tiles from --tiles list (0 = all)",
     )
-    p.add_argument("--limit", type=int, default=0, help="Process at most N tiles (0 = all)")
     p.add_argument(
         "--datetime",
         default=DEFAULT_DATETIME,
@@ -155,30 +155,25 @@ def parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
-def resolve_tiles_file(path: Path) -> Path:
-    if path.is_file():
-        return path
-    alt = path.with_suffix(".geojson") if path.suffix == ".json" else path.with_suffix(".json")
-    if alt.is_file():
-        return alt
-    raise FileNotFoundError(f"Tiles catalog not found: {path} (also tried {alt})")
+def parse_tile_ids(tiles_arg: str) -> list[str]:
+    """Parse comma-separated MGRS ids; validate format and grid cell via mgrs."""
+    parts = [p.strip() for p in tiles_arg.split(",") if p.strip()]
+    if not parts:
+        raise ValueError("--tiles must list at least one MGRS id (e.g. 19HCD,18GXR)")
 
-
-def load_tile_ids(tiles_file: Path, only: set[str] | None) -> list[str]:
-    raw = json.loads(tiles_file.read_text(encoding="utf-8"))
-    features = raw.get("features") or []
     ids: list[str] = []
-    for feat in features:
-        name = (feat.get("properties") or {}).get("Name")
-        if not name:
+    seen: set[str] = set()
+    for part in parts:
+        tile = normalize_mgrs_tile(part)
+        if tile in seen:
             continue
-        tile = str(name).strip().upper()
-        if only and tile not in only:
-            continue
+        try:
+            mgrs_tile_bbox_wgs84(tile)
+        except Exception as exc:
+            raise ValueError(f"Invalid or unknown MGRS tile {tile!r}: {exc}") from exc
+        seen.add(tile)
         ids.append(tile)
-    if not ids:
-        raise RuntimeError(f"No tiles loaded from {tiles_file}")
-    return sorted(set(ids))
+    return ids
 
 
 def datetime_slug(datetime_range: str) -> str:
@@ -262,9 +257,11 @@ def append_manifest(manifest_path: Path, record: dict) -> None:
 
 def main() -> int:
     args = parse_args()
-    tiles_file = resolve_tiles_file(args.tiles_file)
-    only = {t.strip().upper() for t in args.tiles.split(",") if t.strip()} or None
-    tile_ids = load_tile_ids(tiles_file, only)
+    try:
+        tile_ids = parse_tile_ids(args.tiles)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
     if args.limit > 0:
         tile_ids = tile_ids[: args.limit]
 
@@ -281,7 +278,7 @@ def main() -> int:
 
     log.info("=" * 56)
     log.info("Batch Landsat mosaic run")
-    log.info("Tiles catalog: %s (%d tile(s))", tiles_file, len(tile_ids))
+    log.info("Tiles: %s (%d)", ", ".join(tile_ids), len(tile_ids))
     log.info("Workers: %d  datetime: %s  max_scenes: %d  composite: %s", args.workers, args.datetime, args.max_scenes, args.composite)
     log.info("Data dir: %s", args.data_dir)
     log.info("Per-tile logs: %s", log_dir)
@@ -291,9 +288,18 @@ def main() -> int:
     if args.dry_run:
         log.info("Dry-run — planned outputs:")
         for t in tile_ids:
+            bbox = mgrs_tile_bbox_wgs84(t)
+            epsg = epsg_from_mgrs_tile(t)
             out = output_path(args.data_dir, t, args.datetime)
             tlog = tile_log_path(log_dir, t)
-            log.info("  %s → %s  (log: %s)", t, out, tlog)
+            log.info(
+                "  %s  EPSG:%d  bbox=%.4f,%.4f,%.4f,%.4f → %s  (log: %s)",
+                t,
+                epsg,
+                *bbox,
+                out,
+                tlog,
+            )
         return 0
 
     if manifest.exists():
