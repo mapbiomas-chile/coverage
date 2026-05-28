@@ -1,43 +1,43 @@
 # mosaico_test
 
-Repositorio de trabajo para pruebas y ajuste del pipeline de mosaicos Landsat (Chile), con foco en control de sensores, exportaciones seguras en cuenta compartida y validacion de discontinuidades NDWI.
+Working repository for testing and tuning the Landsat mosaic pipeline (Chile), focused on sensor controls, safe exports in a shared account, and NDWI discontinuity validation.
 
-## Estructura actual
+## Current structure
 
-- `mosaico_reduce/`: pipeline principal y utilidades de analisis/graficos.
-- `test_mosaico_reduce/`: perfiles y runners de prueba/diagnostico.
-- `inputs/`: insumos locales.
-- `outputs/`: salidas generadas (graficos, reportes exportados, artefactos de diagnostico).
+- `mosaico_reduce/`: main pipeline and analysis/plotting utilities.
+- `test_mosaico_reduce/`: test/diagnostic profiles and runners.
+- `inputs/`: local inputs.
+- `outputs/`: generated outputs (plots, exported reports, diagnostic artifacts).
 
-> Nota: este repo fue aplanado para evitar git anidado. Antes el trabajo estaba dentro de `coverage-main/`.
+> Note: this repository was flattened to avoid nested git repositories. Previously, the work was inside `coverage-main/`.
 
-## Salidas generadas
+## Generated outputs
 
-Para evitar confusiones al versionar y subir a GitHub, todas las salidas generadas deben quedar en:
+To avoid confusion when versioning and pushing to GitHub, all generated outputs must be placed in:
 
 - `C:\Users\pedro\Documents\mosaico_test\outputs`
 
-Los scripts de diagnostico y graficado del repo ya vienen configurados para escribir por defecto en esa carpeta.
+The repository diagnostic and plotting scripts are already configured to write to that folder by default.
 
-## Bloque de pruebas (`test_mosaico_reduce`)
+## Test block (`test_mosaico_reduce`)
 
-### Objetivo principal
+### Main objective
 
-- Diagnosticar discontinuidades por cambio de sensor (`L5/L7 -> L8/L9`) en bandas e indices.
-- Verificar congruencia entre nombre de banda y rango espectral esperado.
-- Ejecutar pruebas reproducibles sin alterar el flujo productivo.
+- Diagnose discontinuities caused by sensor changes (`L5/L7 -> L8/L9`) in bands and indices.
+- Verify consistency between band names and expected spectral ranges.
+- Run reproducible tests without changing the production workflow.
 
-### Archivos clave
+### Key files
 
-- `test_mosaico_reduce/test_profile.json`: perfil de corrida para prueba de mosaico.
-- `test_mosaico_reduce/run_test_flow.py`: validacion espacial y mosaico de prueba.
-- `test_mosaico_reduce/diagnosis_profile.json`: perfil para diagnostico de discontinuidad.
-- `test_mosaico_reduce/run_discontinuity_diagnosis.py`: reporte numerico y grafico NDWI.
-- `test_mosaico_reduce/run_band_naming_audit.py`: auditoria de nomenclatura espectral.
+- `test_mosaico_reduce/test_profile.json`: run profile for mosaic testing.
+- `test_mosaico_reduce/run_test_flow.py`: spatial validation and test mosaic generation.
+- `test_mosaico_reduce/diagnosis_profile.json`: profile for discontinuity diagnosis.
+- `test_mosaico_reduce/run_discontinuity_diagnosis.py`: numeric and NDWI plot report.
+- `test_mosaico_reduce/run_band_naming_audit.py`: spectral naming audit.
 
-### Flujo recomendado de diagnostico
+### Recommended diagnostic flow
 
-Desde la raiz del repo:
+From the repository root:
 
 ```powershell
 python .\test_mosaico_reduce\run_test_flow.py
@@ -45,39 +45,39 @@ python .\test_mosaico_reduce\run_discontinuity_diagnosis.py
 python .\test_mosaico_reduce\run_band_naming_audit.py
 ```
 
-## Cambios principales aplicados
+## Main applied changes
 
-### 1) Control ano/satelite
-En `mosaico_reduce/mapbiomas_Chile_mosaics_landsat_v1.py` se agrego validacion de combinaciones `year + satellite`:
+### 1) Year/satellite control
+In `mosaico_reduce/mapbiomas_Chile_mosaics_landsat_v1.py`, validation for `year + satellite` combinations was added:
 
-- `l7` permitido en ventana solicitada: `1984-01-01` a `2017-01-01` (ano `< 2017`).
-- Si una fila no cumple regla, se bloquea (o advierte segun configuracion).
+- `l7` allowed in the requested window: `1984-01-01` to `2017-01-01` (year `< 2017`).
+- If a row does not meet the rule, it is blocked (or warned, depending on configuration).
 
-Variable asociada:
+Associated variable:
 - `MOSAIC_STRICT_SENSOR_YEAR_GUARD` (default `1`).
 
-### 2) Salida de exportacion para pruebas
-La coleccion de salida fue cambiada a:
+### 2) Export output for tests
+The output collection was changed to:
 - `projects/mapbiomas-chile/assets/MOSAICS/test_landcover_2`
 
-### 3) Export solo con bandas nucleares
-Se forzo export final con bandas:
+### 3) Export only core bands
+Final export was forced to include bands:
 - `blue_median`, `green_median`, `red_median`, `nir_median`, `swir1_median`, `swir2_median`, `ndvi_median`, `ndwi_median`
 
-Variable asociada:
+Associated variable:
 - `MOSAIC_CORE_BANDS_ONLY_EXPORT` (default `1`).
 
-### 4) Modo seguro en cuenta compartida
-Se agrego proteccion para impedir corridas sin tag:
+### 4) Safe mode in shared account
+Protection was added to prevent runs without a tag:
 
 - `MOSAIC_REQUIRE_EXPORT_TAG` (default `1`).
-- Si falta `MOSAIC_EXPORT_TAG`, el script falla al inicio con error explicito.
+- If `MOSAIC_EXPORT_TAG` is missing, the script fails at startup with an explicit error.
 
-Esto evita mezclar tareas de distintos usuarios en la misma cola de Earth Engine.
+This avoids mixing tasks from different users in the same Earth Engine queue.
 
-## Ejecucion recomendada (PowerShell)
+## Recommended execution (PowerShell)
 
-Desde la raiz del repo:
+From the repository root:
 
 ```powershell
 $env:MOSAIC_EXPORT_TAG='pedro-YYYYMMDD-a'
@@ -85,11 +85,11 @@ $env:MOSAIC_REQUIRE_EXPORT_TAG='1'
 $env:MOSAIC_CORE_BANDS_ONLY_EXPORT='1'
 $env:MOSAIC_REDUCED_MODE='1'
 $env:MOSAIC_STRICT_SENSOR_YEAR_GUARD='1'
-$env:MOSAIC_MAX_JOBS='1'   # smoke test opcional
+$env:MOSAIC_MAX_JOBS='1'   # optional smoke test
 python .\mosaico_reduce\mapbiomas_Chile_mosaics_landsat_v1.py
 ```
 
-## Ver tareas en Earth Engine
+## View tasks in Earth Engine
 
 - Web: https://code.earthengine.google.com/tasks
 - CLI:
@@ -98,17 +98,17 @@ python .\mosaico_reduce\mapbiomas_Chile_mosaics_landsat_v1.py
 earthengine --project mapbiomas-chile task list | Select-String "TMP-CHILE"
 ```
 
-## Publicacion a GitHub
+## Publishing to GitHub
 
-Objetivo: `https://github.com/mapbiomas-chile/coverage`
+Target: `https://github.com/mapbiomas-chile/coverage`
 
-Si falla push por SSH (`Permission denied (publickey)`), configurar credenciales y reintentar:
+If push fails via SSH (`Permission denied (publickey)`), configure credentials and retry:
 
 ```powershell
 git push "git@github.com:mapbiomas-chile/coverage.git" main
 ```
 
-Alternativa HTTPS:
+HTTPS alternative:
 
 ```powershell
 git push "https://github.com/mapbiomas-chile/coverage.git" main
