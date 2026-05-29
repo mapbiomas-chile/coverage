@@ -1,96 +1,109 @@
 # mosaico_reduce
 
-Pipeline de mosaicos Landsat para Chile con foco en control de sensores, exportacion segura en cuenta compartida y seguimiento de discontinuidades NDWI.
+Landsat mosaic pipeline for Chile (CIM 1:250k grid) with sensor guards, safe exports in a shared Earth Engine account, and NDWI discontinuity tracking.
 
-## Archivos clave del flujo
+## Key files
 
-- `mapbiomas_Chile_mosaics_landsat_v1.py`: script principal de generacion/exportacion de mosaicos.
-- `input_params_2026_SJ-18-X-B.json`: parametros por fila (grid, ano, satelite, fechas, filtros).
-- `ndwi_incongruence_report.py`: diagnostico de quiebre NDWI por sensor en serie temporal.
+| File | Role |
+|------|------|
+| `mapbiomas_Chile_mosaics_landsat_v1.py` | Main mosaic generation and export script |
+| `input_params_2026_SJ-18-X-B.json` | Row-level parameters (grid, year, satellite, dates, filters) |
+| `run_pipeline.py` | GPKG overlap check → mosaic script (modular entry point) |
+| `check_gpkg_tile_overlap.py` | Standalone GPKG vs CIM tile intersection test |
+| `ndwi_incongruence_report.py` | NDWI sensor-shift diagnostic on exported assets |
+| `plot_ndwi_gpkg.py` | NDWI time-series plot for the sample GPKG area |
+| `plot_all_bands_gpkg.py` | Multi-band median time-series plot |
+| `format_params_tsv.py` / `params.tsv` | TSV parameter formatting utilities |
+| `ndwi_sensor_shift_report.md` | Written findings from the SJ-18-X-B NDWI analysis |
 
-## Flujo de trabajo aplicado en esta iteracion
+## Workflow in this iteration
 
-1. Se acoto la corrida de prueba a `SJ-18-X-B` usando `input_params_2026_SJ-18-X-B.json`.
-2. Se corrio diagnostico NDWI con `ndwi_incongruence_report.py` para detectar quiebre inter-sensor.
-3. Se ajusto `mapbiomas_Chile_mosaics_landsat_v1.py` para:
-   - controlar combinaciones ano/satelite,
-   - exportar a una coleccion de prueba separada,
-   - limitar bandas finales a opticas + NDVI/NDWI,
-   - forzar tag de corrida en cuenta compartida.
+1. Scope test runs to tile `SJ-18-X-B` via `input_params_2026_SJ-18-X-B.json`.
+2. Run NDWI diagnostics with `ndwi_incongruence_report.py` to detect inter-sensor breaks.
+3. Adjust `mapbiomas_Chile_mosaics_landsat_v1.py` for sensor/year guards, isolated test exports, core-band output, and mandatory export tags.
 
-## Cambios importantes en `mapbiomas_Chile_mosaics_landsat_v1.py`
+## Changes in `mapbiomas_Chile_mosaics_landsat_v1.py`
 
-### 1) Regla de sensores por ano (control de calidad)
+### 1) Sensor/year quality guard
 
-Se incorporo `valid_sensors_for_year(year)` y un guard estricto:
+`valid_sensors_for_year(year)` enforces allowed Landsat sensors per year:
 
-- `MOSAIC_STRICT_SENSOR_YEAR_GUARD=1` (default): filas invalidas `year + satellite` se saltan.
-- `MOSAIC_STRICT_SENSOR_YEAR_GUARD=0`: solo warning (modo flexible).
+| Year range | Primary sensors | Notes |
+|------------|-----------------|-------|
+| ≤ 1998 | `l4`, `l5` | `l7` also allowed from 1984 |
+| 1999–2012 | `l5` | `l7` also allowed from 1984 |
+| 2013–2020 | `l8` | `l7` also allowed until 2016 |
+| ≥ 2021 | `l8`, `l9` | |
 
-Regla vigente:
-- `l7` permitido entre `1984-01-01` y `2017-01-01` (ano `< 2017`).
-- `2017-2020`: solo `l8`.
-- `>=2021`: `l8` y `l9`.
+`l7` window: **1984-01-01 → 2017-01-01** (year `< 2017`).
 
-### 2) Salida de pruebas separada
+- `MOSAIC_STRICT_SENSOR_YEAR_GUARD=1` (default): invalid `year + satellite` rows are skipped.
+- `MOSAIC_STRICT_SENSOR_YEAR_GUARD=0`: warning only.
 
-La salida se dirige a:
+### 2) Isolated test output
+
+Exports target:
+
 - `projects/mapbiomas-chile/assets/MOSAICS/test_landcover_2`
 
-Esto evita mezclar resultados de prueba con otras colecciones historicas.
+Export suffix: `-REDUCED-NDVI-NDWI-v2` (plus optional `MOSAIC_EXPORT_TAG`).
 
-### 3) Export reducido a bandas nucleares (enfocado en NDWI)
+### 3) Core-band export
 
-Con `MOSAIC_CORE_BANDS_ONLY_EXPORT=1` (default), el mosaico final conserva solo:
+With `MOSAIC_CORE_BANDS_ONLY_EXPORT=1` (default), the final mosaic keeps only:
 
-- `blue_median`
-- `green_median`
-- `red_median`
-- `nir_median`
-- `swir1_median`
-- `swir2_median`
-- `ndvi_median`
-- `ndwi_median`
+- `blue_median`, `green_median`, `red_median`, `nir_median`, `swir1_median`, `swir2_median`, `ndvi_median`, `ndwi_median`
 
-Con esto se eliminan bandas extra (SMA, topografia e indices no requeridos para este test).
+Extra bands (SMA, terrain, additional statistics) are dropped.
 
-### 3.1) Cambio aplicado en la definicion de NDWI
+### 4) NDWI definition
 
-Se deja explicitado el ajuste de indice usado en este flujo:
+- **Before:** NDWI as normalized difference of swir and nir.
+- **Now:** NDWI as normalized difference of **green** and **nir**, aligned with the current project analysis criteria.
 
-- Antes: NDWI calculado como normalizado de `swir` y `nir`.
-- Ahora: NDWI calculado como normalizado de `green` y `nir`.
+### 5) Mandatory export tag (shared account)
 
-Este cambio se incorporo para mantener consistencia con el criterio de analisis actual del proyecto.
+- `MOSAIC_REQUIRE_EXPORT_TAG=1` (default): requires `MOSAIC_EXPORT_TAG`; script exits early if missing.
+- Prevents task/asset collisions when multiple users share the same Earth Engine project.
 
-### 4) Tag obligatorio de corrida (cuenta compartida)
+### 6) Runtime switches
 
-`MOSAIC_REQUIRE_EXPORT_TAG=1` (default) obliga definir `MOSAIC_EXPORT_TAG`.
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `MOSAIC_REDUCED_MODE` | `1` | Reduced optical + NDVI/NDWI pipeline |
+| `MOSAIC_STRICT_SENSOR_YEAR_GUARD` | `1` | Skip invalid year/sensor rows |
+| `MOSAIC_CORE_BANDS_ONLY_EXPORT` | `1` | Export core bands only |
+| `MOSAIC_REQUIRE_EXPORT_TAG` | `1` | Require explicit export tag |
+| `MOSAIC_EXPORT_TAG` | — | Unique suffix appended to asset names |
+| `MOSAIC_MAX_JOBS` | — | Limit rows per territory (smoke tests) |
+| `MOSAIC_SKIP_ACTIVE_TASK_GUARD` | `0` | Skip slow `ee.batch.Task.list()` at startup |
 
-Si falta el tag, el script falla al inicio para evitar colisiones/duplicados en la cola de Earth Engine.
+## `input_params_2026_SJ-18-X-B.json`
 
-## Rol de `input_params_2026_SJ-18-X-B.json`
+Each JSON row defines one export job:
 
-Este JSON define la corrida fila a fila:
 - `country`, `grid_name`, `year`, `satellite`
-- ventana temporal (`t0_s`, `t1_s`)
+- Time window (`t0_s`, `t1_s`)
 - `cloud_cover`, `black_list`, `use_tile_mask`
 
-Se usa para pruebas controladas por tile/ano/sensor y para validar reglas de consistencia.
+Used for controlled tile/year/sensor tests and guard validation.
 
-## Rol de `ndwi_incongruence_report.py`
+## `ndwi_incongruence_report.py`
 
-Script de diagnostico que:
-- consulta la coleccion de mosaicos,
-- filtra por `grid_name=SJ-18-X-B`,
-- toma `ndwi_median`,
-- compara estadisticamente periodos pre-2013 y post-2012.
+Diagnostic script that:
 
-Objetivo: evidenciar si el cambio de sensor produce salto estructural en NDWI.
+- Queries the mosaic collection
+- Filters by `grid_name=SJ-18-X-B`
+- Reads `ndwi_median`
+- Compares pre-2013 vs post-2012 periods statistically
 
-## Ejecucion recomendada (PowerShell)
+Goal: detect whether sensor changes produce a structural NDWI shift.
 
-Desde la raiz del repo:
+## Recommended execution (PowerShell)
+
+From `mosaic_test/mosaico_reduce`:
+
+**Direct script:**
 
 ```powershell
 $env:MOSAIC_EXPORT_TAG='pedro-YYYYMMDD-a'
@@ -98,6 +111,18 @@ $env:MOSAIC_REQUIRE_EXPORT_TAG='1'
 $env:MOSAIC_STRICT_SENSOR_YEAR_GUARD='1'
 $env:MOSAIC_CORE_BANDS_ONLY_EXPORT='1'
 $env:MOSAIC_REDUCED_MODE='1'
-$env:MOSAIC_MAX_JOBS='1'   # smoke test opcional
-python .\mosaico_reduce\mapbiomas_Chile_mosaics_landsat_v1.py
+$env:MOSAIC_MAX_JOBS='1'   # optional smoke test
+python .\mapbiomas_Chile_mosaics_landsat_v1.py
+```
+
+**With GPKG overlap validation:**
+
+```powershell
+python .\run_pipeline.py --tile SJ-18-X-B --export-tag pedro-YYYYMMDD-a --max-jobs 1
+```
+
+**Overlap check only:**
+
+```powershell
+python .\check_gpkg_tile_overlap.py --gpkg ..\..\inputs\gpk\Muestra_Lagogpk.gpkg --tile SJ-18-X-B
 ```
