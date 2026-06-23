@@ -66,7 +66,7 @@ Derived data are not committed (see `.gitignore`). On cluster: `$GRILLAS_ROOT` �
 
 1. **Candidate grid** — all valid rectangles per UTM zone and size.
 2. **Selected rectangles** — ~300–350 nationally; balanced by type, ecoregion (E1–E15), critical classes.
-3. **No geometric overlap** — each step 02 run excludes all prior selections (any huso, any size).
+3. **No geometric overlap** — each step 02 run excludes all prior selections (any UTM zone, any size).
 4. **Chips** — same `split` (train/val/test) for all chips in a rectangle.
 
 ## Quality control (step 05)
