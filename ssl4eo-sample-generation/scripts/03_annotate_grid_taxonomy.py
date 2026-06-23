@@ -7,8 +7,8 @@ Las grillas scale300 actuales (_general) deben re-caracterizarse con:
   python caracterizacion_grillas_gee.py --class-level n3 ...
 
 Ejemplo:
-  python scripts/04_annotate_grid_taxonomy.py -i final_samples/seleccion_grilla_ssl4eo_muestras_UTM19_scale300.csv
-  python scripts/04_annotate_grid_taxonomy.py -i "final_samples/seleccion_grilla_ssl4eo_muestras_UTM*_scale300.csv"
+  python scripts/03_annotate_grid_taxonomy.py -i final_samples/seleccion_grilla_ssl4eo_muestras_UTM19_scale300.csv
+  python scripts/03_annotate_grid_taxonomy.py -i "final_samples/seleccion_grilla_ssl4eo_muestras_UTM*_scale300.csv"
 """
 
 from __future__ import annotations
@@ -21,7 +21,9 @@ import pandas as pd
 
 from taxonomy_classes import annotate_dataframe
 
-ROOT = Path(__file__).resolve().parent
+from project_paths import FINALES_DIR, GRILLAS_ROOT
+
+ROOT = GRILLAS_ROOT
 
 
 def resolve_input_paths(pattern: Path) -> list[Path]:

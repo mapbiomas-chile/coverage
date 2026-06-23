@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-10_consolidate_national_review_plan.py
+08_consolidate_national_review_plan.py
 
 Consolida los planes de revisión UTM18 y UTM19 generados por
-09_generate_rectangle_review_plan.py.
+07_generate_rectangle_review_plan.py.
 
 Entrada esperada:
   intermediate_files/review/plan_revision_UTM18_scale300.csv
@@ -25,11 +25,11 @@ Uso desde PowerShell / Cursor (desde la raíz de generacion-muestras-ssl4eo/):
 
   cd generacion-muestras-ssl4eo
 
-  python scripts\\10_consolidate_national_review_plan.py
+  python scripts\\08_consolidate_national_review_plan.py
 
 También permite rutas personalizadas:
 
-  python scripts\\10_consolidate_national_review_plan.py ^
+  python scripts\\08_consolidate_national_review_plan.py ^
     --input intermediate_files\\revision\\plan_revision_UTM18_scale300.csv ^
             intermediate_files\\revision\\plan_revision_UTM19_scale300.csv ^
     --out-dir intermediate_files\\revision
@@ -47,10 +47,7 @@ from project_paths import GRILLAS_ROOT, REVISION_DIR
 DEFAULT_ROOT = GRILLAS_ROOT
 DEFAULT_REV_DIR = REVISION_DIR
 
-DEFAULT_INPUTS = [
-    DEFAULT_REV_DIR / "plan_revision_UTM18_scale300.csv",
-    DEFAULT_REV_DIR / "plan_revision_UTM19_scale300.csv",
-]
+DEFAULT_INPUTS = sorted(REVISION_DIR.glob("plan_revision_UTM*_scale300.csv"))
 
 
 def infer_utm_from_filename(path: Path) -> str:

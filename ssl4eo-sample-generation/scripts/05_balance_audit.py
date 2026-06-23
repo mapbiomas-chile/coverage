@@ -3,8 +3,8 @@
 Auditoria de balanceo nacional (piloto v2) contra metas de la tabla de falencias.
 
 Uso:
-  python scripts/06_balance_audit.py
-  python scripts/06_balance_audit.py --input final_samples/seleccion_*_scale300.geojson
+  python scripts/05_balance_audit.py
+  python scripts/05_balance_audit.py --input final_samples/seleccion_*_scale300.geojson
 """
 
 from __future__ import annotations
@@ -18,10 +18,10 @@ import pandas as pd
 from selection_balancing import OTRA_SIN_VEG_ID, PASTIZAL_MODE_ID
 from critical_classes import CRITICAL_CLASS_NAMES, annotate_critical_classes
 
-from project_paths import FINALES_DIR, GRILLAS_ROOT, REVISION_DIR
+from project_paths import FINALES_DIR, GRILLAS_ROOT, REVISION_DIR, SELECTION_GEOJSON_GLOB
 
 ROOT = GRILLAS_ROOT
-DEFAULT_GLOB = str(FINALES_DIR / "seleccion_grilla_ssl4eo_muestras_UTM*_scale300.geojson")
+DEFAULT_GLOB = SELECTION_GEOJSON_GLOB
 
 ARENA_ID = 23
 SALAR_ID = 61
@@ -60,12 +60,45 @@ def status(ok: bool) -> str:
     return "OK" if ok else "REVISAR"
 
 
+def count_geometry_overlaps(paths: list[Path], tol_deg2: float = 1e-11) -> tuple[int, int]:
+    """Pares con solape geometrico entre cualquier par de selecciones (WGS84)."""
+    frames: list[gpd.GeoDataFrame] = []
+    for path in paths:
+        gdf = gpd.read_file(path).to_crs(4326).reset_index(drop=True)
+        gdf["_gid"] = gdf.get("grid_id", pd.Series(range(len(gdf)))).astype(str)
+        frames.append(gdf)
+    if not frames:
+        return 0, 0
+    all_gdf = pd.concat(frames, ignore_index=True)
+    geoms = all_gdf.geometry.values
+    pairs = 0
+    involved: set[str] = set()
+    for i in range(len(all_gdf)):
+        geom_a = geoms[i]
+        area_a = geom_a.area
+        if area_a <= 0:
+            continue
+        for j in range(i + 1, len(all_gdf)):
+            inter = geom_a.intersection(geoms[j])
+            if inter.is_empty or inter.area <= tol_deg2:
+                continue
+            pairs += 1
+            involved.add(str(all_gdf.iloc[i]["_gid"]))
+            involved.add(str(all_gdf.iloc[j]["_gid"]))
+    return pairs, len(involved)
+
+
 def count_cross_zone_overlaps(paths: list[Path], tol_deg2: float = 1e-11) -> tuple[int, int]:
-    """Pares con solape geometrico entre husos UTM distintos (WGS84)."""
+    """Pares con solape entre husos UTM distintos (compatibilidad)."""
     by_utm: dict[str, gpd.GeoDataFrame] = {}
     for path in paths:
         gdf = gpd.read_file(path).to_crs(4326)
-        by_utm[infer_utm(path)] = gdf.reset_index(drop=True)
+        key = infer_utm(path)
+        by_utm[key] = (
+            pd.concat([by_utm[key], gdf], ignore_index=True)
+            if key in by_utm
+            else gdf.reset_index(drop=True)
+        )
     if len(by_utm) < 2:
         return 0, 0
     keys = sorted(by_utm)
@@ -99,13 +132,14 @@ def main() -> None:
     if args.input:
         paths = args.input
     else:
-        paths = sorted(FINALES_DIR.glob("seleccion_grilla_ssl4eo_muestras_UTM*_scale300.geojson"))
+        paths = sorted(GRILLAS_ROOT.glob(DEFAULT_GLOB))
 
     df = load(paths)
     n = len(df)
     utm18 = df[df["utm"] == "UTM18"]
     utm19 = df[df["utm"] == "UTM19"]
-    cross_pairs, cross_ids = count_cross_zone_overlaps(paths)
+    cross_pairs, cross_ids = count_geometry_overlaps(paths)
+    cross_zone_pairs, _ = count_cross_zone_overlaps(paths)
 
     mode = pd.to_numeric(df.get("lulc_mode_id", -9999), errors="coerce").fillna(-9999).astype(int)
     otra_n = int((mode == OTRA_SIN_VEG_ID).sum())
@@ -172,8 +206,9 @@ def main() -> None:
         f"{status(abs(train / max(n, 1) - 0.70) < 0.08 and val >= 25)}",
         f"[13] Tier 0 auto          {(df.get('review_tier', 99) == 0).sum():3d}   UTM18/19 "
         f"{(utm18.get('review_tier', pd.Series()) == 0).sum()}/{(utm19.get('review_tier', pd.Series()) == 0).sum()}",
-        f"[14] Solape UTM18/19      pares={cross_pairs:3d} ids={cross_ids:3d}   meta 0   "
+        f"[14] Solape global        pares={cross_pairs:3d} ids={cross_ids:3d}   meta 0   "
         f"{status(cross_pairs == 0)}",
+        f"     (frontera UTM18/19: {cross_zone_pairs} pares)",
         "",
         "-- Por tipo --",
         df["sample_type"].value_counts().to_string(),

@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+
+# Datos generados (mantener estructura con .gitkeep)
+final_samples/**/*
+!final_samples/.gitkeep
+!final_samples/README.md
+intermediate_files/**/*
+!intermediate_files/**/.gitkeep
+data/raw/**/*
+!data/raw/.gitkeep
+
+# Artefactos locales
+*.zip
+*.gpkg
+.DS_Store

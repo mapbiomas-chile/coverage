@@ -13,9 +13,9 @@ Genera tablas CSV y un informe de texto con:
   - Split train/val/test y tier de revision
 
 Uso:
-  python scripts/05_rectangle_selection_review.py
-  python scripts/05_rectangle_selection_review.py --utm 18 19
-  python scripts/05_rectangle_selection_review.py --input final_samples/*.geojson
+  python scripts/04_rectangle_selection_review.py
+  python scripts/04_rectangle_selection_review.py --utm 18 19
+  python scripts/04_rectangle_selection_review.py --input final_samples/*.geojson
 """
 
 from __future__ import annotations
@@ -34,11 +34,16 @@ from critical_classes import (
     annotate_critical_classes,
     critical_summary,
 )
+from ecoregion_names import (
+    MAINLAND_ECO_IDS,
+    ecoregion_label,
+    mainland_eco_mask,
+)
 
-from project_paths import FINALES_DIR, GRILLAS_ROOT, REVISION_DIR
+from project_paths import FINALES_DIR, GRILLAS_ROOT, REVISION_DIR, SELECTION_GEOJSON_GLOB, infer_grid_tag
 
 ROOT = GRILLAS_ROOT
-DEFAULT_GLOB = "seleccion_grilla_ssl4eo_muestras_UTM*_scale300.geojson"
+DEFAULT_GLOB = SELECTION_GEOJSON_GLOB
 DEFAULT_OUT = REVISION_DIR
 
 
@@ -50,7 +55,7 @@ def clean_label(value) -> str:
 
 
 def infer_utm(path: Path) -> str:
-    name = path.stem.upper()
+    name = path.as_posix().upper()
     if "UTM18" in name:
         return "UTM18"
     if "UTM19" in name:
@@ -64,6 +69,7 @@ def load_selections(paths: list[Path]) -> pd.DataFrame:
         gdf = gpd.read_file(p)
         df = pd.DataFrame(gdf.drop(columns="geometry", errors="ignore"))
         df["utm"] = infer_utm(p)
+        df["grid_size"] = infer_grid_tag(p)
         df["fuente"] = p.name
         frames.append(df)
     if not frames:
@@ -73,7 +79,10 @@ def load_selections(paths: list[Path]) -> pd.DataFrame:
 
 def prepare_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    df["ecorregion"] = df.get("eco_dom_name", pd.Series(dtype=object)).map(clean_label)
+    df["ecorregion"] = df.apply(
+        lambda r: ecoregion_label(r.get("eco_dom_id"), r.get("eco_dom_name")),
+        axis=1,
+    )
     df["clase_modal"] = df.get("lulc_mode_name", pd.Series(dtype=object)).map(clean_label)
     df["clase_ultimo"] = df.get("lulc_last_name", pd.Series(dtype=object)).map(clean_label)
     df["tipo_muestra"] = df.get("sample_type", pd.Series(dtype=object)).map(clean_label)
@@ -108,7 +117,10 @@ def count_table(df: pd.DataFrame, group_cols: list[str], name: str = "n_muestras
 
 
 def pivot_count(df: pd.DataFrame, index: str, columns: str) -> pd.DataFrame:
-    pt = pd.crosstab(df[index], df[columns], margins=True, margins_name="TOTAL")
+    work = df.copy()
+    if "eco_dom_id" in work.columns:
+        work = work[mainland_eco_mask(work["eco_dom_id"])].copy()
+    pt = pd.crosstab(work[index], work[columns], margins=True, margins_name="TOTAL")
     return pt.sort_index()
 
 
@@ -135,7 +147,9 @@ def resumen_general(df: pd.DataFrame) -> pd.DataFrame:
             "utm": utm,
             "n_muestras": len(g),
             "n_grid_id_unicos": g["grid_id"].nunique(),
-            "n_ecorregiones": g["ecorregion"].nunique(),
+            "n_ecorregiones": g.loc[mainland_eco_mask(g["eco_dom_id"]), "ecorregion"].nunique()
+            if "eco_dom_id" in g.columns
+            else g["ecorregion"].nunique(),
             "n_clases_modales": g["clase_modal"].nunique(),
             "n_tipos_muestra": g["tipo_muestra"].nunique(),
             "n_clases_criticas": int(g["tiene_clase_critica"].sum()),
@@ -149,7 +163,9 @@ def resumen_general(df: pd.DataFrame) -> pd.DataFrame:
         "utm": "TOTAL",
         "n_muestras": len(total),
         "n_grid_id_unicos": total["grid_id"].nunique(),
-        "n_ecorregiones": total["ecorregion"].nunique(),
+        "n_ecorregiones": total.loc[mainland_eco_mask(total["eco_dom_id"]), "ecorregion"].nunique()
+        if "eco_dom_id" in total.columns
+        else total["ecorregion"].nunique(),
         "n_clases_modales": total["clase_modal"].nunique(),
         "n_tipos_muestra": total["tipo_muestra"].nunique(),
         "n_clases_criticas": int(total["tiene_clase_critica"].sum()),
@@ -282,16 +298,18 @@ def run_revision(df: pd.DataFrame, out_dir: Path, tag: str = "") -> None:
 
 
 def discover_inputs(glob_pat: str, utm_filter: list[str] | None) -> list[Path]:
-    if "/" in glob_pat or "\\" in glob_pat:
-        base = Path(glob_pat).parent
+    if "**" in glob_pat:
+        base = GRILLAS_ROOT
+        paths = sorted(base.glob(glob_pat))
+    elif "/" in glob_pat or "\\" in glob_pat:
+        base = GRILLAS_ROOT / Path(glob_pat).parent
         pattern = Path(glob_pat).name
+        paths = sorted(base.glob(pattern))
     else:
-        base = FINALES_DIR
-        pattern = glob_pat
-    paths = sorted(base.glob(pattern))
+        paths = sorted(FINALES_DIR.glob(glob_pat))
     if utm_filter:
         utm_set = {u.upper().replace("UTM", "UTM") for u in utm_filter}
-        paths = [p for p in paths if any(u in p.stem.upper() for u in utm_set)]
+        paths = [p for p in paths if any(u in p.as_posix().upper() for u in utm_set)]
     return paths
 
 

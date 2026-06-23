@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-09_generate_rectangle_review_plan.py
+07_generate_rectangle_review_plan.py
 
 Genera un plan de revisión temporal para rectángulos seleccionados SSL4EO-L.
 
@@ -18,7 +18,7 @@ Salida:
     review_priority
     review_notes
 
-La lógica usa los campos generados por 03_rectangle_selection.py:
+La lógica usa los campos generados por 02_rectangle_selection.py:
   dim_temporal, sample_type, ref_year, stable_years, md_id_P1..P4,
   md_nm_P1..P4, stb_yrs_P1..P4, transition_pct, target_rare_class, review_tier.
 """

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Visualizador interactivo de reportes de revision (05_rectangle_selection_review.py).
+Visualizador interactivo de reportes de revision (04_rectangle_selection_review.py).
 
 Uso (desde grillas/):
-  streamlit run scripts/07_visualize_reports.py
-  python scripts/07_visualize_reports.py --export-html revision_dashboard.html
+  streamlit run scripts/06_visualize_reports.py
+  python scripts/06_visualize_reports.py --export-html revision_dashboard.html
 """
 
 from __future__ import annotations
@@ -26,13 +26,20 @@ from critical_classes import (
     critical_summary,
     presence_pct_column,
 )
-from project_paths import FINALES_DIR, GRILLAS_ROOT, REVISION_DIR, SCRIPTS_DIR
+from ecoregion_names import (
+    MAINLAND_ECO_IDS,
+    _LULC_N1_NAMES,
+    ecoregion_label,
+    mainland_eco_mask,
+    sort_ecoregion_index,
+)
+from project_paths import FINALES_DIR, GRILLAS_ROOT, REVISION_DIR, SCRIPTS_DIR, SELECTION_CSV_GLOB, SELECTION_GEOJSON_GLOB
 
 ROOT = GRILLAS_ROOT
-REVISION_SCRIPT = SCRIPTS_DIR / "05_rectangle_selection_review.py"
+REVISION_SCRIPT = SCRIPTS_DIR / "04_rectangle_selection_review.py"
 DEFAULT_REVISION = REVISION_DIR
-DEFAULT_GEOJSON_GLOB = "final_samples/seleccion_grilla_ssl4eo_muestras_UTM*_scale300.geojson"
-DEFAULT_SELECTION_GLOB = "final_samples/seleccion_grilla_ssl4eo_muestras_UTM*_scale300.csv"
+DEFAULT_GEOJSON_GLOB = SELECTION_GEOJSON_GLOB
+DEFAULT_SELECTION_GLOB = SELECTION_CSV_GLOB
 DEFAULT_CHIPS_GLOB = "intermediate_files/chips_1x1/seleccion/seleccion_chips_1x1_*.geojson"
 # Alias retrocompatible con el nombre anterior del parametro
 DEFAULT_GPKG_GLOB = DEFAULT_GEOJSON_GLOB
@@ -161,7 +168,69 @@ def load_calidad_means(revision_dir: Path, utm: str) -> pd.DataFrame | None:
     return out.reset_index(drop=True)
 
 
-def heatmap_figure(matrix: pd.DataFrame, title: str) -> go.Figure:
+def prepare_eco_heatmap(matrix: pd.DataFrame) -> pd.DataFrame:
+    """Filtra islas, ordena ecorregiones E1-E15 y deja solo columnas numericas."""
+    data = matrix.copy()
+    if "TOTAL" in data.index:
+        data = data.drop(index="TOTAL")
+    if "TOTAL" in data.columns:
+        data = data.drop(columns="TOTAL")
+    ordered = sort_ecoregion_index(data.index)
+    present = [r for r in ordered if r in data.index]
+    extra = [r for r in data.index if r not in present]
+    data = data.reindex(present + extra)
+    numeric = data.select_dtypes(include="number")
+    return numeric if not numeric.empty else data
+
+
+def pivot_has_bad_eco_labels(pivot: pd.DataFrame | None) -> bool:
+    if pivot is None or pivot.empty:
+        return True
+    labels = [str(i) for i in pivot.index if str(i) != "TOTAL"]
+    return not labels or any(lbl in _LULC_N1_NAMES for lbl in labels)
+
+
+def build_eco_pivots_from_selection(sel_gdf) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Reconstruye pivots eco x clase / eco x tipo desde seleccion (15 ecorregiones)."""
+    df = pd.DataFrame(sel_gdf.drop(columns="geometry", errors="ignore"))
+    if "eco_dom_id" not in df.columns:
+        raise ValueError("Faltan columnas eco_dom_id en la seleccion.")
+    df = df[mainland_eco_mask(df["eco_dom_id"])].copy()
+    df["ecorregion"] = df.apply(
+        lambda r: ecoregion_label(r.get("eco_dom_id"), r.get("eco_dom_name")),
+        axis=1,
+    )
+    df["clase_modal"] = df.get("lulc_mode_name", pd.Series("", index=df.index)).astype(str)
+    df["tipo_muestra"] = df.get("sample_type", pd.Series("", index=df.index)).astype(str)
+    eco_clase = pd.crosstab(df["ecorregion"], df["clase_modal"])
+    eco_tipo = pd.crosstab(df["ecorregion"], df["tipo_muestra"])
+    return prepare_eco_heatmap(eco_clase), prepare_eco_heatmap(eco_tipo)
+
+
+def resolve_eco_pivots(
+    revision_dir: Path,
+    utm: str,
+    sel_gdf,
+) -> tuple[pd.DataFrame | None, pd.DataFrame | None]:
+    eco_clase = load_pivot(revision_dir, REPORT_STEMS["eco_clase_pivot"], utm)
+    eco_tipo = load_pivot(revision_dir, REPORT_STEMS["eco_tipo_pivot"], utm)
+    if pivot_has_bad_eco_labels(eco_clase) or pivot_has_bad_eco_labels(eco_tipo):
+        if sel_gdf is not None and not sel_gdf.empty:
+            return build_eco_pivots_from_selection(sel_gdf)
+    if eco_clase is not None:
+        eco_clase = prepare_eco_heatmap(eco_clase)
+    if eco_tipo is not None:
+        eco_tipo = prepare_eco_heatmap(eco_tipo)
+    return eco_clase, eco_tipo
+
+
+def heatmap_figure(
+    matrix: pd.DataFrame,
+    title: str,
+    *,
+    y_title: str = "",
+    x_title: str = "",
+) -> go.Figure:
     data = matrix.select_dtypes(include="number")
     if data.empty:
         data = matrix
@@ -170,15 +239,16 @@ def heatmap_figure(matrix: pd.DataFrame, title: str) -> go.Figure:
         text_auto=True,
         aspect="auto",
         color_continuous_scale="Blues",
-        labels=dict(color="n"),
+        labels=dict(x=x_title, y=y_title, color="n"),
     )
     fig.update_layout(
         title=title,
-        xaxis_title="",
-        yaxis_title="",
+        xaxis_title=x_title,
+        yaxis_title=y_title,
         margin=dict(l=10, r=10, t=50, b=10),
     )
-    fig.update_xaxes(tickangle=45)
+    fig.update_xaxes(tickangle=45, side="bottom")
+    fig.update_yaxes(autorange="reversed")
     return fig
 
 
@@ -365,6 +435,11 @@ def _prepare_map_columns(gdf) -> None:
         ("parent_grid_id", ""),
     ):
         gdf[col] = gdf[col].astype(str) if col in gdf.columns else default
+    if "eco_dom_id" in gdf.columns:
+        gdf["eco_dom_name"] = gdf.apply(
+            lambda r: ecoregion_label(r.get("eco_dom_id"), r.get("eco_dom_name")),
+            axis=1,
+        )
     if "utm_zone" in gdf.columns:
         gdf["utm"] = "UTM" + pd.to_numeric(gdf["utm_zone"], errors="coerce").fillna(0).astype(int).astype(str)
 
@@ -616,24 +691,42 @@ def render_dashboard(
 
     with tab_eco:
         c1, c2 = st.columns(2)
-        eco_clase = load_pivot(revision_dir, REPORT_STEMS["eco_clase_pivot"], utm)
-        eco_tipo = load_pivot(revision_dir, REPORT_STEMS["eco_tipo_pivot"], utm)
+        sel_for_eco = load_selection_geometries(gpkg_glob, utm)
+        eco_clase, eco_tipo = resolve_eco_pivots(revision_dir, utm, sel_for_eco)
         clase_tipo = load_pivot(revision_dir, REPORT_STEMS["clase_tipo_pivot"], utm)
+        st.caption(
+            "Ecorregiones continentales E1–E15 (E16/E17 islas excluidas de este set)."
+        )
         with c1:
-            if eco_clase is not None:
+            if eco_clase is not None and not eco_clase.empty:
                 st.plotly_chart(
-                    heatmap_figure(eco_clase, "Ecorregion x clase modal"),
+                    heatmap_figure(
+                        eco_clase,
+                        "Ecorregion x clase modal",
+                        y_title="Ecorregion",
+                        x_title="Clase modal",
+                    ),
                     use_container_width=True,
                 )
         with c2:
-            if eco_tipo is not None:
+            if eco_tipo is not None and not eco_tipo.empty:
                 st.plotly_chart(
-                    heatmap_figure(eco_tipo, "Ecorregion x tipo de muestra"),
+                    heatmap_figure(
+                        eco_tipo,
+                        "Ecorregion x tipo de muestra",
+                        y_title="Ecorregion",
+                        x_title="Tipo de muestra",
+                    ),
                     use_container_width=True,
                 )
         if clase_tipo is not None:
             st.plotly_chart(
-                heatmap_figure(clase_tipo, "Clase modal x tipo de muestra"),
+                heatmap_figure(
+                    clase_tipo.drop(index="TOTAL", errors="ignore").drop(columns="TOTAL", errors="ignore"),
+                    "Clase modal x tipo de muestra",
+                    y_title="Clase modal",
+                    x_title="Tipo de muestra",
+                ),
                 use_container_width=True,
             )
 
@@ -698,11 +791,11 @@ def ensure_revision_reports(revision_dir: Path) -> tuple[bool, str]:
     """Genera reportes CSV si la carpeta revision aun no existe."""
     if revision_dir.exists() and any(revision_dir.glob("*.csv")):
         return True, ""
-    geojsons = sorted(FINALES_DIR.glob("seleccion_grilla_ssl4eo_muestras_UTM*_scale300.geojson"))
+    geojsons = sorted(GRILLAS_ROOT.glob(SELECTION_GEOJSON_GLOB))
     if not geojsons:
         return False, (
             "No hay reportes de revision ni selecciones .geojson en final_samples/. "
-            "Ejecuta primero scripts/03_rectangle_selection.py y scripts/05_rectangle_selection_review.py."
+            "Ejecuta primero scripts/02_rectangle_selection.py y scripts/04_rectangle_selection_review.py."
         )
     revision_dir.mkdir(parents=True, exist_ok=True)
     cmd = revision_subprocess_cmd(
@@ -734,7 +827,7 @@ def run_streamlit() -> None:
         )
         chips_glob = st.text_input("Patron GeoJSON chips 1x1 (opcional)", DEFAULT_CHIPS_GLOB)
         if st.button("Regenerar reportes"):
-            with st.spinner("Ejecutando 05_rectangle_selection_review.py..."):
+            with st.spinner("Ejecutando 04_rectangle_selection_review.py..."):
                 result = subprocess.run(
                     revision_subprocess_cmd("--utm", "18", "19"),
                     cwd=GRILLAS_ROOT,
@@ -756,7 +849,7 @@ def run_streamlit() -> None:
                 st.error(msg or "La carpeta de reportes no existe.")
                 st.caption(
                     "Generala manualmente:\n"
-                    "`python scripts/05_rectangle_selection_review.py --utm 18 19`"
+                    "`python scripts/04_rectangle_selection_review.py --utm 18 19`"
                 )
 
     if revision_dir.exists():
@@ -835,8 +928,8 @@ def export_html(
     """Genera un HTML estatico con el mismo contenido principal del dashboard."""
     resumen = load_csv(revision_dir, REPORT_STEMS["resumen"], utm)
     por_tipo = load_csv(revision_dir, REPORT_STEMS["tipo"], utm)
-    eco_clase = load_pivot(revision_dir, REPORT_STEMS["eco_clase_pivot"], utm)
-    eco_tipo = load_pivot(revision_dir, REPORT_STEMS["eco_tipo_pivot"], utm)
+    sel_gdf = load_selection_geometries(gpkg_glob, utm)
+    eco_clase, eco_tipo = resolve_eco_pivots(revision_dir, utm, sel_gdf)
     clase_tipo = load_pivot(revision_dir, REPORT_STEMS["clase_tipo_pivot"], utm)
     split_df = load_csv(revision_dir, REPORT_STEMS["split"], utm)
     calidad = load_calidad_means(revision_dir, utm)
@@ -878,20 +971,54 @@ def export_html(
         plotly_added = True
 
     heatmaps = []
-    if eco_clase is not None:
-        heatmaps.append(html_chart(heatmap_figure(eco_clase, "Ecorregion x clase modal"), include_js=not plotly_added))
+    if eco_clase is not None and not eco_clase.empty:
+        heatmaps.append(
+            html_chart(
+                heatmap_figure(
+                    eco_clase,
+                    "Ecorregion x clase modal",
+                    y_title="Ecorregion",
+                    x_title="Clase modal",
+                ),
+                include_js=not plotly_added,
+            )
+        )
         plotly_added = True
-    if eco_tipo is not None:
-        heatmaps.append(html_chart(heatmap_figure(eco_tipo, "Ecorregion x tipo de muestra"), include_js=not plotly_added))
+    if eco_tipo is not None and not eco_tipo.empty:
+        heatmaps.append(
+            html_chart(
+                heatmap_figure(
+                    eco_tipo,
+                    "Ecorregion x tipo de muestra",
+                    y_title="Ecorregion",
+                    x_title="Tipo de muestra",
+                ),
+                include_js=not plotly_added,
+            )
+        )
         plotly_added = True
     if heatmaps:
-        parts.append(html_section("Cobertura eco / clase", f"<div class='grid-2'>{''.join(heatmaps)}</div>"))
+        parts.append(
+            html_section(
+                "Cobertura eco / clase (E1–E15 continental)",
+                f"<div class='grid-2'>{''.join(heatmaps)}</div>",
+            )
+        )
 
     if clase_tipo is not None:
+        ct = clase_tipo.drop(index="TOTAL", errors="ignore").drop(columns="TOTAL", errors="ignore")
         parts.append(
             html_section(
                 "Clase modal x tipo de muestra",
-                html_chart(heatmap_figure(clase_tipo, "Clase modal x tipo de muestra"), include_js=not plotly_added),
+                html_chart(
+                    heatmap_figure(
+                        ct,
+                        "Clase modal x tipo de muestra",
+                        y_title="Clase modal",
+                        x_title="Tipo de muestra",
+                    ),
+                    include_js=not plotly_added,
+                ),
             )
         )
         plotly_added = True
@@ -992,7 +1119,7 @@ def main() -> int:
         return 0
     if "streamlit" not in sys.modules:
         print(
-            "Ejecuta con: streamlit run scripts/07_visualize_reports.py",
+            "Ejecuta con: streamlit run scripts/06_visualize_reports.py",
             file=sys.stderr,
         )
         return 1

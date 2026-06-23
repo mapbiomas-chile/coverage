@@ -1,58 +1,87 @@
-# Final samples pipeline (2×2 / 3×3, scale300)
+# Scripts — SSL4EO sample generation (scale300)
 
-Run all commands from the root of this directory.
+Run all commands from the repository root (`ssl4eo-sample-generation/`).
 
-| Step | Script | Description |
-|------|--------|-------------|
-| 01 | `01_gee_grid_characterization.py` | Characterizes candidate grids in GEE (export SHP to Drive, v3.1) |
-| 02 | `02_download_grids_drive.py` | Downloads characterized ZIPs → `intermediate_files/gee_characterization/` |
-| 03 | `03_rectangle_selection.py` | Selection by sample type → `final_samples/` (anti-overlap within zone and UTM18/UTM19 border) |
-| 04 | `04_annotate_grid_taxonomy.py` | N1/N2/N3 taxonomy on selection (`*_taxonomia_n3`) |
-| 05 | `05_rectangle_selection_review.py` | Review reports → `intermediate_files/review/` |
-| 06 | `06_balance_audit.py` | Balancing checklist vs targets (14 criteria) |
-| 07 | `07_visualize_reports.py` | Streamlit dashboard for review reports |
-| 08 | — | *No script.* Prefix `08_` = critical-class tables from step 05 |
-| 09 | `09_generate_rectangle_review_plan.py` | Review-year plan per rectangle |
-| 10 | `10_consolidate_national_review_plan.py` | Consolidates UTM18/UTM19 plans into national plan |
+On cluster, set data output root first:
 
-## Visualization dashboard
-
-```powershell
-streamlit run scripts/07_visualize_reports.py
-python scripts/07_visualize_reports.py --export-html revision_dashboard.html
+```bash
+export GRILLAS_ROOT=/home/lserey/mapbiomas_land/prod/samples
+export MAPBIOMAS_LAND_ROOT=/home/lserey/mapbiomas_land
+source cluster/activate_mb_labels.sh
 ```
 
-Reads reports from `intermediate_files/review/`, geometries from `final_samples/`, and can overlay 1×1 chips (optional, disabled by default).
+## Pipeline numerado (01–08)
 
-## UTM19 example (full workflow 02–10)
+| Paso | Script | Función | Salida principal |
+|------|--------|---------|------------------|
+| **01** | `01_local_grid_characterization.py` | Caracterización de grillas candidatas (rasterio) | `intermediate_files/grid_characterization/*.zip` |
+| **02** | `02_rectangle_selection.py` | Selección balanceada; **4 corridas** (UTM18/19 × 2×2/3×3); anti-solape global | `final_samples/UTM{18\|19}/{homogeneo_2x2\|mixto_3x3}/seleccion_*.{geojson,gpkg,csv}` |
+| **03** | `03_annotate_grid_taxonomy.py` | Taxonomía N1/N2/N3 | `*_taxonomia_n3.csv` |
+| **04** | `04_rectangle_selection_review.py` | Tablas y reporte de revisión | `intermediate_files/review/01_*` … `09_*`, `REVISION_COMPLETA*.txt` |
+| **05** | `05_balance_audit.py` | Auditoría de balanceo (14 criterios) | `AUDITORIA_BALANCEO.txt` |
+| **06** | `06_visualize_reports.py` | Dashboard Streamlit / export HTML | `revision_dashboard.html` |
+| **07** | `07_generate_rectangle_review_plan.py` | Plan de revisión temporal por rectángulo | `plan_revision_UTM{18\|19}_{homogeneo_2x2\|mixto_3x3}_scale300.csv` |
+| **08** | `08_consolidate_national_review_plan.py` | Plan nacional consolidado | `plan_revision_nacional_scale300.csv`, etc. |
 
-```powershell
-python scripts/02_download_grids_drive.py --scale300-all
+> Los prefijos `08_clases_criticas_*` en `intermediate_files/review/` son **nombres de archivos CSV** generados por el paso **04**, no un script aparte.
 
-python scripts/03_rectangle_selection.py `
-  --homogeneo intermediate_files/gee_characterization/grilla_ssl4eo_muestras_homogeneo_2x2_UTM19_scale300_n3.zip `
-  --mixto intermediate_files/gee_characterization/grilla_ssl4eo_muestras_mixto_3x3_UTM19_scale300_n3.zip `
-  --no-auto-previous
+### Orden de ejecución (cluster)
 
-python scripts/04_annotate_grid_taxonomy.py `
-  -i final_samples/seleccion_grilla_ssl4eo_muestras_UTM19_scale300.csv
+`cluster/run_pipeline_02_08.sh`:
 
-python scripts/05_rectangle_selection_review.py --utm 19
-python scripts/06_balance_audit.py
+1. **01** (opcional) — 4 ZIPs de caracterización  
+2. **02** × 4 — selección por huso y tamaño  
+3. **03** + **07** por cada selección  
+4. **04** → **05** → **08** → **06**
 
-python scripts/09_generate_rectangle_review_plan.py `
-  -i final_samples/seleccion_grilla_ssl4eo_muestras_UTM19_scale300.geojson `
-  -o intermediate_files/review/plan_revision_UTM19_scale300.csv
+## Módulos auxiliares (sin número)
 
-python scripts/10_consolidate_national_review_plan.py `
-  --input intermediate_files/review/plan_revision_UTM18_scale300.csv `
-          intermediate_files/review/plan_revision_UTM19_scale300.csv `
-  --out-dir intermediate_files/review
+| Módulo | Uso |
+|--------|-----|
+| `local_grid_characterization.py` | Lógica raster/MGRS del paso 01 |
+| `cluster_config.py` | Rutas de insumos en cluster |
+| `project_paths.py` | `GRILLAS_ROOT`, helpers de rutas |
+| `selection_balancing.py` | Balanceo ecorregional, split, cupos |
+| `ecoregion_names.py` | Etiquetas E1–E15 (continental) |
+| `critical_classes.py` | Clases críticas / raras |
+| `taxonomy_classes.py` | Lookup taxonomía MapBiomas C2 N3 |
+
+## Paso 01 — Caracterización
+
+```bash
+python scripts/01_local_grid_characterization.py --run-scale300-all
 ```
 
-## Helper modules
+## Paso 02 — Selección (4 corridas)
 
-- `selection_balancing.py` — balancing, spatial split, fill
-- `critical_classes.py` — rare / critical classes
-- `taxonomy_classes.py` — N3 taxonomy lookup
-- `project_paths.py` — paths for `final_samples/` and `intermediate_files/`
+```bash
+python scripts/02_rectangle_selection.py \
+  --homogeneo intermediate_files/grid_characterization/grilla_ssl4eo_muestras_homogeneo_2x2_UTM18_scale300_n3.zip
+
+python scripts/02_rectangle_selection.py \
+  --mixto intermediate_files/grid_characterization/grilla_ssl4eo_muestras_mixto_3x3_UTM18_scale300_n3.zip
+```
+
+Repetir para UTM19, o ejecutar `bash cluster/run_pipeline_02_08.sh`.
+
+## Pasos 03–08 — Comandos rápidos
+
+```bash
+python scripts/03_annotate_grid_taxonomy.py \
+  -i final_samples/UTM18/homogeneo_2x2/seleccion_grilla_ssl4eo_muestras_homogeneo_2x2_UTM18_scale300.csv
+
+python scripts/04_rectangle_selection_review.py --utm 18 19
+python scripts/05_balance_audit.py
+
+python scripts/07_generate_rectangle_review_plan.py \
+  -i final_samples/UTM18/homogeneo_2x2/seleccion_grilla_ssl4eo_muestras_homogeneo_2x2_UTM18_scale300.geojson \
+  -o intermediate_files/review/plan_revision_UTM18_homogeneo_2x2_scale300.csv
+
+python scripts/08_consolidate_national_review_plan.py --out-dir intermediate_files/review
+
+streamlit run scripts/06_visualize_reports.py
+python scripts/06_visualize_reports.py \
+  --export-html intermediate_files/review/revision_dashboard.html
+```
+
+Ver también: [../README.md](../README.md), [../cluster/README.md](../cluster/README.md).

@@ -1,8 +1,8 @@
 """
 SELECCIÓN DE RECTÁNGULOS SSL4EO-L — v2.0
 ==========================================
-Selecciona rectángulos del SHP caracterizado en GEE organizando
-la selección según los 6 tipos esenciales de muestras (v1):
+Selecciona rectángulos del ZIP caracterizado localmente (paso 01, rasterio)
+organizando la selección según los 6 tipos esenciales de muestras (v1):
 
   Dimensión temporal × Dimensión espacial:
 
@@ -66,6 +66,8 @@ from selection_balancing import (
     cap_sample_type,
     fill_ecoregion_quotas,
     fill_to_total_target,
+    cap_per_ecoregion,
+    spread_mgrs_tile_order,
     infer_utm_zone,
     is_otra_sin_vegetacion_exempt,
     modal_cap_for_zone,
@@ -82,7 +84,12 @@ from taxonomy_classes import (
 # 1. ARGUMENTOS
 # ══════════════════════════════════════════════════════════════
 
-from project_paths import FINALES_DIR, GEE_CARACTERIZACION_DIR
+from project_paths import (
+    FINALES_DIR,
+    GRID_TAGS,
+    selection_base_name,
+    selection_output_dir,
+)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
@@ -124,6 +131,14 @@ _stems = [f.stem for f in [FILE_HOMOGENEO, FILE_MIXTO] if f is not None]
 base_name_combined = "__".join(_stems)
 
 
+def infer_grid_tag_from_inputs(hom: Path | None, mix: Path | None) -> str:
+    if hom and not mix:
+        return "homogeneo_2x2"
+    if mix and not hom:
+        return "mixto_3x3"
+    return "combined"
+
+
 def make_output_stem(paths: list[Path | None]) -> str:
     names = " ".join(p.stem.upper() for p in paths if p)
     utm = "UTM18" if "UTM18" in names else "UTM19" if "UTM19" in names else "UTM"
@@ -132,7 +147,22 @@ def make_output_stem(paths: list[Path | None]) -> str:
         else "scale900" if "SCALE900" in names
         else "scale"
     )
+    grid_tag = infer_grid_tag_from_inputs(FILE_HOMOGENEO, FILE_MIXTO)
+    if grid_tag in GRID_TAGS:
+        utm_num = 18 if utm == "UTM18" else 19 if utm == "UTM19" else None
+        if utm_num:
+            return selection_base_name(utm_num, grid_tag, scale)
     return f"grilla_ssl4eo_muestras_{utm}_{scale}"
+
+
+INPUT_MODE = infer_grid_tag_from_inputs(FILE_HOMOGENEO, FILE_MIXTO)
+HOMOGENEO_TYPES = {"estable_homogenea", "anual_homogenea"}
+MIXTO_TYPES = {
+    "estable_simple_media",
+    "anual_simple_media",
+    "transicion_homogenea",
+    "transicion_simple_media",
+}
 
 LN_MAX_CLASSES  = np.log(19)
 N_YEARS_PERIOD  = 26
@@ -156,17 +186,17 @@ ALL_PERIODS = ["P1", "P2", "P3", "P4"]
 # ══════════════════════════════════════════════════════════════
 
 _ref_file  = FILE_HOMOGENEO if FILE_HOMOGENEO is not None else FILE_MIXTO
-output_dir = FINALES_DIR
-output_dir.mkdir(parents=True, exist_ok=True)
 base_name  = make_output_stem([FILE_HOMOGENEO, FILE_MIXTO])
+if USE_SCALE300_PROFILE and INPUT_MODE in GRID_TAGS and UTM_ZONE:
+    output_dir = selection_output_dir(UTM_ZONE, INPUT_MODE)
+else:
+    output_dir = FINALES_DIR
+output_dir.mkdir(parents=True, exist_ok=True)
 
 output_gpkg    = output_dir / f"seleccion_{base_name}.gpkg"
 output_geojson = output_dir / f"seleccion_{base_name}.geojson"
 output_csv     = output_dir / f"seleccion_{base_name}.csv"
 output_reserve_csv = output_dir / f"reservas_{base_name}.csv"
-output_shp_dir = output_dir / f"seleccion_{base_name}_shp"
-output_shp_dir.mkdir(exist_ok=True)
-output_shp = output_shp_dir / "seleccion.shp"
 
 
 # ══════════════════════════════════════════════════════════════
@@ -246,9 +276,10 @@ if USE_SCALE300_PROFILE:
     N_PASTIZAL_PER_GROUP = 3
     MAX_PASTIZAL      = 10
     MAX_RARE = MAX_ARENA + MAX_SALAR + MAX_ACHAP + MAX_BOSQUE_NORTE + MAX_PASTIZAL
-    MIN_PER_ECO       = 6
+    MIN_PER_ECO       = 8
     PRIORITY_ECOS     = {7, 8, 9, 12, 15}
-    ECO_FILL_MAX_ADD  = 35
+    ECO_FILL_MAX_ADD  = 50
+    MAX_PER_ECO_PICK  = 18
     MAX_MODAL_OTRA    = modal_cap_for_zone(UTM_ZONE)
     RESERVE_PER_ECO   = 3
     if UTM_ZONE == 18:
@@ -256,6 +287,7 @@ if USE_SCALE300_PROFILE:
         MAX_T_S_CAP   = 35
         MAX_E_H       = 32
         MAX_E_S       = 45
+        MAX_PER_ECO_PICK = 12
         N_E_H_PER_GROUP = 8
         N_E_S_PER_GROUP = 8
         E_H_MIN_STAB_RUN = 4
@@ -266,11 +298,17 @@ if USE_SCALE300_PROFILE:
     elif UTM_ZONE == 19:
         MAX_TOTAL     = 180
         MAX_T_S_CAP   = 50
+        MAX_PER_ECO_PICK = 14
         MAX_T_H       = 25
         MAX_T_S       = 40
     else:
         MAX_TOTAL     = 160 + MAX_RARE
         MAX_T_S_CAP   = 85
+
+    if INPUT_MODE == "homogeneo_2x2":
+        MAX_TOTAL = {18: 55, 19: 70}.get(UTM_ZONE or 0, MAX_E_H + MAX_A_H + 25)
+    elif INPUT_MODE == "mixto_3x3":
+        MAX_TOTAL = {18: 90, 19: 110}.get(UTM_ZONE or 0, MAX_E_S + MAX_A_S + MAX_T_H + MAX_T_S + 25)
 else:
     MIN_ARENA_SALAR_PCT = PRESENCE_THRESHOLD_PCT
     MIN_ARENA_SALAR_PERIOD_PCT = MIN_RELAXED_PERIOD_PCT
@@ -332,6 +370,7 @@ else:
     MIN_PER_ECO = 0
     PRIORITY_ECOS = set()
     ECO_FILL_MAX_ADD = 0
+    MAX_PER_ECO_PICK = 99999
     MAX_MODAL_OTRA = 99999
     MAX_PASTIZAL = 0
     N_PASTIZAL_PER_GROUP = 0
@@ -464,11 +503,19 @@ def read_vector(path: Path) -> gpd.GeoDataFrame:
     if not path.exists():
         raise FileNotFoundError(f"No existe: {path}")
     if path.suffix.lower() == ".zip":
-        try:    return gpd.read_file(path)
-        except Exception as e1:
-            try: return gpd.read_file(f"zip://{path.as_posix()}")
-            except Exception as e2:
-                raise RuntimeError(f"No se pudo leer ZIP.\n{e1}\n{e2}")
+        attempts = [
+            path,
+            f"zip://{path.as_posix()}!grilla.gpkg",
+            f"zip://{path.as_posix()}!grilla.shp",
+            f"zip://{path.as_posix()}",
+        ]
+        errors: list[str] = []
+        for candidate in attempts:
+            try:
+                return gpd.read_file(candidate)
+            except Exception as exc:
+                errors.append(f"{candidate}: {exc}")
+        raise RuntimeError("No se pudo leer ZIP.\n" + "\n".join(errors))
     return gpd.read_file(path)
 
 
@@ -720,6 +767,8 @@ def pick_type(pool: pd.DataFrame, used_ids: set, *, group_cols, n_per_group,
               auto_tier_mask=None,
               year_counts: dict[int, int] | None = None,
               spatial_tracker: SpatialSelectionTracker | None = None,
+              eco_counts: dict[int, int] | None = None,
+              max_per_eco: int | None = None,
               ) -> tuple[pd.DataFrame, set]:
     """Selecciona un tipo y reserva grid_id + geometria para evitar solapes."""
     pool = without_used_ids(pool, used_ids, spatial_tracker)
@@ -739,6 +788,11 @@ def pick_type(pool: pd.DataFrame, used_ids: set, *, group_cols, n_per_group,
 
     if auto_tier_mask is not None and not sel.empty:
         sel.loc[auto_tier_mask(sel), "review_tier"] = 0
+
+    if max_per_eco and eco_counts is not None and not sel.empty:
+        sel = cap_per_ecoregion(sel, eco_counts, max_per_eco, score_col)
+    if not sel.empty:
+        sel = spread_mgrs_tile_order(sel, score_col)
 
     sel = sel.head(max_n)
     if sel.empty:
@@ -1234,6 +1288,26 @@ def is_selection_output(path: Path, base_name: str) -> bool:
     return "_TAXONOMIA" in stem or stem.startswith("RESERVAS_")
 
 
+def discover_all_previous_selections(base_name: str, scale: str) -> list[Path]:
+    """Selecciones ya exportadas en cualquier huso/tamaño (anti-solape global)."""
+    scale_up = scale.upper()
+    by_stem: dict[str, Path] = {}
+    if not FINALES_DIR.is_dir():
+        return []
+    for ext in (".geojson", ".gpkg"):
+        for path in sorted(FINALES_DIR.glob(f"UTM*/**/seleccion_*{ext}")):
+            if scale_up not in path.stem.upper():
+                continue
+            if is_selection_output(path, base_name):
+                continue
+            if not path.exists():
+                continue
+            stem = path.stem
+            if stem not in by_stem or ext == ".gpkg":
+                by_stem[stem] = path
+    return list(by_stem.values())
+
+
 def discover_same_zone_previous(
     output_dir: Path,
     ref_paths: list[Path | None],
@@ -1241,6 +1315,25 @@ def discover_same_zone_previous(
 ) -> list[Path]:
     files: list[Path] = []
     seen: set[Path] = set()
+    utm, scale = infer_ref_utm_scale(ref_paths)
+    grid_tag = infer_grid_tag_from_inputs(FILE_HOMOGENEO, FILE_MIXTO)
+
+    if utm and grid_tag in GRID_TAGS:
+        utm_num = int(utm.replace("UTM", ""))
+        zone_dir = FINALES_DIR / f"UTM{utm_num}"
+        if zone_dir.is_dir():
+            for sub in sorted(zone_dir.iterdir()):
+                if not sub.is_dir() or sub.name == grid_tag:
+                    continue
+                for ext in (".geojson", ".gpkg"):
+                    for path in sorted(sub.glob(f"seleccion_*{scale}*{ext}")):
+                        resolved = path.resolve()
+                        if resolved in seen or is_selection_output(path, base_name):
+                            continue
+                        seen.add(resolved)
+                        files.append(path)
+        return files
+
     for pattern in ("seleccion_grilla_ssl4eo_*.gpkg", "seleccion_grilla_ssl4eo_*.geojson"):
         for path in sorted(output_dir.glob(pattern)):
             resolved = path.resolve()
@@ -1261,8 +1354,18 @@ def discover_cross_zone_previous(
     utm, scale = infer_ref_utm_scale(ref_paths)
     if not utm or not scale:
         return []
-    other = "UTM19" if utm == "UTM18" else "UTM18"
+    other_num = 19 if utm == "UTM18" else 18
+    grid_tag = infer_grid_tag_from_inputs(FILE_HOMOGENEO, FILE_MIXTO)
     files: list[Path] = []
+    if grid_tag in GRID_TAGS:
+        other_dir = selection_output_dir(other_num, grid_tag)
+        stem = selection_base_name(other_num, grid_tag, scale)
+        for ext in (".geojson", ".gpkg"):
+            path = other_dir / f"seleccion_{stem}{ext}"
+            if path.exists() and not is_selection_output(path, base_name):
+                files.append(path)
+        return files
+    other = "UTM19" if utm == "UTM18" else "UTM18"
     for ext in (".geojson", ".gpkg"):
         path = output_dir / f"seleccion_grilla_ssl4eo_muestras_{other}_{scale}{ext}"
         if path.exists() and not is_selection_output(path, base_name):
@@ -1291,26 +1394,23 @@ def seed_spatial_tracker_from_files(
 
 
 prev_files: list[Path] = []
-if AUTO_PREVIOUS:
-    prev_files.extend(discover_same_zone_previous(output_dir, [FILE_HOMOGENEO, FILE_MIXTO], base_name))
-cross_zone_files: list[Path] = []
-if CROSS_ZONE_PREVIOUS:
-    cross_zone_files = discover_cross_zone_previous(
-        output_dir, [FILE_HOMOGENEO, FILE_MIXTO], base_name
-    )
+if AUTO_PREVIOUS or CROSS_ZONE_PREVIOUS:
+    _, scale = infer_ref_utm_scale([FILE_HOMOGENEO, FILE_MIXTO])
+    prev_files = discover_all_previous_selections(base_name, scale or "scale300")
 for f in manual_previous:
     if f not in prev_files:
         prev_files.append(f)
 
 overlap_files = list(prev_files)
-for f in cross_zone_files:
-    if f not in overlap_files:
-        overlap_files.append(f)
 
-if cross_zone_files:
-    print("\n-- Seleccion del otro huso UTM (anti-solape frontera) --")
-    for f in cross_zone_files:
-        print(f"  {f.name}")
+if overlap_files:
+    print("\n-- Selecciones previas (anti-solape huso/tamaño) --")
+    for f in overlap_files:
+        try:
+            label = f.relative_to(FINALES_DIR.parent)
+        except ValueError:
+            label = f
+        print(f"  {label}")
 
 gdf = exclude_overlaps(gdf, overlap_files, gdf.crs, MAX_OVERLAP, OVERLAP_TOLERANCE_M2)
 
@@ -1500,8 +1600,11 @@ print("\n====== POOLS POR TIPO ======")
 gm = cands.get("grid_mode", pd.Series("mixto", index=cands.index))
 cands_hom = cands[gm == "homogeneo"].copy()
 cands_mix = cands[gm != "homogeneo"].copy()
-if len(cands_hom) == 0: cands_hom = cands.copy()
-if len(cands_mix) == 0: cands_mix = cands.copy()
+if INPUT_MODE == "combined":
+    if len(cands_hom) == 0:
+        cands_hom = cands.copy()
+    if len(cands_mix) == 0:
+        cands_mix = cands.copy()
 if USE_SCALE300_PROFILE:
     cands_hom = block_desert_otra_candidates(cands_hom)
     cands_mix = block_desert_otra_candidates(cands_mix)
@@ -1731,7 +1834,23 @@ rare_pool_lookup = {
 
 print("\n====== SELECCIÓN EXCLUSIVA ======")
 anual_year_counts: dict[int, int] = defaultdict(int)
+eco_pick_counts: dict[int, int] = {}
+
+
+def selection_type_enabled(type_name: str) -> bool:
+    if type_name in RARE_CLASS_SPECS:
+        return True
+    if INPUT_MODE == "homogeneo_2x2":
+        return type_name in HOMOGENEO_TYPES
+    if INPUT_MODE == "mixto_3x3":
+        return type_name in MIXTO_TYPES
+    return True
+
+
 for type_name in SELECTION_ORDER:
+    if not selection_type_enabled(type_name):
+        print(f"  {type_name:24s}: omitido ({INPUT_MODE})")
+        continue
     if type_name in RARE_CLASS_SPECS:
         spec = RARE_CLASS_SPECS[type_name]
         picked, used_ids = pick_rare_class(
@@ -1765,10 +1884,14 @@ for type_name in SELECTION_ORDER:
             auto_tier_mask=spec.get("auto_tier_mask"),
             year_counts=anual_year_counts,
             spatial_tracker=spatial_tracker,
+            eco_counts=eco_pick_counts if USE_SCALE300_PROFILE else None,
+            max_per_eco=MAX_PER_ECO_PICK if USE_SCALE300_PROFILE else None,
         )
     parts.append(picked)
+    if not picked.empty and "eco_dom_id" in picked.columns:
+        for eid in picked["eco_dom_id"].astype(int):
+            eco_pick_counts[eid] = eco_pick_counts.get(eid, 0) + 1
     print(f"  {type_name:24s}: {len(picked):4d}")
-
 
 # ══════════════════════════════════════════════════════════════
 # 10. ENSAMBLE FINAL
@@ -2024,10 +2147,6 @@ export  = selected.drop(columns=drop_sc, errors="ignore")
 
 export.to_file(output_gpkg,    layer="seleccion", driver="GPKG")
 export.to_file(output_geojson, driver="GeoJSON")
-try:
-    export.to_file(output_shp, driver="ESRI Shapefile")
-except Exception as exc:
-    print(f"  Advertencia: no se pudo exportar SHP ({exc})")
 export.drop(columns="geometry").to_csv(
     output_csv, index=False, encoding="utf-8-sig")
 
@@ -2040,7 +2159,6 @@ if not reserves.empty:
 print("\n====== ARCHIVOS EXPORTADOS ======")
 print(f"  {output_gpkg}")
 print(f"  {output_geojson}")
-print(f"  {output_shp}")
 print(f"  {output_csv}")
 if not reserves.empty:
     print(f"  {output_reserve_csv}")

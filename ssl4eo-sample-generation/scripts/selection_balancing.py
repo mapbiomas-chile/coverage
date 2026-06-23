@@ -13,7 +13,40 @@ WATER_MODE_ID = 33
 ARID_ECO_IDS = {1, 2, 3, 4, 5}
 DESERT_ECOS_BLOCK_OTRA = {1, 2, 3}
 FRAGILE_ECOS = {3, 6}
+MAINLAND_ECO_IDS = frozenset(range(1, 16))
 
+
+def cap_per_ecoregion(
+    df: pd.DataFrame,
+    eco_counts: dict[int, int],
+    max_per_eco: int,
+    score_col: str,
+) -> pd.DataFrame:
+    """Descarta candidatos que exceden el cupo acumulado por ecorregion."""
+    if df.empty or max_per_eco <= 0 or "eco_dom_id" not in df.columns:
+        return df
+    counts = dict(eco_counts)
+    kept: list[pd.Series] = []
+    for _, row in df.sort_values(score_col, ascending=False).iterrows():
+        eid = int(row["eco_dom_id"])
+        if counts.get(eid, 0) >= max_per_eco:
+            continue
+        kept.append(row)
+        counts[eid] = counts.get(eid, 0) + 1
+    if not kept:
+        return df.iloc[0:0]
+    return pd.DataFrame(kept)
+
+
+def spread_mgrs_tile_order(df: pd.DataFrame, score_col: str) -> pd.DataFrame:
+    """Alterna tiles MGRS para reducir agrupamiento espacial dentro de un lote."""
+    if df.empty or "mgrs_dom" not in df.columns:
+        return df.sort_values(score_col, ascending=False)
+    work = df.sort_values(score_col, ascending=False).copy()
+    work["_mgrs_rank"] = work.groupby("mgrs_dom", sort=False).cumcount()
+    return work.sort_values(["_mgrs_rank", score_col], ascending=[True, False]).drop(
+        columns="_mgrs_rank"
+    )
 
 def infer_utm_zone(*paths) -> int | None:
     names = " ".join(str(p).upper() for p in paths if p)
@@ -471,6 +504,8 @@ def fill_ecoregion_quotas(
     free = candidates[~candidates["grid_id"].isin(used_ids)].copy()
     free = block_desert_otra_candidates(free)
     free = block_water_in_fill(free)
+    if "eco_dom_id" in free.columns:
+        free = free[free["eco_dom_id"].astype(int).isin(MAINLAND_ECO_IDS)].copy()
     if free.empty:
         return selected, used_ids
 
@@ -490,7 +525,8 @@ def fill_ecoregion_quotas(
         return "anual" if best_p else "estable"
 
     eco_order = sorted(
-        set(priority_ecos) | set(free["eco_dom_id"].astype(int).unique()),
+        {e for e in (set(priority_ecos) | set(free["eco_dom_id"].astype(int).unique()))
+         if e in MAINLAND_ECO_IDS},
         key=lambda e: (0 if e in priority_ecos else 1, eco_counts.get(e, 0)),
     )
 
@@ -509,6 +545,12 @@ def fill_ecoregion_quotas(
             .astype(int)
         )
 
+        have_mgrs = set(
+            eco_sel.get("mgrs_dom", pd.Series(dtype=object)).astype(str).str.strip()
+        )
+        have_mgrs.discard("")
+        have_mgrs.discard("nan")
+
         pool = free[free["eco_dom_id"].astype(int) == eco_id].copy()
         if pool.empty:
             continue
@@ -519,10 +561,16 @@ def fill_ecoregion_quotas(
         pool.loc[~pool["_temporal"].isin(have_temporal), "_prio"] += 2
         pool.loc[~pool["_modal"].isin(have_modal), "_prio"] += 1
         pool.loc[pool["_modal"] == OTRA_SIN_VEG_ID, "_prio"] -= 1
+        pool["_mgrs_bonus"] = (
+            ~pool.get("mgrs_dom", pd.Series("", index=pool.index)).astype(str).str.strip().isin(have_mgrs)
+        ).astype(float)
         pool["_mix_bonus"] = (
             pool.get("grid_mode", pd.Series("mixto", index=pool.index)).astype(str) == "mixto"
         ).astype(float)
-        pool = pool.sort_values(["_prio", "_mix_bonus", score_col], ascending=[False, False, False])
+        pool = pool.sort_values(
+            ["_prio", "_mgrs_bonus", "_mix_bonus", score_col],
+            ascending=[False, False, False, False],
+        )
 
         take = take_non_overlapping_rows(
             pool.drop(columns=["_temporal", "_modal", "_prio"], errors="ignore"),
@@ -594,8 +642,16 @@ def fill_to_total_target(
     free = candidates[~candidates["grid_id"].isin(used_ids)].copy()
     free = block_desert_otra_candidates(free)
     free = block_water_in_fill(free)
+    if "eco_dom_id" in free.columns:
+        free = free[free["eco_dom_id"].astype(int).isin(MAINLAND_ECO_IDS)].copy()
     if free.empty:
         return selected, used_ids
+
+    eco_counts = (
+        selected.groupby(selected["eco_dom_id"].astype(int)).size().to_dict()
+        if not selected.empty and "eco_dom_id" in selected.columns
+        else {}
+    )
 
     if score_col not in free.columns:
         for alt in ("sc_e_s", "sc_a_s", "sc_t_s", "sc_e_h"):
@@ -607,7 +663,14 @@ def fill_to_total_target(
             score_col = "_score"
 
     free = prefer_mixto_score(free, score_col)
-    take = take_non_overlapping_rows(free, need, spatial_tracker).copy()
+    free["_eco_deficit"] = free["eco_dom_id"].astype(int).map(
+        lambda e: eco_counts.get(e, 0)
+    )
+    free = free.sort_values(["_eco_deficit", score_col], ascending=[True, False])
+    free = spread_mgrs_tile_order(free, score_col)
+    take = take_non_overlapping_rows(
+        free.drop(columns="_eco_deficit", errors="ignore"), need, spatial_tracker
+    ).copy()
     types, dims_t, dims_s = [], [], []
     for _, row in take.iterrows():
         st, dt, ds = infer_fill_sample_type(row)
