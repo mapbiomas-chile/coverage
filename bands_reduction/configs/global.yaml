@@ -1,0 +1,32 @@
+# Config global — bands_reduction
+# ⚙️ AJUSTAR rutas y umbrales antes de producción
+
+project:
+  name: bands_reduction
+  n_bands_full: 184
+  n_ecoregions: 8
+
+# Rutas locales (fuera del repo; no versionar rasters/muestras)
+paths:
+  mosaic: null          # ej. /path/to/mosaico_184.tif
+  samples: null         # ej. /path/to/samples.gpkg
+  results_dir: results
+
+qa:
+  # Criterio de aceptación: caída máxima vs. full-band RF
+  max_oa_drop: 0.02     # ⚙️ AJUSTAR (1–2 %)
+  max_kappa_drop: 0.02  # ⚙️ AJUSTAR
+  cv_folds: 5           # ⚙️ AJUSTAR
+
+pipeline:
+  stages:
+    - filter_base       # 1 FCBF/CFS
+    - spectral_cluster  # 2 WaLuDi + BandClust
+    - jm_refine         # 3 Jeffries-Matusita
+    - boruta            # 4
+    - shce_ensemble     # 5
+  qa_after: [jm_refine, boruta, shce_ensemble]
+
+round_2_optional:
+  metaheuristics: false
+  autoencoder: false

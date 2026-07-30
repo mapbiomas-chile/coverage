@@ -1,0 +1,9 @@
+# ⚙️ AJUSTAR: fijar versiones al cerrar el entorno
+numpy
+scipy
+pandas
+scikit-learn
+rasterio
+pyyaml
+tqdm
+# boruta / mutual info / etc. se agregan al implementar etapas 1–5
