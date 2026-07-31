@@ -8,7 +8,7 @@ Alineada a la cadena de 5 etapas ([`metodologia.md`](metodologia.md)) y al READM
 
 | Fase | Qué | Etapa método | Entregable |
 |------|-----|--------------|------------|
-| **F0 — Setup** | Entorno, configs, I/O mosaico 184 + muestras (rutas locales) | — | `src/io`, `configs/global.yaml`, scripts de inspección |
+| **F0 — Setup** | Entorno, configs, I/O mosaico 2015 (184 bandas) + ecorregiones + muestras (rutas locales) | — | `src/io`, `configs/global.yaml`, scripts de inspección |
 | **F1 — EDA + filtro base** | Correlación / MI; primer recorte | **1** FCBF/CFS | Bandas candidatas post-filtro + reportes EDA |
 | **F2 — Clustering espectral** | WaLuDi + BandClust por ecorregión | **2** | 1 banda representativa por cluster |
 | **F3 — Refinamiento JM** | Separabilidad con muestras + QA | **3** + QA | Ranking / filtro por ecorregión |
@@ -38,5 +38,5 @@ scripts/
 
 - [ ] Umbral OA/Kappa `⚙️ AJUSTAR` (propuesta: caída ≤ 1–2 %).
 - [ ] Umbral JM mínima entre pares de clases.
-- [ ] Lista canónica de las 8 ecorregiones y YAMLs en `configs/ecoregions/`.
-- [ ] Rutas locales de mosaico y muestras en `configs/global.yaml`.
+- [ ] Lista canónica de las 15 ecorregiones (originalmente 8, luego divididas) y YAMLs en `configs/ecoregions/`.
+- [ ] Rutas locales de mosaico, ecorregiones y muestras en `configs/global.yaml`.

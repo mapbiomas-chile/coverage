@@ -1,6 +1,6 @@
 # Metodología de selección de bandas — LULC por ecorregión
 
-Reducción de bandas con mínima pérdida de información sobre un mosaico de **184 bandas** y **8 ecorregiones** (un modelo por ecorregión).
+Reducción de bandas con mínima pérdida de información para LULC del año **2015**, sobre un mosaico de **184 bandas** y **15 ecorregiones** (un modelo por ecorregión). Originalmente eran **8 ecorregiones**, que se dividieron y resultaron en **15**.
 
 > Referencia: NotebookLM del proyecto
 
@@ -8,7 +8,7 @@ Reducción de bandas con mínima pérdida de información sobre un mosaico de **
 
 ## Idea general
 
-Las **5 etapas** son una **cadena**, no 5 métodos compitiendo. La salida de cada una alimenta a la siguiente: cada método aporta según su rol (quitar redundancia, agrupar, afinar con muestras, confirmar, consolidar). Esto permite una reducción reproducible en las 8 ecorregiones, porque el paso final es un **ensamble estable** y no depende de un solo método.
+Las **5 etapas** son una **cadena**, no 5 métodos compitiendo. La salida de cada una alimenta a la siguiente: cada método aporta según su rol (quitar redundancia, agrupar, afinar con muestras, confirmar, consolidar). Esto permite una reducción reproducible en las 15 ecorregiones, porque el paso final es un **ensamble estable** y no depende de un solo método.
 
 ```
 184 bandas
@@ -62,7 +62,7 @@ Las **5 etapas** son una **cadena**, no 5 métodos compitiendo. La salida de cad
 
 - **Método:** SHCE (estabilidad–heterogeneidad–correlación), que agrega Boruta, JMIM, MDA y RFE.
 - **Rol:** consolida todo lo anterior en un subconjunto estable y robusto.
-- **Por qué:** un ensamble reduce el riesgo de que un solo método elija bandas por azar — esencial para replicar de forma consistente en las 8 ecorregiones. Mejor apuesta para el subconjunto final.
+- **Por qué:** un ensamble reduce el riesgo de que un solo método elija bandas por azar — esencial para replicar de forma consistente en las 15 ecorregiones. Mejor apuesta para el subconjunto final.
 
 ---
 

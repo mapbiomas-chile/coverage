@@ -3,13 +3,17 @@
 
 project:
   name: bands_reduction
+  year: 2015            # año de referencia del mosaico LULC
   n_bands_full: 184
-  n_ecoregions: 8
+  # Originalmente 8 ecorregiones; se dividieron y quedaron 15
+  n_ecoregions: 15
 
 # Rutas locales (fuera del repo; no versionar rasters/muestras)
 paths:
-  mosaic: null          # ej. /path/to/mosaico_184.tif
+  # Directorio de tiles UTM con mosaicos de 184 bandas (año 2015; patrón TMP-CHILE-<MGRS>-2015-SBAND-184B.tif)
+  mosaic: /home/lserey/mapbiomas_land/test/mosaics/mosaics_184bands
   samples: null         # ej. /path/to/samples.gpkg
+  ecoregions: /home/lserey/mapbiomas_land/ancillary_data/ecorregiones_col3_30m_alineado_lulc.tif
   results_dir: results
 
 qa:

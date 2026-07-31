@@ -1,6 +1,6 @@
 # Selección de Bandas para Clasificación LULC por Ecorregión
 
-Reducción de bandas con **mínima pérdida de información** para clasificación de cobertura y uso de suelo (LULC), sobre un mosaico de **184 bandas** y **8 ecorregiones** (un modelo por ecorregión).
+Reducción de bandas con **mínima pérdida de información** para clasificación de cobertura y uso de suelo (LULC) del año **2015**, sobre un mosaico de **184 bandas** y **15 ecorregiones** (un modelo por ecorregión). Originalmente eran **8 ecorregiones**, que se dividieron y resultaron en **15**.
 
 > **Estado:** en construcción. Los parámetros marcados con `⚙️ AJUSTAR` deben confirmarse antes de correr en producción.
 
@@ -14,7 +14,7 @@ Encontrar, para cada ecorregión, el subconjunto **más pequeño** de bandas que
 
 - Máxima reducción de dimensionalidad (de 184 → N bandas, N lo menor posible).
 - Mínima pérdida de información / separabilidad de clases.
-- Un procedimiento **replicable e idéntico en las 8 ecorregiones**, aunque el subconjunto final pueda diferir entre ellas.
+- Un procedimiento **replicable e idéntico en las 15 ecorregiones**, aunque el subconjunto final pueda diferir entre ellas.
 - Interpretabilidad física de cada banda seleccionada (importante para LULC).
 
 ---
@@ -93,13 +93,18 @@ bands_reduction/
     └── roadmap.md
 ```
 
-Rutas de datos (mosaico, muestras, interim) se declaran en `configs/global.yaml` apuntando a un directorio **fuera** de este repo.
+Rutas de datos (mosaico 2015, muestras, ecorregiones, interim) se declaran en `configs/global.yaml` apuntando a directorios **fuera** de este repo:
+
+| Input | Ruta |
+|-------|------|
+| Mosaico 184 bandas (**año 2015**) | `/home/lserey/mapbiomas_land/test/mosaics/mosaics_184bands` |
+| Ecorregiones (valores 1–15) | `/home/lserey/mapbiomas_land/ancillary_data/ecorregiones_col3_30m_alineado_lulc.tif` |
 
 ---
 
 ## 5. Hoja de ruta
 
-- [ ] **F0 — Setup.** Repo, entorno, lectura del mosaico de 184 bandas, carga de muestras.
+- [ ] **F0 — Setup.** Repo, entorno, lectura del mosaico 2015 de 184 bandas, carga de muestras.
 - [ ] **F1 — EDA espectral + filtro base.** Correlación / MI; etapa 1 (FCBF/CFS).
 - [ ] **F2 — Clustering espectral.** WaLuDi / BandClust por ecorregión (etapa 2).
 - [ ] **F3 — Refinamiento semi-supervisado.** Separabilidad JM con muestras (etapa 3) + QA.
