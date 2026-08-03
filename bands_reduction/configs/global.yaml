@@ -27,7 +27,7 @@ qa:
 
 pipeline:
   stages:
-    - spectral_cluster  # 1 WaLuDi + BandClust
+    - spectral_cluster  # 1 WaLuDi + BandClust / corr |r|>=0.9
     - jm_refine         # 2 Jeffries-Matusita (sobre 184 y sobre clustering)
     - boruta            # 3
   qa_after: [jm_refine, boruta]
@@ -37,6 +37,13 @@ pipeline:
     - corr_outside      # correlación de bandas fuera de intersección/unión
     - eval_union        # evaluación de la unión global
   qa_consolidation: true
+
+# Boruta (scripts/09_run_boruta.py) — ⚙️ AJUSTAR
+boruta:
+  max_iter: 50
+  n_estimators: 200
+  perc: 100            # 100 = umbral = max importancia de sombras
+  alpha: 0.05
 
 round_2_optional:
   metaheuristics: false

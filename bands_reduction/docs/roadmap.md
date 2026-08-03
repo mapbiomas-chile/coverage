@@ -28,12 +28,15 @@ Alineada a la cadena de 3 etapas + consolidación entre ecorregiones ([`metodolo
 ```
 scripts/
   01_inspect_mosaic.py
-  02_spectral_eda.py
-  03_run_selection.py           # orquesta etapas 1–3 por ecorregión
-  04_run_qa.py                  # verificación transversal (post 2/3 y consolidación)
-  05_consolidate_ecoregions.py  # intersección, unión, correlación fuera de sets
-  06_export_selected_bands.py
+  02_export_band_list.py          # band-list contract (full / clustering)
+  04_run_jm.py                    # JM ranking (etapa 2)
+  05_build_train_matrix_chile.py  # extract Chile train spectra
+  06_run_jm_chile_184.py          # JM nacional 184
+  09_run_boruta.py                # Boruta verify (etapa 3) — listo
+  # en feat/fs_me: 07 JM por ecorregión, 08 clustering+|r|>=0.9 + JM
 ```
+
+Detalle Boruta: [`boruta_howto.md`](boruta_howto.md).
 
 ## Criterios a fijar antes de producción
 

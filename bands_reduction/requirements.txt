@@ -7,4 +7,4 @@ rasterio
 pyyaml
 tqdm
 pyproj
-# boruta / mutual info / etc. se agregan al implementar etapas 1–5
+# Boruta stage uses sklearn RF (src/selection/boruta_select.py); no extra package required
