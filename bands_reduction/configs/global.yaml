@@ -27,12 +27,16 @@ qa:
 
 pipeline:
   stages:
-    - filter_base       # 1 FCBF/CFS
-    - spectral_cluster  # 2 WaLuDi + BandClust
-    - jm_refine         # 3 Jeffries-Matusita
-    - boruta            # 4
-    - shce_ensemble     # 5
-  qa_after: [jm_refine, boruta, shce_ensemble]
+    - spectral_cluster  # 1 WaLuDi + BandClust
+    - jm_refine         # 2 Jeffries-Matusita (sobre 184 y sobre clustering)
+    - boruta            # 3
+  qa_after: [jm_refine, boruta]
+  consolidation:
+    - intersection      # mínimo común entre ecorregiones
+    - union             # unión entre ecorregiones
+    - corr_outside      # correlación de bandas fuera de intersección/unión
+    - eval_union        # evaluación de la unión global
+  qa_consolidation: true
 
 round_2_optional:
   metaheuristics: false
