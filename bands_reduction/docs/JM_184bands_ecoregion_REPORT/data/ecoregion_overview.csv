@@ -1,0 +1,16 @@
+eco_id,eco_name,n_samples,n_classes,top1_band,top1_mean_jm,status
+1,E1_Puna_seca_andina,349,12,ndvi_median_dry,1.3416031519815321,OK
+2,E2_Desierto_Atacama,362,12,gv_median,1.341174266547767,OK
+3,E3_Matorral_norte_1,117,10,npv_min,1.6023077316153436,OK
+4,E4_Estepa_andina,398,13,npv_min,1.4007367457747433,OK
+5,E5_Matorral_norte_2,439,13,ndvi_median,1.133501002899121,OK
+6,E6_Andes_norte,256,12,gcvi_median,1.2598346098471929,OK
+7,E7_Andes_central,790,15,gcvi_median,1.2943259872205701,OK
+8,E8_Matorral_sur,830,14,gcvi_median,1.2082733639623022,OK
+9,E9_Costa_Norte,1205,13,gcvi_median,1.260511305744996,OK
+10,E10_Andes_Sur,685,15,gcvi_median,1.3297058041579048,OK
+11,E11_Costa_Sur_1,712,12,gcvi_median,1.3618989546703342,OK
+12,E12_Costa_Sur_2,118,8,ndfi_median_dry,1.7216179269097922,OK
+13,E13_Andes_Sur_Costa,95,9,gvs_median_wet,1.999811568612934,OK
+14,E14_Estepa_patagonica,406,14,gcvi_median,1.430948721158835,OK
+15,E15_Bosque_subpolar,607,13,red_median,1.3188066811225059,OK

@@ -1,0 +1,124 @@
+{
+  "eco_id": 9,
+  "eco_name": "E9_Costa_Norte",
+  "n_samples": 1205,
+  "n_bands": 184,
+  "n_classes": 13,
+  "class_counts": {
+    "11": {
+      "n": 54,
+      "name": "Humedal"
+    },
+    "12": {
+      "n": 14,
+      "name": "Pastizal"
+    },
+    "15": {
+      "n": 28,
+      "name": "Pastura"
+    },
+    "18": {
+      "n": 45,
+      "name": "Agricultura"
+    },
+    "23": {
+      "n": 48,
+      "name": "Arena, Playa y Duna"
+    },
+    "24": {
+      "n": 36,
+      "name": "Infraestructura"
+    },
+    "29": {
+      "n": 29,
+      "name": "Afloramiento Rocoso"
+    },
+    "33": {
+      "n": 135,
+      "name": "Río, lago u océano"
+    },
+    "59": {
+      "n": 42,
+      "name": "Bosque Primario"
+    },
+    "60": {
+      "n": 45,
+      "name": "Bosque Secundario"
+    },
+    "66": {
+      "n": 25,
+      "name": "Matorral"
+    },
+    "67": {
+      "n": 21,
+      "name": "Bosque Achaparrado"
+    },
+    "80": {
+      "n": 683,
+      "name": "Latifoliadas"
+    }
+  },
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 38,
+      "band_name": "gcvi_median",
+      "mean_jm": 1.260511305744996
+    },
+    {
+      "rank": 2,
+      "band_index": 9,
+      "band_name": "cai_median",
+      "mean_jm": 1.2260197425843633
+    },
+    {
+      "rank": 3,
+      "band_index": 11,
+      "band_name": "cai_median_wet",
+      "mean_jm": 1.2138597706264385
+    },
+    {
+      "rank": 4,
+      "band_index": 116,
+      "band_name": "npv_min",
+      "mean_jm": 1.1909453776288033
+    },
+    {
+      "rank": 5,
+      "band_index": 40,
+      "band_name": "gcvi_median_wet",
+      "mean_jm": 1.1536508409509456
+    },
+    {
+      "rank": 6,
+      "band_index": 39,
+      "band_name": "gcvi_median_dry",
+      "mean_jm": 1.1499685256150083
+    },
+    {
+      "rank": 7,
+      "band_index": 60,
+      "band_name": "gvs_median",
+      "mean_jm": 1.1429711344738709
+    },
+    {
+      "rank": 8,
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.1292560172950799
+    },
+    {
+      "rank": 9,
+      "band_index": 22,
+      "band_name": "elevation",
+      "mean_jm": 1.1105690773504624
+    },
+    {
+      "rank": 10,
+      "band_index": 62,
+      "band_name": "gvs_median_wet",
+      "mean_jm": 1.0799899848706522
+    }
+  ],
+  "status": "OK"
+}

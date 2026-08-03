@@ -1,0 +1,132 @@
+{
+  "eco_id": 7,
+  "eco_name": "E7_Andes_central",
+  "n_samples": 790,
+  "n_bands": 184,
+  "n_classes": 15,
+  "class_counts": {
+    "11": {
+      "n": 30,
+      "name": "Humedal"
+    },
+    "12": {
+      "n": 41,
+      "name": "Pastizal"
+    },
+    "15": {
+      "n": 24,
+      "name": "Pastura"
+    },
+    "18": {
+      "n": 39,
+      "name": "Agricultura"
+    },
+    "23": {
+      "n": 22,
+      "name": "Arena, Playa y Duna"
+    },
+    "24": {
+      "n": 28,
+      "name": "Infraestructura"
+    },
+    "25": {
+      "n": 33,
+      "name": "Otra área sin vegetación"
+    },
+    "29": {
+      "n": 35,
+      "name": "Afloramiento Rocoso"
+    },
+    "33": {
+      "n": 137,
+      "name": "Río, lago u océano"
+    },
+    "34": {
+      "n": 26,
+      "name": "Hielo y nieve"
+    },
+    "59": {
+      "n": 43,
+      "name": "Bosque Primario"
+    },
+    "60": {
+      "n": 43,
+      "name": "Bosque Secundario"
+    },
+    "66": {
+      "n": 28,
+      "name": "Matorral"
+    },
+    "67": {
+      "n": 31,
+      "name": "Bosque Achaparrado"
+    },
+    "80": {
+      "n": 230,
+      "name": "Latifoliadas"
+    }
+  },
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 38,
+      "band_name": "gcvi_median",
+      "mean_jm": 1.2943259872205701
+    },
+    {
+      "rank": 2,
+      "band_index": 19,
+      "band_name": "cloud_min",
+      "mean_jm": 1.2776897084836656
+    },
+    {
+      "rank": 3,
+      "band_index": 140,
+      "band_name": "sefi_max",
+      "mean_jm": 1.269614606116655
+    },
+    {
+      "rank": 4,
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.2559623867100083
+    },
+    {
+      "rank": 5,
+      "band_index": 133,
+      "band_name": "savi_max",
+      "mean_jm": 1.224008589950531
+    },
+    {
+      "rank": 6,
+      "band_index": 40,
+      "band_name": "gcvi_median_wet",
+      "mean_jm": 1.2152476968242412
+    },
+    {
+      "rank": 7,
+      "band_index": 23,
+      "band_name": "evi2_max",
+      "mean_jm": 1.2100248339419624
+    },
+    {
+      "rank": 8,
+      "band_index": 30,
+      "band_name": "fns_max",
+      "mean_jm": 1.2033573515144003
+    },
+    {
+      "rank": 9,
+      "band_index": 159,
+      "band_name": "soil_min",
+      "mean_jm": 1.2031382122128904
+    },
+    {
+      "rank": 10,
+      "band_index": 116,
+      "band_name": "npv_min",
+      "mean_jm": 1.2017337702568502
+    }
+  ],
+  "status": "OK"
+}

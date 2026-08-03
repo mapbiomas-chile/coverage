@@ -1,0 +1,120 @@
+{
+  "eco_id": 1,
+  "eco_name": "E1_Puna_seca_andina",
+  "n_samples": 349,
+  "n_bands": 184,
+  "n_classes": 12,
+  "class_counts": {
+    "11": {
+      "n": 26,
+      "name": "Humedal"
+    },
+    "18": {
+      "n": 22,
+      "name": "Agricultura"
+    },
+    "23": {
+      "n": 21,
+      "name": "Arena, Playa y Duna"
+    },
+    "24": {
+      "n": 35,
+      "name": "Infraestructura"
+    },
+    "25": {
+      "n": 39,
+      "name": "Otra área sin vegetación"
+    },
+    "29": {
+      "n": 22,
+      "name": "Afloramiento Rocoso"
+    },
+    "33": {
+      "n": 33,
+      "name": "Río, lago u océano"
+    },
+    "34": {
+      "n": 20,
+      "name": "Hielo y nieve"
+    },
+    "59": {
+      "n": 29,
+      "name": "Bosque Primario"
+    },
+    "61": {
+      "n": 32,
+      "name": "Salar"
+    },
+    "63": {
+      "n": 48,
+      "name": "Estepa"
+    },
+    "66": {
+      "n": 22,
+      "name": "Matorral"
+    }
+  },
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 93,
+      "band_name": "ndvi_median_dry",
+      "mean_jm": 1.3416031519815321
+    },
+    {
+      "rank": 2,
+      "band_index": 56,
+      "band_name": "gv_min",
+      "mean_jm": 1.3293023772406865
+    },
+    {
+      "rank": 3,
+      "band_index": 41,
+      "band_name": "gcvi_min",
+      "mean_jm": 1.3285470712652387
+    },
+    {
+      "rank": 4,
+      "band_index": 63,
+      "band_name": "gvs_min",
+      "mean_jm": 1.322114042801001
+    },
+    {
+      "rank": 5,
+      "band_index": 38,
+      "band_name": "gcvi_median",
+      "mean_jm": 1.3112224399748047
+    },
+    {
+      "rank": 6,
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.3005138024957452
+    },
+    {
+      "rank": 7,
+      "band_index": 116,
+      "band_name": "npv_min",
+      "mean_jm": 1.299906122714025
+    },
+    {
+      "rank": 8,
+      "band_index": 134,
+      "band_name": "savi_median",
+      "mean_jm": 1.2985276473251433
+    },
+    {
+      "rank": 9,
+      "band_index": 24,
+      "band_name": "evi2_median",
+      "mean_jm": 1.297190096861122
+    },
+    {
+      "rank": 10,
+      "band_index": 156,
+      "band_name": "soil_median",
+      "mean_jm": 1.2860130434120158
+    }
+  ],
+  "status": "OK"
+}

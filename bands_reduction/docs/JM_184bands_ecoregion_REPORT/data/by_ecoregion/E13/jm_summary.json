@@ -1,0 +1,108 @@
+{
+  "eco_id": 13,
+  "eco_name": "E13_Andes_Sur_Costa",
+  "n_samples": 95,
+  "n_bands": 184,
+  "n_classes": 9,
+  "class_counts": {
+    "11": {
+      "n": 27,
+      "name": "Humedal"
+    },
+    "12": {
+      "n": 1,
+      "name": "Pastizal"
+    },
+    "23": {
+      "n": 9,
+      "name": "Arena, Playa y Duna"
+    },
+    "33": {
+      "n": 22,
+      "name": "Río, lago u océano"
+    },
+    "34": {
+      "n": 3,
+      "name": "Hielo y nieve"
+    },
+    "59": {
+      "n": 17,
+      "name": "Bosque Primario"
+    },
+    "60": {
+      "n": 6,
+      "name": "Bosque Secundario"
+    },
+    "66": {
+      "n": 9,
+      "name": "Matorral"
+    },
+    "67": {
+      "n": 1,
+      "name": "Bosque Achaparrado"
+    }
+  },
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 62,
+      "band_name": "gvs_median_wet",
+      "mean_jm": 1.999811568612934
+    },
+    {
+      "rank": 2,
+      "band_index": 59,
+      "band_name": "gvs_max",
+      "mean_jm": 1.9878098720596642
+    },
+    {
+      "rank": 3,
+      "band_index": 85,
+      "band_name": "ndfi_median_wet",
+      "mean_jm": 1.967199208919756
+    },
+    {
+      "rank": 4,
+      "band_index": 60,
+      "band_name": "gvs_median",
+      "mean_jm": 1.9507730640979164
+    },
+    {
+      "rank": 5,
+      "band_index": 102,
+      "band_name": "ndwi_min",
+      "mean_jm": 1.9357334797158938
+    },
+    {
+      "rank": 6,
+      "band_index": 82,
+      "band_name": "ndfi_max",
+      "mean_jm": 1.9275292454371324
+    },
+    {
+      "rank": 7,
+      "band_index": 156,
+      "band_name": "soil_median",
+      "mean_jm": 1.9016613903683022
+    },
+    {
+      "rank": 8,
+      "band_index": 143,
+      "band_name": "sefi_median_wet",
+      "mean_jm": 1.880606010494838
+    },
+    {
+      "rank": 9,
+      "band_index": 140,
+      "band_name": "sefi_max",
+      "mean_jm": 1.8631806292429236
+    },
+    {
+      "rank": 10,
+      "band_index": 38,
+      "band_name": "gcvi_median",
+      "mean_jm": 1.8590790952106595
+    }
+  ],
+  "status": "OK"
+}

@@ -1,0 +1,1638 @@
+{
+  "1": {
+    "members": [
+      {
+        "band_index": 0,
+        "band_name": "aspect"
+      }
+    ],
+    "representative": {
+      "band_index": 0,
+      "band_name": "aspect"
+    },
+    "size": 1
+  },
+  "2": {
+    "members": [
+      {
+        "band_index": 154,
+        "band_name": "slope"
+      }
+    ],
+    "representative": {
+      "band_index": 154,
+      "band_name": "slope"
+    },
+    "size": 1
+  },
+  "3": {
+    "members": [
+      {
+        "band_index": 176,
+        "band_name": "tpi"
+      }
+    ],
+    "representative": {
+      "band_index": 176,
+      "band_name": "tpi"
+    },
+    "size": 1
+  },
+  "4": {
+    "members": [
+      {
+        "band_index": 71,
+        "band_name": "hallcover_amp"
+      }
+    ],
+    "representative": {
+      "band_index": 71,
+      "band_name": "hallcover_amp"
+    },
+    "size": 1
+  },
+  "5": {
+    "members": [
+      {
+        "band_index": 78,
+        "band_name": "hallheigth_amp"
+      }
+    ],
+    "representative": {
+      "band_index": 78,
+      "band_name": "hallheigth_amp"
+    },
+    "size": 1
+  },
+  "6": {
+    "members": [
+      {
+        "band_index": 119,
+        "band_name": "pri_max"
+      }
+    ],
+    "representative": {
+      "band_index": 119,
+      "band_name": "pri_max"
+    },
+    "size": 1
+  },
+  "7": {
+    "members": [
+      {
+        "band_index": 124,
+        "band_name": "pri_amp"
+      }
+    ],
+    "representative": {
+      "band_index": 124,
+      "band_name": "pri_amp"
+    },
+    "size": 1
+  },
+  "8": {
+    "members": [
+      {
+        "band_index": 125,
+        "band_name": "pri_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 125,
+      "band_name": "pri_stdDev"
+    },
+    "size": 1
+  },
+  "9": {
+    "members": [
+      {
+        "band_index": 98,
+        "band_name": "ndwi_max"
+      }
+    ],
+    "representative": {
+      "band_index": 98,
+      "band_name": "ndwi_max"
+    },
+    "size": 1
+  },
+  "10": {
+    "members": [
+      {
+        "band_index": 103,
+        "band_name": "ndwi_amp"
+      }
+    ],
+    "representative": {
+      "band_index": 103,
+      "band_name": "ndwi_amp"
+    },
+    "size": 1
+  },
+  "11": {
+    "members": [
+      {
+        "band_index": 91,
+        "band_name": "ndvi_max"
+      }
+    ],
+    "representative": {
+      "band_index": 91,
+      "band_name": "ndvi_max"
+    },
+    "size": 1
+  },
+  "12": {
+    "members": [
+      {
+        "band_index": 96,
+        "band_name": "ndvi_amp"
+      }
+    ],
+    "representative": {
+      "band_index": 96,
+      "band_name": "ndvi_amp"
+    },
+    "size": 1
+  },
+  "13": {
+    "members": [
+      {
+        "band_index": 104,
+        "band_name": "ndwi_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 104,
+      "band_name": "ndwi_stdDev"
+    },
+    "size": 1
+  },
+  "14": {
+    "members": [
+      {
+        "band_index": 12,
+        "band_name": "cai_min"
+      }
+    ],
+    "representative": {
+      "band_index": 12,
+      "band_name": "cai_min"
+    },
+    "size": 1
+  },
+  "15": {
+    "members": [
+      {
+        "band_index": 97,
+        "band_name": "ndvi_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 97,
+      "band_name": "ndvi_stdDev"
+    },
+    "size": 1
+  },
+  "16": {
+    "members": [
+      {
+        "band_index": 37,
+        "band_name": "gcvi_max"
+      },
+      {
+        "band_index": 42,
+        "band_name": "gcvi_amp"
+      },
+      {
+        "band_index": 43,
+        "band_name": "gcvi_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 42,
+      "band_name": "gcvi_amp"
+    },
+    "size": 3
+  },
+  "17": {
+    "members": [
+      {
+        "band_index": 34,
+        "band_name": "fns_min"
+      },
+      {
+        "band_index": 155,
+        "band_name": "soil_max"
+      }
+    ],
+    "representative": {
+      "band_index": 34,
+      "band_name": "fns_min"
+    },
+    "size": 2
+  },
+  "18": {
+    "members": [
+      {
+        "band_index": 35,
+        "band_name": "fns_amp"
+      },
+      {
+        "band_index": 36,
+        "band_name": "fns_stdDev"
+      },
+      {
+        "band_index": 160,
+        "band_name": "soil_amp"
+      },
+      {
+        "band_index": 161,
+        "band_name": "soil_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 35,
+      "band_name": "fns_amp"
+    },
+    "size": 4
+  },
+  "19": {
+    "members": [
+      {
+        "band_index": 167,
+        "band_name": "swir1_amp"
+      },
+      {
+        "band_index": 168,
+        "band_name": "swir1_stdDev"
+      },
+      {
+        "band_index": 174,
+        "band_name": "swir2_amp"
+      },
+      {
+        "band_index": 175,
+        "band_name": "swir2_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 167,
+      "band_name": "swir1_amp"
+    },
+    "size": 4
+  },
+  "20": {
+    "members": [
+      {
+        "band_index": 72,
+        "band_name": "hallcover_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 72,
+      "band_name": "hallcover_stdDev"
+    },
+    "size": 1
+  },
+  "21": {
+    "members": [
+      {
+        "band_index": 30,
+        "band_name": "fns_max"
+      },
+      {
+        "band_index": 159,
+        "band_name": "soil_min"
+      }
+    ],
+    "representative": {
+      "band_index": 30,
+      "band_name": "fns_max"
+    },
+    "size": 2
+  },
+  "22": {
+    "members": [
+      {
+        "band_index": 166,
+        "band_name": "swir1_min"
+      },
+      {
+        "band_index": 173,
+        "band_name": "swir2_min"
+      }
+    ],
+    "representative": {
+      "band_index": 173,
+      "band_name": "swir2_min"
+    },
+    "size": 2
+  },
+  "23": {
+    "members": [
+      {
+        "band_index": 32,
+        "band_name": "fns_median_dry"
+      },
+      {
+        "band_index": 157,
+        "band_name": "soil_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 32,
+      "band_name": "fns_median_dry"
+    },
+    "size": 2
+  },
+  "24": {
+    "members": [
+      {
+        "band_index": 164,
+        "band_name": "swir1_median_dry"
+      },
+      {
+        "band_index": 171,
+        "band_name": "swir2_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 171,
+      "band_name": "swir2_median_dry"
+    },
+    "size": 2
+  },
+  "25": {
+    "members": [
+      {
+        "band_index": 162,
+        "band_name": "swir1_max"
+      },
+      {
+        "band_index": 169,
+        "band_name": "swir2_max"
+      }
+    ],
+    "representative": {
+      "band_index": 162,
+      "band_name": "swir1_max"
+    },
+    "size": 2
+  },
+  "26": {
+    "members": [
+      {
+        "band_index": 31,
+        "band_name": "fns_median"
+      },
+      {
+        "band_index": 33,
+        "band_name": "fns_median_wet"
+      },
+      {
+        "band_index": 156,
+        "band_name": "soil_median"
+      },
+      {
+        "band_index": 158,
+        "band_name": "soil_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 156,
+      "band_name": "soil_median"
+    },
+    "size": 4
+  },
+  "27": {
+    "members": [
+      {
+        "band_index": 67,
+        "band_name": "hallcover_median"
+      },
+      {
+        "band_index": 163,
+        "band_name": "swir1_median"
+      },
+      {
+        "band_index": 165,
+        "band_name": "swir1_median_wet"
+      },
+      {
+        "band_index": 170,
+        "band_name": "swir2_median"
+      },
+      {
+        "band_index": 172,
+        "band_name": "swir2_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 170,
+      "band_name": "swir2_median"
+    },
+    "size": 5
+  },
+  "28": {
+    "members": [
+      {
+        "band_index": 141,
+        "band_name": "sefi_median"
+      },
+      {
+        "band_index": 143,
+        "band_name": "sefi_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 141,
+      "band_name": "sefi_median"
+    },
+    "size": 2
+  },
+  "29": {
+    "members": [
+      {
+        "band_index": 142,
+        "band_name": "sefi_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 142,
+      "band_name": "sefi_median_dry"
+    },
+    "size": 1
+  },
+  "30": {
+    "members": [
+      {
+        "band_index": 140,
+        "band_name": "sefi_max"
+      }
+    ],
+    "representative": {
+      "band_index": 140,
+      "band_name": "sefi_max"
+    },
+    "size": 1
+  },
+  "31": {
+    "members": [
+      {
+        "band_index": 51,
+        "band_name": "green_median_texture"
+      }
+    ],
+    "representative": {
+      "band_index": 51,
+      "band_name": "green_median_texture"
+    },
+    "size": 1
+  },
+  "32": {
+    "members": [
+      {
+        "band_index": 106,
+        "band_name": "nir_median"
+      },
+      {
+        "band_index": 108,
+        "band_name": "nir_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 106,
+      "band_name": "nir_median"
+    },
+    "size": 2
+  },
+  "33": {
+    "members": [
+      {
+        "band_index": 109,
+        "band_name": "nir_min"
+      }
+    ],
+    "representative": {
+      "band_index": 109,
+      "band_name": "nir_min"
+    },
+    "size": 1
+  },
+  "34": {
+    "members": [
+      {
+        "band_index": 113,
+        "band_name": "npv_median"
+      },
+      {
+        "band_index": 115,
+        "band_name": "npv_median_wet"
+      },
+      {
+        "band_index": 116,
+        "band_name": "npv_min"
+      }
+    ],
+    "representative": {
+      "band_index": 115,
+      "band_name": "npv_median_wet"
+    },
+    "size": 3
+  },
+  "35": {
+    "members": [
+      {
+        "band_index": 5,
+        "band_name": "blue_min"
+      },
+      {
+        "band_index": 19,
+        "band_name": "cloud_min"
+      },
+      {
+        "band_index": 48,
+        "band_name": "green_min"
+      },
+      {
+        "band_index": 130,
+        "band_name": "red_min"
+      }
+    ],
+    "representative": {
+      "band_index": 48,
+      "band_name": "green_min"
+    },
+    "size": 4
+  },
+  "36": {
+    "members": [
+      {
+        "band_index": 2,
+        "band_name": "blue_median"
+      },
+      {
+        "band_index": 4,
+        "band_name": "blue_median_wet"
+      },
+      {
+        "band_index": 16,
+        "band_name": "cloud_median"
+      },
+      {
+        "band_index": 18,
+        "band_name": "cloud_median_wet"
+      },
+      {
+        "band_index": 45,
+        "band_name": "green_median"
+      },
+      {
+        "band_index": 47,
+        "band_name": "green_median_wet"
+      },
+      {
+        "band_index": 127,
+        "band_name": "red_median"
+      },
+      {
+        "band_index": 129,
+        "band_name": "red_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 47,
+      "band_name": "green_median_wet"
+    },
+    "size": 8
+  },
+  "37": {
+    "members": [
+      {
+        "band_index": 117,
+        "band_name": "npv_amp"
+      },
+      {
+        "band_index": 118,
+        "band_name": "npv_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 117,
+      "band_name": "npv_amp"
+    },
+    "size": 2
+  },
+  "38": {
+    "members": [
+      {
+        "band_index": 112,
+        "band_name": "npv_max"
+      }
+    ],
+    "representative": {
+      "band_index": 112,
+      "band_name": "npv_max"
+    },
+    "size": 1
+  },
+  "39": {
+    "members": [
+      {
+        "band_index": 110,
+        "band_name": "nir_amp"
+      },
+      {
+        "band_index": 111,
+        "band_name": "nir_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 110,
+      "band_name": "nir_amp"
+    },
+    "size": 2
+  },
+  "40": {
+    "members": [
+      {
+        "band_index": 1,
+        "band_name": "blue_max"
+      },
+      {
+        "band_index": 6,
+        "band_name": "blue_amp"
+      },
+      {
+        "band_index": 7,
+        "band_name": "blue_stdDev"
+      },
+      {
+        "band_index": 15,
+        "band_name": "cloud_max"
+      },
+      {
+        "band_index": 20,
+        "band_name": "cloud_amp"
+      },
+      {
+        "band_index": 21,
+        "band_name": "cloud_stdDev"
+      },
+      {
+        "band_index": 44,
+        "band_name": "green_max"
+      },
+      {
+        "band_index": 49,
+        "band_name": "green_amp"
+      },
+      {
+        "band_index": 50,
+        "band_name": "green_stdDev"
+      },
+      {
+        "band_index": 79,
+        "band_name": "hallheigth_stdDev"
+      },
+      {
+        "band_index": 126,
+        "band_name": "red_max"
+      },
+      {
+        "band_index": 131,
+        "band_name": "red_amp"
+      },
+      {
+        "band_index": 132,
+        "band_name": "red_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 49,
+      "band_name": "green_amp"
+    },
+    "size": 13
+  },
+  "41": {
+    "members": [
+      {
+        "band_index": 105,
+        "band_name": "nir_max"
+      }
+    ],
+    "representative": {
+      "band_index": 105,
+      "band_name": "nir_max"
+    },
+    "size": 1
+  },
+  "42": {
+    "members": [
+      {
+        "band_index": 3,
+        "band_name": "blue_median_dry"
+      },
+      {
+        "band_index": 17,
+        "band_name": "cloud_median_dry"
+      },
+      {
+        "band_index": 46,
+        "band_name": "green_median_dry"
+      },
+      {
+        "band_index": 128,
+        "band_name": "red_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 46,
+      "band_name": "green_median_dry"
+    },
+    "size": 4
+  },
+  "43": {
+    "members": [
+      {
+        "band_index": 114,
+        "band_name": "npv_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 114,
+      "band_name": "npv_median_dry"
+    },
+    "size": 1
+  },
+  "44": {
+    "members": [
+      {
+        "band_index": 107,
+        "band_name": "nir_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 107,
+      "band_name": "nir_median_dry"
+    },
+    "size": 1
+  },
+  "45": {
+    "members": [
+      {
+        "band_index": 22,
+        "band_name": "elevation"
+      }
+    ],
+    "representative": {
+      "band_index": 22,
+      "band_name": "elevation"
+    },
+    "size": 1
+  },
+  "46": {
+    "members": [
+      {
+        "band_index": 152,
+        "band_name": "shade_amp"
+      },
+      {
+        "band_index": 153,
+        "band_name": "shade_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 152,
+      "band_name": "shade_amp"
+    },
+    "size": 2
+  },
+  "47": {
+    "members": [
+      {
+        "band_index": 28,
+        "band_name": "evi2_amp"
+      },
+      {
+        "band_index": 29,
+        "band_name": "evi2_stdDev"
+      },
+      {
+        "band_index": 138,
+        "band_name": "savi_amp"
+      },
+      {
+        "band_index": 139,
+        "band_name": "savi_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 28,
+      "band_name": "evi2_amp"
+    },
+    "size": 4
+  },
+  "48": {
+    "members": [
+      {
+        "band_index": 57,
+        "band_name": "gv_amp"
+      },
+      {
+        "band_index": 58,
+        "band_name": "gv_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 57,
+      "band_name": "gv_amp"
+    },
+    "size": 2
+  },
+  "49": {
+    "members": [
+      {
+        "band_index": 182,
+        "band_name": "wefi_amp"
+      },
+      {
+        "band_index": 183,
+        "band_name": "wefi_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 182,
+      "band_name": "wefi_amp"
+    },
+    "size": 2
+  },
+  "50": {
+    "members": [
+      {
+        "band_index": 64,
+        "band_name": "gvs_amp"
+      },
+      {
+        "band_index": 65,
+        "band_name": "gvs_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 64,
+      "band_name": "gvs_amp"
+    },
+    "size": 2
+  },
+  "51": {
+    "members": [
+      {
+        "band_index": 87,
+        "band_name": "ndfi_amp"
+      },
+      {
+        "band_index": 88,
+        "band_name": "ndfi_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 87,
+      "band_name": "ndfi_amp"
+    },
+    "size": 2
+  },
+  "52": {
+    "members": [
+      {
+        "band_index": 8,
+        "band_name": "cai_max"
+      },
+      {
+        "band_index": 13,
+        "band_name": "cai_amp"
+      }
+    ],
+    "representative": {
+      "band_index": 8,
+      "band_name": "cai_max"
+    },
+    "size": 2
+  },
+  "53": {
+    "members": [
+      {
+        "band_index": 10,
+        "band_name": "cai_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 10,
+      "band_name": "cai_median_dry"
+    },
+    "size": 1
+  },
+  "54": {
+    "members": [
+      {
+        "band_index": 120,
+        "band_name": "pri_median"
+      }
+    ],
+    "representative": {
+      "band_index": 120,
+      "band_name": "pri_median"
+    },
+    "size": 1
+  },
+  "55": {
+    "members": [
+      {
+        "band_index": 121,
+        "band_name": "pri_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 121,
+      "band_name": "pri_median_dry"
+    },
+    "size": 1
+  },
+  "56": {
+    "members": [
+      {
+        "band_index": 122,
+        "band_name": "pri_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 122,
+      "band_name": "pri_median_wet"
+    },
+    "size": 1
+  },
+  "57": {
+    "members": [
+      {
+        "band_index": 123,
+        "band_name": "pri_min"
+      }
+    ],
+    "representative": {
+      "band_index": 123,
+      "band_name": "pri_min"
+    },
+    "size": 1
+  },
+  "58": {
+    "members": [
+      {
+        "band_index": 81,
+        "band_name": "ndbi"
+      },
+      {
+        "band_index": 89,
+        "band_name": "ndmi"
+      },
+      {
+        "band_index": 99,
+        "band_name": "ndwi_median"
+      }
+    ],
+    "representative": {
+      "band_index": 89,
+      "band_name": "ndmi"
+    },
+    "size": 3
+  },
+  "59": {
+    "members": [
+      {
+        "band_index": 80,
+        "band_name": "mbi"
+      }
+    ],
+    "representative": {
+      "band_index": 80,
+      "band_name": "mbi"
+    },
+    "size": 1
+  },
+  "60": {
+    "members": [
+      {
+        "band_index": 101,
+        "band_name": "ndwi_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 101,
+      "band_name": "ndwi_median_wet"
+    },
+    "size": 1
+  },
+  "61": {
+    "members": [
+      {
+        "band_index": 102,
+        "band_name": "ndwi_min"
+      }
+    ],
+    "representative": {
+      "band_index": 102,
+      "band_name": "ndwi_min"
+    },
+    "size": 1
+  },
+  "62": {
+    "members": [
+      {
+        "band_index": 100,
+        "band_name": "ndwi_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 100,
+      "band_name": "ndwi_median_dry"
+    },
+    "size": 1
+  },
+  "63": {
+    "members": [
+      {
+        "band_index": 145,
+        "band_name": "sefi_amp"
+      },
+      {
+        "band_index": 146,
+        "band_name": "sefi_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 146,
+      "band_name": "sefi_stdDev"
+    },
+    "size": 2
+  },
+  "64": {
+    "members": [
+      {
+        "band_index": 144,
+        "band_name": "sefi_min"
+      }
+    ],
+    "representative": {
+      "band_index": 144,
+      "band_name": "sefi_min"
+    },
+    "size": 1
+  },
+  "65": {
+    "members": [
+      {
+        "band_index": 148,
+        "band_name": "shade_median"
+      },
+      {
+        "band_index": 150,
+        "band_name": "shade_median_wet"
+      },
+      {
+        "band_index": 151,
+        "band_name": "shade_min"
+      }
+    ],
+    "representative": {
+      "band_index": 148,
+      "band_name": "shade_median"
+    },
+    "size": 3
+  },
+  "66": {
+    "members": [
+      {
+        "band_index": 149,
+        "band_name": "shade_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 149,
+      "band_name": "shade_median_dry"
+    },
+    "size": 1
+  },
+  "67": {
+    "members": [
+      {
+        "band_index": 147,
+        "band_name": "shade_max"
+      }
+    ],
+    "representative": {
+      "band_index": 147,
+      "band_name": "shade_max"
+    },
+    "size": 1
+  },
+  "68": {
+    "members": [
+      {
+        "band_index": 9,
+        "band_name": "cai_median"
+      }
+    ],
+    "representative": {
+      "band_index": 9,
+      "band_name": "cai_median"
+    },
+    "size": 1
+  },
+  "69": {
+    "members": [
+      {
+        "band_index": 11,
+        "band_name": "cai_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 11,
+      "band_name": "cai_median_wet"
+    },
+    "size": 1
+  },
+  "70": {
+    "members": [
+      {
+        "band_index": 93,
+        "band_name": "ndvi_median_dry"
+      },
+      {
+        "band_index": 95,
+        "band_name": "ndvi_min"
+      }
+    ],
+    "representative": {
+      "band_index": 93,
+      "band_name": "ndvi_median_dry"
+    },
+    "size": 2
+  },
+  "71": {
+    "members": [
+      {
+        "band_index": 92,
+        "band_name": "ndvi_median"
+      }
+    ],
+    "representative": {
+      "band_index": 92,
+      "band_name": "ndvi_median"
+    },
+    "size": 1
+  },
+  "72": {
+    "members": [
+      {
+        "band_index": 90,
+        "band_name": "ndsi"
+      }
+    ],
+    "representative": {
+      "band_index": 90,
+      "band_name": "ndsi"
+    },
+    "size": 1
+  },
+  "73": {
+    "members": [
+      {
+        "band_index": 23,
+        "band_name": "evi2_max"
+      },
+      {
+        "band_index": 24,
+        "band_name": "evi2_median"
+      },
+      {
+        "band_index": 26,
+        "band_name": "evi2_median_wet"
+      },
+      {
+        "band_index": 53,
+        "band_name": "gv_median"
+      },
+      {
+        "band_index": 133,
+        "band_name": "savi_max"
+      },
+      {
+        "band_index": 134,
+        "band_name": "savi_median"
+      },
+      {
+        "band_index": 136,
+        "band_name": "savi_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 136,
+      "band_name": "savi_median_wet"
+    },
+    "size": 7
+  },
+  "74": {
+    "members": [
+      {
+        "band_index": 52,
+        "band_name": "gv_max"
+      },
+      {
+        "band_index": 55,
+        "band_name": "gv_median_wet"
+      },
+      {
+        "band_index": 178,
+        "band_name": "wefi_median"
+      },
+      {
+        "band_index": 180,
+        "band_name": "wefi_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 180,
+      "band_name": "wefi_median_wet"
+    },
+    "size": 4
+  },
+  "75": {
+    "members": [
+      {
+        "band_index": 177,
+        "band_name": "wefi_max"
+      }
+    ],
+    "representative": {
+      "band_index": 177,
+      "band_name": "wefi_max"
+    },
+    "size": 1
+  },
+  "76": {
+    "members": [
+      {
+        "band_index": 60,
+        "band_name": "gvs_median"
+      },
+      {
+        "band_index": 62,
+        "band_name": "gvs_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 62,
+      "band_name": "gvs_median_wet"
+    },
+    "size": 2
+  },
+  "77": {
+    "members": [
+      {
+        "band_index": 83,
+        "band_name": "ndfi_median"
+      },
+      {
+        "band_index": 85,
+        "band_name": "ndfi_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 83,
+      "band_name": "ndfi_median"
+    },
+    "size": 2
+  },
+  "78": {
+    "members": [
+      {
+        "band_index": 59,
+        "band_name": "gvs_max"
+      }
+    ],
+    "representative": {
+      "band_index": 59,
+      "band_name": "gvs_max"
+    },
+    "size": 1
+  },
+  "79": {
+    "members": [
+      {
+        "band_index": 82,
+        "band_name": "ndfi_max"
+      }
+    ],
+    "representative": {
+      "band_index": 82,
+      "band_name": "ndfi_max"
+    },
+    "size": 1
+  },
+  "80": {
+    "members": [
+      {
+        "band_index": 56,
+        "band_name": "gv_min"
+      }
+    ],
+    "representative": {
+      "band_index": 56,
+      "band_name": "gv_min"
+    },
+    "size": 1
+  },
+  "81": {
+    "members": [
+      {
+        "band_index": 181,
+        "band_name": "wefi_min"
+      }
+    ],
+    "representative": {
+      "band_index": 181,
+      "band_name": "wefi_min"
+    },
+    "size": 1
+  },
+  "82": {
+    "members": [
+      {
+        "band_index": 179,
+        "band_name": "wefi_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 179,
+      "band_name": "wefi_median_dry"
+    },
+    "size": 1
+  },
+  "83": {
+    "members": [
+      {
+        "band_index": 27,
+        "band_name": "evi2_min"
+      },
+      {
+        "band_index": 137,
+        "band_name": "savi_min"
+      }
+    ],
+    "representative": {
+      "band_index": 27,
+      "band_name": "evi2_min"
+    },
+    "size": 2
+  },
+  "84": {
+    "members": [
+      {
+        "band_index": 25,
+        "band_name": "evi2_median_dry"
+      },
+      {
+        "band_index": 54,
+        "band_name": "gv_median_dry"
+      },
+      {
+        "band_index": 135,
+        "band_name": "savi_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 25,
+      "band_name": "evi2_median_dry"
+    },
+    "size": 3
+  },
+  "85": {
+    "members": [
+      {
+        "band_index": 38,
+        "band_name": "gcvi_median"
+      },
+      {
+        "band_index": 39,
+        "band_name": "gcvi_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 39,
+      "band_name": "gcvi_median_dry"
+    },
+    "size": 2
+  },
+  "86": {
+    "members": [
+      {
+        "band_index": 61,
+        "band_name": "gvs_median_dry"
+      },
+      {
+        "band_index": 63,
+        "band_name": "gvs_min"
+      },
+      {
+        "band_index": 86,
+        "band_name": "ndfi_min"
+      }
+    ],
+    "representative": {
+      "band_index": 63,
+      "band_name": "gvs_min"
+    },
+    "size": 3
+  },
+  "87": {
+    "members": [
+      {
+        "band_index": 84,
+        "band_name": "ndfi_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 84,
+      "band_name": "ndfi_median_dry"
+    },
+    "size": 1
+  },
+  "88": {
+    "members": [
+      {
+        "band_index": 40,
+        "band_name": "gcvi_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 40,
+      "band_name": "gcvi_median_wet"
+    },
+    "size": 1
+  },
+  "89": {
+    "members": [
+      {
+        "band_index": 94,
+        "band_name": "ndvi_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 94,
+      "band_name": "ndvi_median_wet"
+    },
+    "size": 1
+  },
+  "90": {
+    "members": [
+      {
+        "band_index": 41,
+        "band_name": "gcvi_min"
+      }
+    ],
+    "representative": {
+      "band_index": 41,
+      "band_name": "gcvi_min"
+    },
+    "size": 1
+  },
+  "91": {
+    "members": [
+      {
+        "band_index": 14,
+        "band_name": "cai_stdDev"
+      }
+    ],
+    "representative": {
+      "band_index": 14,
+      "band_name": "cai_stdDev"
+    },
+    "size": 1
+  },
+  "92": {
+    "members": [
+      {
+        "band_index": 66,
+        "band_name": "hallcover_max"
+      }
+    ],
+    "representative": {
+      "band_index": 66,
+      "band_name": "hallcover_max"
+    },
+    "size": 1
+  },
+  "93": {
+    "members": [
+      {
+        "band_index": 68,
+        "band_name": "hallcover_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 68,
+      "band_name": "hallcover_median_dry"
+    },
+    "size": 1
+  },
+  "94": {
+    "members": [
+      {
+        "band_index": 69,
+        "band_name": "hallcover_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 69,
+      "band_name": "hallcover_median_wet"
+    },
+    "size": 1
+  },
+  "95": {
+    "members": [
+      {
+        "band_index": 70,
+        "band_name": "hallcover_min"
+      }
+    ],
+    "representative": {
+      "band_index": 70,
+      "band_name": "hallcover_min"
+    },
+    "size": 1
+  },
+  "96": {
+    "members": [
+      {
+        "band_index": 73,
+        "band_name": "hallheigth_max"
+      }
+    ],
+    "representative": {
+      "band_index": 73,
+      "band_name": "hallheigth_max"
+    },
+    "size": 1
+  },
+  "97": {
+    "members": [
+      {
+        "band_index": 74,
+        "band_name": "hallheigth_median"
+      }
+    ],
+    "representative": {
+      "band_index": 74,
+      "band_name": "hallheigth_median"
+    },
+    "size": 1
+  },
+  "98": {
+    "members": [
+      {
+        "band_index": 75,
+        "band_name": "hallheigth_median_dry"
+      }
+    ],
+    "representative": {
+      "band_index": 75,
+      "band_name": "hallheigth_median_dry"
+    },
+    "size": 1
+  },
+  "99": {
+    "members": [
+      {
+        "band_index": 76,
+        "band_name": "hallheigth_median_wet"
+      }
+    ],
+    "representative": {
+      "band_index": 76,
+      "band_name": "hallheigth_median_wet"
+    },
+    "size": 1
+  },
+  "100": {
+    "members": [
+      {
+        "band_index": 77,
+        "band_name": "hallheigth_min"
+      }
+    ],
+    "representative": {
+      "band_index": 77,
+      "band_name": "hallheigth_min"
+    },
+    "size": 1
+  }
+}
