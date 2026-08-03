@@ -6,4 +6,5 @@ scikit-learn
 rasterio
 pyyaml
 tqdm
+pyproj
 # boruta / mutual info / etc. se agregan al implementar etapas 1–5
