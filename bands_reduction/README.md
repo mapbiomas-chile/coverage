@@ -10,12 +10,13 @@ Metodología detallada: [`docs/metodologia.md`](docs/metodologia.md). Hoja de ru
 
 ## 1. Objetivo
 
-Encontrar, para cada ecorregión, el subconjunto **más pequeño** de bandas que conserve la información necesaria para clasificar LULC, verificando explícitamente la pérdida de información. Se busca:
+Encontrar, para cada ecorregión, el subconjunto **más pequeño** de bandas que conserve la información necesaria para clasificar LULC, y consolidar un **mínimo común** (intersección) y una **unión** entre ecorregiones. Se busca:
 
 - Máxima reducción de dimensionalidad (de 184 → N bandas, N lo menor posible).
 - Mínima pérdida de información / separabilidad de clases.
 - Un procedimiento **replicable e idéntico en las 15 ecorregiones**, aunque el subconjunto final pueda diferir entre ellas.
 - Interpretabilidad física de cada banda seleccionada (importante para LULC).
+- Núcleo común (intersección), cobertura total (unión) y diagnóstico por correlación de bandas descartadas.
 
 ---
 
@@ -23,24 +24,24 @@ Encontrar, para cada ecorregión, el subconjunto **más pequeño** de bandas que
 
 Se descartan los métodos **embedded** por decisión de diseño. El foco es **no supervisado** y **semi-supervisado**, aprovechando que existen *algunas* muestras etiquetadas.
 
-Las **5 etapas** son una cadena (no métodos compitiendo): filtro base → clustering espectral → refinamiento JM → Boruta → ensamble SHCE. Verificación transversal tras las etapas 3, 4 y 5. Detalle en [`docs/metodologia.md`](docs/metodologia.md).
+Las **3 etapas** son una cadena (no métodos compitiendo): clustering espectral → refinamiento JM → Boruta. Luego se consolidan **intersección** y **unión** entre ecorregiones. Verificación transversal tras JM, Boruta y la consolidación. Detalle en [`docs/metodologia.md`](docs/metodologia.md).
 
 ### Método principal (recomendado)
 
-**Clustering espectral no supervisado + verificación semi-supervisada.**
+**Clustering espectral no supervisado + refinamiento JM + Boruta + consolidación entre ecorregiones.**
 
 | Paso | Qué hace | Por qué |
 |------|----------|---------|
-| Selección | Agrupa las 184 bandas por redundancia (información mutua / correlación) y elige una banda representativa por grupo | No depende de etiquetas; conserva el sentido físico de la banda |
-| Verificación | Usa las muestras etiquetadas para medir separabilidad antes/después | Cierra el loop: confirma que la reducción no degrada las clases |
+| Clustering | Agrupa las 184 bandas por redundancia (MI / correlación) y elige una banda representativa por grupo | No depende de etiquetas; conserva el sentido físico |
+| JM | Prioriza separabilidad por ecorregión sobre las 184 bandas y sobre el resultado del clustering | Contrasta set completo vs. reducido con pocas muestras |
+| Boruta | Confirma relevancia real de los candidatos | Verifica frente al azar |
+| Consolidación | Intersección (mínimo común), unión, correlación de bandas fuera de esos sets, evaluación de la unión | Núcleo compartido + cobertura total + diagnóstico de descartes |
 
 Candidatos de selección (primera ronda):
 
-- **FCBF / CFS** — filtro base (etapa 1).
-- **WaLuDi** / **BandClust** — clustering espectral (etapa 2).
-- **Jeffries-Matusita** — refinamiento semi-supervisado (etapa 3).
-- **Boruta** — wrapper de verificación (etapa 4).
-- **SHCE** — ensamble final (etapa 5).
+- **WaLuDi** / **BandClust** — clustering espectral (etapa 1).
+- **Jeffries-Matusita** — refinamiento semi-supervisado (etapa 2).
+- **Boruta** — wrapper de verificación (etapa 3).
 
 Metaheurísticos (GA / PSO / GWO / WOA) y **autoencoder** quedan como **ronda 2 opcional**.
 
@@ -48,15 +49,16 @@ Metaheurísticos (GA / PSO / GWO / WOA) y **autoencoder** quedan como **ronda 2 
 
 ## 3. Cómo verificar la pérdida de información
 
-Tres niveles, de menos a más costoso (control de calidad tras etapas 3, 4 y 5):
+Tres niveles, de menos a más costoso (control de calidad tras etapas 2 y 3, y sobre intersección/unión):
 
 1. **Redundancia / información** (sin etiquetas)
    - Matriz de correlación espectral antes vs. después.
    - Información mutua promedio del subconjunto.
+   - Correlación de bandas **fuera** de la intersección / unión.
 2. **Separabilidad de clases** (con muestras)
    - Distancia **Jeffries-Matusita** o **Bhattacharyya** por par de clases.
 3. **Impacto en clasificación** (con muestras)
-   - Random Forest con 184 bandas vs. subconjunto reducido.
+   - Random Forest con 184 bandas vs. subconjunto reducido (por ecorregión, intersección y unión).
    - Métricas: **Overall Accuracy**, **Kappa**, **Jaccard**, con validación cruzada.
 
 Criterio de aceptación sugerido `⚙️ AJUSTAR`: conservar el subconjunto más pequeño cuya caída de OA/Kappa respecto al set completo sea `≤ 1–2 %` y cuya separabilidad JM mínima entre clases se mantenga por encima de un umbral.
@@ -77,9 +79,9 @@ bands_reduction/
 │   └── ecoregions/
 ├── src/
 │   ├── io/                   ← lectura de raster y muestras
-│   ├── selection/            ← FCBF/CFS, WaLuDi, BandClust, JM, Boruta, SHCE
-│   ├── evaluation/           ← MI, JM/Bhattacharyya, RF, métricas
-│   ├── pipeline/             ← orquestación end-to-end (etapas 1–5)
+│   ├── selection/            ← WaLuDi, BandClust, JM, Boruta
+│   ├── evaluation/           ← MI, JM/Bhattacharyya, RF, correlación, métricas
+│   ├── pipeline/             ← orquestación (etapas 1–3 + consolidación)
 │   └── utils/                ← logging, config, helpers
 ├── scripts/                  ← entrypoints CLI
 ├── test/                     ← tests unitarios / de integración
@@ -105,11 +107,11 @@ Rutas de datos (mosaico 2015, muestras, ecorregiones, interim) se declaran en `c
 ## 5. Hoja de ruta
 
 - [ ] **F0 — Setup.** Repo, entorno, lectura del mosaico 2015 de 184 bandas, carga de muestras.
-- [ ] **F1 — EDA espectral + filtro base.** Correlación / MI; etapa 1 (FCBF/CFS).
-- [ ] **F2 — Clustering espectral.** WaLuDi / BandClust por ecorregión (etapa 2).
-- [ ] **F3 — Refinamiento semi-supervisado.** Separabilidad JM con muestras (etapa 3) + QA.
-- [ ] **F4 — Wrapper Boruta.** Verificación (etapa 4) + QA.
-- [ ] **F5 — Ensamble SHCE.** Consolidación final por ecorregión (etapa 5) + QA.
+- [ ] **F1 — EDA espectral.** Correlación / MI sobre las 184 bandas.
+- [ ] **F2 — Clustering espectral.** WaLuDi / BandClust por ecorregión (etapa 1).
+- [ ] **F3 — Refinamiento JM.** Separabilidad sobre 184 y sobre clustering (etapa 2) + QA.
+- [ ] **F4 — Wrapper Boruta.** Verificación (etapa 3) + QA → \(S_e\) por ecorregión.
+- [ ] **F5 — Consolidación.** Intersección, unión, correlación fuera de sets, evaluación de la unión + QA.
 - [ ] **F6 (opcional).** Metaheurísticos / autoencoder como comparación (ronda 2).
 
 Detalle en [`docs/roadmap.md`](docs/roadmap.md).
@@ -128,6 +130,9 @@ python scripts/01_inspect_mosaic.py --config configs/global.yaml
 # 2. EDA de redundancia
 python scripts/02_spectral_eda.py --config configs/global.yaml
 
-# 3. Selección por ecorregión (cadena etapas 1–5)
+# 3. Selección por ecorregión (cadena etapas 1–3)
 python scripts/03_run_selection.py --ecoregion configs/ecoregions/eco_01.yaml
+
+# 4. Consolidación entre ecorregiones (intersección / unión)
+python scripts/05_consolidate_ecoregions.py --config configs/global.yaml
 ```
