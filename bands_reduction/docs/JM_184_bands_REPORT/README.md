@@ -62,8 +62,8 @@ JM does **not** train a classifier. The name `train` only means the sample split
 ![Class counts](figures/class_counts_chile_train.png)
 
 Nombres según leyenda MapBiomas Chile Col2 (con id entre corchetes).  
-Clases **79/80** (Coníferas / Latifoliadas) no venían en la leyenda pegada; se tomaron de la taxonomía Col2 del repo.  
-Clase **62** aparece en las muestras pero sin nombre en la leyenda enviada.
+**79** = Coníferas · **80** = Latifoliadas.  
+**62** no está en la leyenda Col2 enviada (34 muestras, solo ecorregión E2 Desierto de Atacama); se etiqueta como *Sin nombre en leyenda*.
 
 See [`data/class_counts.csv`](data/class_counts.csv).
 

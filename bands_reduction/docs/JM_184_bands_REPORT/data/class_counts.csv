@@ -1,5 +1,5 @@
 class_id,class_name,n_samples
-80,Latifoliadas (Silvicultura),1506
+80,Latifoliadas,1506
 33,"Río, lago u océano",1122
 59,Bosque Primario,538
 11,Humedal,530
@@ -15,6 +15,6 @@ class_id,class_name,n_samples
 15,Pastura,189
 67,Bosque Achaparrado,166
 63,Estepa,156
-79,Coníferas (Silvicultura),148
+79,Coníferas,148
 61,Salar,134
-62,Clase 62 (sin nombre en leyenda),34
+62,Sin nombre en leyenda,34
