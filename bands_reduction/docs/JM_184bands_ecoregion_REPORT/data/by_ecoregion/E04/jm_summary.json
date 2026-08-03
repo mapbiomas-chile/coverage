@@ -1,9 +1,13 @@
 {
   "eco_id": 4,
   "eco_name": "E4_Estepa_andina",
-  "n_samples": 398,
+  "n_samples": 331,
+  "exclude_classes": [
+    33,
+    34
+  ],
   "n_bands": 184,
-  "n_classes": 13,
+  "n_classes": 11,
   "class_counts": {
     "11": {
       "n": 43,
@@ -28,14 +32,6 @@
     "29": {
       "n": 27,
       "name": "Afloramiento Rocoso"
-    },
-    "33": {
-      "n": 43,
-      "name": "Río, lago u océano"
-    },
-    "34": {
-      "n": 24,
-      "name": "Hielo y nieve"
     },
     "59": {
       "n": 22,
@@ -63,61 +59,61 @@
       "rank": 1,
       "band_index": 116,
       "band_name": "npv_min",
-      "mean_jm": 1.4007367457747433
+      "mean_jm": 1.3696241067352117
     },
     {
       "rank": 2,
-      "band_index": 134,
-      "band_name": "savi_median",
-      "mean_jm": 1.3617042899537317
+      "band_index": 37,
+      "band_name": "gcvi_max",
+      "mean_jm": 1.2070032161134336
     },
     {
       "rank": 3,
-      "band_index": 24,
-      "band_name": "evi2_median",
-      "mean_jm": 1.349449631707357
+      "band_index": 91,
+      "band_name": "ndvi_max",
+      "mean_jm": 1.2051194006783945
     },
     {
       "rank": 4,
-      "band_index": 92,
-      "band_name": "ndvi_median",
-      "mean_jm": 1.340895517238918
+      "band_index": 125,
+      "band_name": "pri_stdDev",
+      "mean_jm": 1.1943854611385978
     },
     {
       "rank": 5,
-      "band_index": 136,
-      "band_name": "savi_median_wet",
-      "mean_jm": 1.322315279616086
+      "band_index": 22,
+      "band_name": "elevation",
+      "mean_jm": 1.1915501873484686
     },
     {
       "rank": 6,
-      "band_index": 26,
-      "band_name": "evi2_median_wet",
-      "mean_jm": 1.3108851057205528
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.1843775243970658
     },
     {
       "rank": 7,
-      "band_index": 38,
-      "band_name": "gcvi_median",
-      "mean_jm": 1.2901251189175689
+      "band_index": 134,
+      "band_name": "savi_median",
+      "mean_jm": 1.1759650651900417
     },
     {
       "rank": 8,
-      "band_index": 94,
-      "band_name": "ndvi_median_wet",
-      "mean_jm": 1.2574002768117223
+      "band_index": 136,
+      "band_name": "savi_median_wet",
+      "mean_jm": 1.1708018822395572
     },
     {
       "rank": 9,
-      "band_index": 140,
-      "band_name": "sefi_max",
-      "mean_jm": 1.2144515384959051
+      "band_index": 24,
+      "band_name": "evi2_median",
+      "mean_jm": 1.1612839854286354
     },
     {
       "rank": 10,
-      "band_index": 22,
-      "band_name": "elevation",
-      "mean_jm": 1.2084781223277878
+      "band_index": 26,
+      "band_name": "evi2_median_wet",
+      "mean_jm": 1.158329957849313
     }
   ],
   "status": "OK"

@@ -1,9 +1,13 @@
 {
   "eco_id": 2,
   "eco_name": "E2_Desierto_Atacama",
-  "n_samples": 362,
+  "n_samples": 361,
+  "exclude_classes": [
+    33,
+    34
+  ],
   "n_bands": 184,
-  "n_classes": 12,
+  "n_classes": 11,
   "class_counts": {
     "11": {
       "n": 21,
@@ -28,10 +32,6 @@
     "29": {
       "n": 22,
       "name": "Afloramiento Rocoso"
-    },
-    "33": {
-      "n": 1,
-      "name": "Río, lago u océano"
     },
     "59": {
       "n": 62,

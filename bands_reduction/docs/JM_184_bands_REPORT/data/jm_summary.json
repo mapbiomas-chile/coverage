@@ -1,5 +1,10 @@
 {
-  "n_samples": 7369,
+  "n_samples": 5996,
+  "n_samples_before_exclude": 7369,
+  "exclude_classes": [
+    33,
+    34
+  ],
   "n_input_bands": 184,
   "n_selected_bands": 184,
   "input_source": "full",
@@ -7,27 +12,27 @@
     {
       "band_index": 71,
       "band_name": "hallcover_amp",
-      "mean_jm": 1.2212822141700994
-    },
-    {
-      "band_index": 38,
-      "band_name": "gcvi_median",
-      "mean_jm": 1.1608800985254195
-    },
-    {
-      "band_index": 94,
-      "band_name": "ndvi_median_wet",
-      "mean_jm": 1.1213171974781382
-    },
-    {
-      "band_index": 92,
-      "band_name": "ndvi_median",
-      "mean_jm": 1.1099034067078006
+      "mean_jm": 1.235603197879429
     },
     {
       "band_index": 78,
       "band_name": "hallheigth_amp",
-      "mean_jm": 1.1079441758322073
+      "mean_jm": 1.1379890230714327
+    },
+    {
+      "band_index": 94,
+      "band_name": "ndvi_median_wet",
+      "mean_jm": 1.081074933737197
+    },
+    {
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.052786923021373
+    },
+    {
+      "band_index": 38,
+      "band_name": "gcvi_median",
+      "mean_jm": 1.0358039955462968
     }
   ],
   "class_counts": {
@@ -39,8 +44,6 @@
     "24": 421,
     "25": 215,
     "29": 290,
-    "33": 1122,
-    "34": 251,
     "59": 538,
     "60": 354,
     "61": 134,
@@ -51,6 +54,6 @@
     "79": 148,
     "80": 1506
   },
-  "ranking_csv": "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_all/results/jm_chile_184/jm_ranking.csv",
-  "band_list_jm": "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_all/results/jm_chile_184/band_list_jm.json"
+  "ranking_csv": "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_JM/results/jm_chile_184/jm_ranking.csv",
+  "band_list_jm": "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_JM/results/jm_chile_184/band_list_jm.json"
 }

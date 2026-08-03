@@ -63,21 +63,21 @@ def main() -> None:
         "--samples",
         type=Path,
         default=Path(
-            "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_all/samples/chile_train_184.npz"
+            "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_JM/samples/chile_train_184.npz"
         ),
     )
     parser.add_argument(
         "--index-csv",
         type=Path,
         default=Path(
-            "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_all/samples/chile_train_184_index.csv"
+            "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_JM/samples/chile_train_184_index.csv"
         ),
     )
     parser.add_argument(
         "--band-list",
         type=Path,
         default=Path(
-            "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_all/band_lists/band_list_full_184.json"
+            "/home/lserey/mapbiomas_land/tmp/JM_test_ME/184_bands_JM/band_lists/band_list_full_184.json"
         ),
     )
     parser.add_argument(
@@ -87,7 +87,16 @@ def main() -> None:
     )
     parser.add_argument("--min-count", type=int, default=10)
     parser.add_argument("--min-samples-eco", type=int, default=50)
+    parser.add_argument(
+        "--exclude-classes",
+        type=int,
+        nargs="*",
+        default=[33, 34],
+        help="Class ids to drop before JM (default: 33 water, 34 ice/snow)",
+    )
     args = parser.parse_args()
+
+    exclude_set = {int(c) for c in (args.exclude_classes or [])}
 
     data = load_samples(args.samples)
     if "y" not in data:
@@ -108,9 +117,14 @@ def main() -> None:
 
     eco_ids = sorted(idx["eco_id"].dropna().unique().astype(int))
     overview = []
+    print(f"exclude_classes={sorted(exclude_set)}")
 
     for eco_id in eco_ids:
-        mask = (idx["eco_id"].to_numpy() == eco_id) & (y_full >= 0)
+        mask = (
+            (idx["eco_id"].to_numpy() == eco_id)
+            & (y_full >= 0)
+            & (~np.isin(y_full, list(exclude_set)) if exclude_set else True)
+        )
         n = int(mask.sum())
         eco_name = str(idx.loc[idx["eco_id"] == eco_id, "eco_name"].iloc[0])
         eco_dir = out / "by_ecoregion" / f"E{eco_id:02d}"
@@ -119,9 +133,10 @@ def main() -> None:
         if n < args.min_samples_eco:
             overview.append(
                 {
-                    "eco_id": eco_id,
+                    "eco_id": int(eco_id),
                     "eco_name": eco_name,
-                    "n_samples": n,
+                    "n_samples": int(n),
+                    "exclude_classes": sorted(exclude_set),
                     "status": "SKIP_TOO_FEW_SAMPLES",
                 }
             )
@@ -159,10 +174,14 @@ def main() -> None:
         save_band_list(eco_dir / "band_list_jm.json", bl)
 
         classes, counts = np.unique(y, return_counts=True)
+        excl_note = (
+            f" · excl {sorted(exclude_set)}" if exclude_set else ""
+        )
         summary = {
             "eco_id": int(eco_id),
             "eco_name": eco_name,
             "n_samples": int(n),
+            "exclude_classes": sorted(exclude_set),
             "n_bands": int(len(bands)),
             "n_classes": int(len(classes)),
             "class_counts": {
@@ -189,13 +208,12 @@ def main() -> None:
         )
         _plot_top15(
             rank,
-            f"JM E{eco_id} {eco_name}\nn={n} train · 184 bands",
+            f"JM E{eco_id} {eco_name}\nn={n} train · 184 bands{excl_note}",
             eco_dir / "jm_top15.png",
         )
-        # copy top fig to figures/
         _plot_top15(
             rank,
-            f"JM E{eco_id} {eco_name}\nn={n} train · 184 bands",
+            f"JM E{eco_id} {eco_name}\nn={n} train · 184 bands{excl_note}",
             out / "figures" / f"E{eco_id:02d}_jm_top15.png",
         )
         overview.append(
@@ -204,6 +222,7 @@ def main() -> None:
                 "eco_name": eco_name,
                 "n_samples": int(n),
                 "n_classes": int(len(classes)),
+                "exclude_classes": sorted(exclude_set),
                 "top1_band": str(rank.iloc[0]["band_name"]),
                 "top1_mean_jm": float(rank.iloc[0]["mean_jm"]),
                 "status": "OK",
@@ -224,7 +243,9 @@ def main() -> None:
         fig, ax = plt.subplots(figsize=(10, 5))
         ax.bar([f"E{i}" for i in ok["eco_id"]], ok["top1_mean_jm"], color="#2a6f7a")
         ax.set_ylabel("Top-1 mean JM")
-        ax.set_title("Per-ecoregion JM — best band score (184 bands, train)")
+        ax.set_title(
+            f"Per-ecoregion JM — best band score (184 bands, excl {sorted(exclude_set) or 'none'})"
+        )
         ax.set_ylim(0, 2)
         fig.tight_layout()
         fig.savefig(out / "figures" / "overview_top1_jm_by_eco.png", dpi=140)
@@ -233,17 +254,20 @@ def main() -> None:
         fig, ax = plt.subplots(figsize=(10, 5))
         ax.bar([f"E{i}" for i in ok["eco_id"]], ok["n_samples"], color="#6b5b4a")
         ax.set_ylabel("N train samples")
-        ax.set_title("Samples per ecoregion used in JM")
+        ax.set_title(
+            f"Samples per ecoregion used in JM (excl {sorted(exclude_set) or 'none'})"
+        )
         fig.tight_layout()
         fig.savefig(out / "figures" / "overview_nsamples_by_eco.png", dpi=140)
         plt.close(fig)
 
-    readme = f"""# 184bands_ecorregion — JM por ecorregión (184 bandas)
+    readme = f"""# JM por ecorregión (184 bandas)
 
 JM **sin clustering**, una corrida por ecorregión, muestras `train` Col2.
 
 - Matriz: `{args.samples}`
 - Salida: `{out}`
+- exclude_classes: `{sorted(exclude_set)}`
 - Ecorregiones OK: {int((ov['status']=='OK').sum())} / {len(ov)}
 
 Ver `summaries/ecoregion_overview.csv` y `by_ecoregion/E*/`.

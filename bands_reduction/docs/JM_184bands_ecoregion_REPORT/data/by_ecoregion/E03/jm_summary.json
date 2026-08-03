@@ -2,6 +2,10 @@
   "eco_id": 3,
   "eco_name": "E3_Matorral_norte_1",
   "n_samples": 117,
+  "exclude_classes": [
+    33,
+    34
+  ],
   "n_bands": 184,
   "n_classes": 10,
   "class_counts": {

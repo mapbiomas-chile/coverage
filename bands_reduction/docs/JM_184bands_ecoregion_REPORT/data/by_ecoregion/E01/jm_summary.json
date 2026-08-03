@@ -1,9 +1,13 @@
 {
   "eco_id": 1,
   "eco_name": "E1_Puna_seca_andina",
-  "n_samples": 349,
+  "n_samples": 296,
+  "exclude_classes": [
+    33,
+    34
+  ],
   "n_bands": 184,
-  "n_classes": 12,
+  "n_classes": 10,
   "class_counts": {
     "11": {
       "n": 26,
@@ -29,14 +33,6 @@
       "n": 22,
       "name": "Afloramiento Rocoso"
     },
-    "33": {
-      "n": 33,
-      "name": "Río, lago u océano"
-    },
-    "34": {
-      "n": 20,
-      "name": "Hielo y nieve"
-    },
     "59": {
       "n": 29,
       "name": "Bosque Primario"
@@ -57,63 +53,63 @@
   "top10": [
     {
       "rank": 1,
-      "band_index": 93,
-      "band_name": "ndvi_median_dry",
-      "mean_jm": 1.3416031519815321
+      "band_index": 56,
+      "band_name": "gv_min",
+      "mean_jm": 1.3159611822905057
     },
     {
       "rank": 2,
-      "band_index": 56,
-      "band_name": "gv_min",
-      "mean_jm": 1.3293023772406865
+      "band_index": 63,
+      "band_name": "gvs_min",
+      "mean_jm": 1.3128403794146841
     },
     {
       "rank": 3,
-      "band_index": 41,
-      "band_name": "gcvi_min",
-      "mean_jm": 1.3285470712652387
+      "band_index": 116,
+      "band_name": "npv_min",
+      "mean_jm": 1.287288276881861
     },
     {
       "rank": 4,
-      "band_index": 63,
-      "band_name": "gvs_min",
-      "mean_jm": 1.322114042801001
+      "band_index": 181,
+      "band_name": "wefi_min",
+      "mean_jm": 1.2713093344253015
     },
     {
       "rank": 5,
-      "band_index": 38,
-      "band_name": "gcvi_median",
-      "mean_jm": 1.3112224399748047
+      "band_index": 144,
+      "band_name": "sefi_min",
+      "mean_jm": 1.2702337807997934
     },
     {
       "rank": 6,
-      "band_index": 92,
-      "band_name": "ndvi_median",
-      "mean_jm": 1.3005138024957452
+      "band_index": 86,
+      "band_name": "ndfi_min",
+      "mean_jm": 1.2544682882374505
     },
     {
       "rank": 7,
-      "band_index": 116,
-      "band_name": "npv_min",
-      "mean_jm": 1.299906122714025
+      "band_index": 54,
+      "band_name": "gv_median_dry",
+      "mean_jm": 1.224640192557504
     },
     {
       "rank": 8,
-      "band_index": 134,
-      "band_name": "savi_median",
-      "mean_jm": 1.2985276473251433
+      "band_index": 179,
+      "band_name": "wefi_median_dry",
+      "mean_jm": 1.187634842637778
     },
     {
       "rank": 9,
-      "band_index": 24,
-      "band_name": "evi2_median",
-      "mean_jm": 1.297190096861122
+      "band_index": 142,
+      "band_name": "sefi_median_dry",
+      "mean_jm": 1.1700520135923242
     },
     {
       "rank": 10,
-      "band_index": 156,
-      "band_name": "soil_median",
-      "mean_jm": 1.2860130434120158
+      "band_index": 141,
+      "band_name": "sefi_median",
+      "mean_jm": 1.1536887925065669
     }
   ],
   "status": "OK"

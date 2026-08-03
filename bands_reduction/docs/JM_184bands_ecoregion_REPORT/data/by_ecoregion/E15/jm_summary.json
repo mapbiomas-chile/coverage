@@ -1,9 +1,13 @@
 {
   "eco_id": 15,
   "eco_name": "E15_Bosque_subpolar",
-  "n_samples": 607,
+  "n_samples": 396,
+  "exclude_classes": [
+    33,
+    34
+  ],
   "n_bands": 184,
-  "n_classes": 13,
+  "n_classes": 11,
   "class_counts": {
     "11": {
       "n": 58,
@@ -24,14 +28,6 @@
     "29": {
       "n": 30,
       "name": "Afloramiento Rocoso"
-    },
-    "33": {
-      "n": 162,
-      "name": "Río, lago u océano"
-    },
-    "34": {
-      "n": 49,
-      "name": "Hielo y nieve"
     },
     "59": {
       "n": 62,
@@ -61,63 +57,63 @@
   "top10": [
     {
       "rank": 1,
-      "band_index": 127,
-      "band_name": "red_median",
-      "mean_jm": 1.3188066811225059
+      "band_index": 59,
+      "band_name": "gvs_max",
+      "mean_jm": 1.2228674536820583
     },
     {
       "rank": 2,
-      "band_index": 40,
-      "band_name": "gcvi_median_wet",
-      "mean_jm": 1.3163211066002496
+      "band_index": 60,
+      "band_name": "gvs_median",
+      "mean_jm": 1.2088446948757867
     },
     {
       "rank": 3,
-      "band_index": 38,
-      "band_name": "gcvi_median",
-      "mean_jm": 1.3120072683291069
+      "band_index": 83,
+      "band_name": "ndfi_median",
+      "mean_jm": 1.1846571224179352
     },
     {
       "rank": 4,
-      "band_index": 60,
-      "band_name": "gvs_median",
-      "mean_jm": 1.2923060056232827
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.1806223693552589
     },
     {
       "rank": 5,
-      "band_index": 45,
-      "band_name": "green_median",
-      "mean_jm": 1.2604658363002166
+      "band_index": 40,
+      "band_name": "gcvi_median_wet",
+      "mean_jm": 1.164851719794155
     },
     {
       "rank": 6,
-      "band_index": 133,
-      "band_name": "savi_max",
-      "mean_jm": 1.2475731943433932
+      "band_index": 82,
+      "band_name": "ndfi_max",
+      "mean_jm": 1.1640094907943237
     },
     {
       "rank": 7,
-      "band_index": 94,
-      "band_name": "ndvi_median_wet",
-      "mean_jm": 1.2455746359106858
+      "band_index": 62,
+      "band_name": "gvs_median_wet",
+      "mean_jm": 1.152988685344388
     },
     {
       "rank": 8,
-      "band_index": 23,
-      "band_name": "evi2_max",
-      "mean_jm": 1.241885320333893
+      "band_index": 140,
+      "band_name": "sefi_max",
+      "mean_jm": 1.137601180359081
     },
     {
       "rank": 9,
-      "band_index": 92,
-      "band_name": "ndvi_median",
-      "mean_jm": 1.23984520559233
+      "band_index": 141,
+      "band_name": "sefi_median",
+      "mean_jm": 1.1376003842620195
     },
     {
       "rank": 10,
-      "band_index": 141,
-      "band_name": "sefi_median",
-      "mean_jm": 1.237121107558402
+      "band_index": 71,
+      "band_name": "hallcover_amp",
+      "mean_jm": 1.1353918094420863
     }
   ],
   "status": "OK"
