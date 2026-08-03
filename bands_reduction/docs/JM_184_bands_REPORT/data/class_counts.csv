@@ -1,20 +1,20 @@
-,n_samples
-80,1506
-33,1122
-59,538
-11,530
-24,421
-66,421
-23,357
-60,354
-18,322
-29,290
-34,251
-25,215
-12,215
-15,189
-67,166
-63,156
-79,148
-61,134
-62,34
+class_id,class_name,n_samples
+80,Latifoliadas (Silvicultura),1506
+33,"Río, lago u océano",1122
+59,Bosque Primario,538
+11,Humedal,530
+24,Infraestructura,421
+66,Matorral,421
+23,"Arena, Playa y Duna",357
+60,Bosque Secundario,354
+18,Agricultura,322
+29,Afloramiento Rocoso,290
+34,Hielo y nieve,251
+12,Pastizal,215
+25,Otra área sin vegetación,215
+15,Pastura,189
+67,Bosque Achaparrado,166
+63,Estepa,156
+79,Coníferas (Silvicultura),148
+61,Salar,134
+62,Clase 62 (sin nombre en leyenda),34
