@@ -1,0 +1,9 @@
+# Ecorregión — Andes sur (MapBiomas C3 id=10)
+
+ecoregion:
+  id: 10
+  name: E10_Andes_Sur
+  label: Andes sur
+
+pilot:
+  year: 2015

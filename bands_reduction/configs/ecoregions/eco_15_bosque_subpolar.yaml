@@ -1,0 +1,9 @@
+# Ecorregión — Bosque subpolar (MapBiomas C3 id=15)
+
+ecoregion:
+  id: 15
+  name: E15_Bosque_subpolar
+  label: Bosque subpolar
+
+pilot:
+  year: 2015

@@ -1,0 +1,10 @@
+# Ecorregión — Puna seca andina (MapBiomas C3 id=1)
+# Valor en ecorregiones_col3_30m_alineado_lulc.tif
+
+ecoregion:
+  id: 1
+  name: E1_Puna_seca_andina
+  label: Puna seca andina
+
+pilot:
+  year: 2015

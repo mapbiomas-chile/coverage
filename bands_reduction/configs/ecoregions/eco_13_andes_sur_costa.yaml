@@ -1,0 +1,9 @@
+# Ecorregión — Andes sur costa (MapBiomas C3 id=13)
+
+ecoregion:
+  id: 13
+  name: E13_Andes_Sur_Costa
+  label: Andes sur costa
+
+pilot:
+  year: 2015

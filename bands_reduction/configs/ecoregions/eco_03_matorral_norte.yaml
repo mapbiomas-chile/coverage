@@ -1,0 +1,9 @@
+# Ecorregión — Matorral norte 1 (MapBiomas C3 id=3)
+
+ecoregion:
+  id: 3
+  name: E3_Matorral_norte_1
+  label: Matorral norte 1
+
+pilot:
+  year: 2015

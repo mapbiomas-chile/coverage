@@ -1,0 +1,9 @@
+# Ecorregión — Matorral sur (MapBiomas C3 id=8)
+
+ecoregion:
+  id: 8
+  name: E8_Matorral_sur
+  label: Matorral sur
+
+pilot:
+  year: 2015

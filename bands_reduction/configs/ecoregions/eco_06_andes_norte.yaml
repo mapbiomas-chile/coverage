@@ -1,0 +1,9 @@
+# Ecorregión — Andes norte (MapBiomas C3 id=6)
+
+ecoregion:
+  id: 6
+  name: E6_Andes_norte
+  label: Andes norte
+
+pilot:
+  year: 2015

@@ -1,0 +1,9 @@
+# Ecorregión — Costa sur 1 (MapBiomas C3 id=11)
+
+ecoregion:
+  id: 11
+  name: E11_Costa_Sur_1
+  label: Costa sur 1
+
+pilot:
+  year: 2015

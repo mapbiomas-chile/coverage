@@ -1,0 +1,9 @@
+# Ecorregión — Costa norte (MapBiomas C3 id=9)
+
+ecoregion:
+  id: 9
+  name: E9_Costa_Norte
+  label: Costa norte
+
+pilot:
+  year: 2015

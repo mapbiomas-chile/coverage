@@ -1,0 +1,9 @@
+# Ecorregión — Costa sur 2 (MapBiomas C3 id=12)
+
+ecoregion:
+  id: 12
+  name: E12_Costa_Sur_2
+  label: Costa sur 2
+
+pilot:
+  year: 2015

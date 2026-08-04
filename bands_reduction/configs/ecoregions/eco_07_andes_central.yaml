@@ -1,0 +1,9 @@
+# Ecorregión — Andes central (MapBiomas C3 id=7)
+
+ecoregion:
+  id: 7
+  name: E7_Andes_central
+  label: Andes central
+
+pilot:
+  year: 2015

@@ -1,0 +1,9 @@
+# Ecorregión — Estepa andina (MapBiomas C3 id=4)
+
+ecoregion:
+  id: 4
+  name: E4_Estepa_andina
+  label: Estepa andina
+
+pilot:
+  year: 2015

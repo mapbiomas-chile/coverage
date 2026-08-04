@@ -1,0 +1,9 @@
+# Ecorregión — Estepa patagónica (MapBiomas C3 id=14)
+
+ecoregion:
+  id: 14
+  name: E14_Estepa_patagonica
+  label: Estepa patagonica
+
+pilot:
+  year: 2015
