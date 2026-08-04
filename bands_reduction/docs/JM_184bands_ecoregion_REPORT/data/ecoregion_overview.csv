@@ -1,0 +1,16 @@
+eco_id,eco_name,n_samples,n_classes,exclude_classes,top1_band,top1_mean_jm,status
+1,E1_Puna_seca_andina,296,10,"[33, 34]",gv_min,1.3159611822905057,OK
+2,E2_Desierto_Atacama,361,11,"[33, 34]",gv_median,1.341174266547767,OK
+3,E3_Matorral_norte_1,117,10,"[33, 34]",npv_min,1.6023077316153436,OK
+4,E4_Estepa_andina,331,11,"[33, 34]",npv_min,1.3696241067352117,OK
+5,E5_Matorral_norte_2,396,12,"[33, 34]",cloud_min,1.1634434764525992,OK
+6,E6_Andes_norte,183,10,"[33, 34]",elevation,1.201782291614947,OK
+7,E7_Andes_central,627,13,"[33, 34]",npv_min,1.1612802967196896,OK
+8,E8_Matorral_sur,760,13,"[33, 34]",npv_min,1.1666873518296637,OK
+9,E9_Costa_Norte,1070,12,"[33, 34]",cai_median,1.1809452233939266,OK
+10,E10_Andes_Sur,430,13,"[33, 34]",hallheigth_amp,1.23051379240914,OK
+11,E11_Costa_Sur_1,570,11,"[33, 34]",ndvi_median,1.2527591996952796,OK
+12,E12_Costa_Sur_2,103,7,"[33, 34]",gv_median,1.614030375988022,OK
+13,E13_Andes_Sur_Costa,70,7,"[33, 34]",sefi_median_wet,1.999519208190155,OK
+14,E14_Estepa_patagonica,286,12,"[33, 34]",ndvi_median,1.2648444217820423,OK
+15,E15_Bosque_subpolar,396,11,"[33, 34]",gvs_max,1.2228674536820583,OK

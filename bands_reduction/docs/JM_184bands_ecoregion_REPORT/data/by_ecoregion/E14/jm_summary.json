@@ -1,0 +1,124 @@
+{
+  "eco_id": 14,
+  "eco_name": "E14_Estepa_patagonica",
+  "n_samples": 286,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "n_bands": 184,
+  "n_classes": 12,
+  "class_counts": {
+    "11": {
+      "n": 16,
+      "name": "Humedal"
+    },
+    "15": {
+      "n": 22,
+      "name": "Pastura"
+    },
+    "18": {
+      "n": 15,
+      "name": "Agricultura"
+    },
+    "23": {
+      "n": 39,
+      "name": "Arena, Playa y Duna"
+    },
+    "24": {
+      "n": 29,
+      "name": "Infraestructura"
+    },
+    "29": {
+      "n": 21,
+      "name": "Afloramiento Rocoso"
+    },
+    "59": {
+      "n": 32,
+      "name": "Bosque Primario"
+    },
+    "60": {
+      "n": 21,
+      "name": "Bosque Secundario"
+    },
+    "63": {
+      "n": 39,
+      "name": "Estepa"
+    },
+    "66": {
+      "n": 24,
+      "name": "Matorral"
+    },
+    "67": {
+      "n": 24,
+      "name": "Bosque Achaparrado"
+    },
+    "79": {
+      "n": 4,
+      "name": "Coníferas"
+    }
+  },
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.2648444217820423
+    },
+    {
+      "rank": 2,
+      "band_index": 38,
+      "band_name": "gcvi_median",
+      "mean_jm": 1.2248707339656413
+    },
+    {
+      "rank": 3,
+      "band_index": 37,
+      "band_name": "gcvi_max",
+      "mean_jm": 1.2137891659084283
+    },
+    {
+      "rank": 4,
+      "band_index": 11,
+      "band_name": "cai_median_wet",
+      "mean_jm": 1.2001741942662523
+    },
+    {
+      "rank": 5,
+      "band_index": 116,
+      "band_name": "npv_min",
+      "mean_jm": 1.1973842189485002
+    },
+    {
+      "rank": 6,
+      "band_index": 59,
+      "band_name": "gvs_max",
+      "mean_jm": 1.1966096204839245
+    },
+    {
+      "rank": 7,
+      "band_index": 22,
+      "band_name": "elevation",
+      "mean_jm": 1.1891347499019589
+    },
+    {
+      "rank": 8,
+      "band_index": 9,
+      "band_name": "cai_median",
+      "mean_jm": 1.1703860548830425
+    },
+    {
+      "rank": 9,
+      "band_index": 94,
+      "band_name": "ndvi_median_wet",
+      "mean_jm": 1.1689742666265153
+    },
+    {
+      "rank": 10,
+      "band_index": 40,
+      "band_name": "gcvi_median_wet",
+      "mean_jm": 1.1661405984185267
+    }
+  ],
+  "status": "OK"
+}

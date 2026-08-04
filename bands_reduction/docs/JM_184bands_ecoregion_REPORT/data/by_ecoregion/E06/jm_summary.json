@@ -1,0 +1,116 @@
+{
+  "eco_id": 6,
+  "eco_name": "E6_Andes_norte",
+  "n_samples": 183,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "n_bands": 184,
+  "n_classes": 10,
+  "class_counts": {
+    "11": {
+      "n": 11,
+      "name": "Humedal"
+    },
+    "12": {
+      "n": 25,
+      "name": "Pastizal"
+    },
+    "15": {
+      "n": 15,
+      "name": "Pastura"
+    },
+    "18": {
+      "n": 20,
+      "name": "Agricultura"
+    },
+    "24": {
+      "n": 4,
+      "name": "Infraestructura"
+    },
+    "25": {
+      "n": 29,
+      "name": "Otra área sin vegetación"
+    },
+    "29": {
+      "n": 34,
+      "name": "Afloramiento Rocoso"
+    },
+    "59": {
+      "n": 17,
+      "name": "Bosque Primario"
+    },
+    "60": {
+      "n": 6,
+      "name": "Bosque Secundario"
+    },
+    "66": {
+      "n": 22,
+      "name": "Matorral"
+    }
+  },
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 22,
+      "band_name": "elevation",
+      "mean_jm": 1.201782291614947
+    },
+    {
+      "rank": 2,
+      "band_index": 94,
+      "band_name": "ndvi_median_wet",
+      "mean_jm": 1.137409065970443
+    },
+    {
+      "rank": 3,
+      "band_index": 15,
+      "band_name": "cloud_max",
+      "mean_jm": 1.1220686040273598
+    },
+    {
+      "rank": 4,
+      "band_index": 140,
+      "band_name": "sefi_max",
+      "mean_jm": 1.121574261853111
+    },
+    {
+      "rank": 5,
+      "band_index": 92,
+      "band_name": "ndvi_median",
+      "mean_jm": 1.1203347588941113
+    },
+    {
+      "rank": 6,
+      "band_index": 6,
+      "band_name": "blue_amp",
+      "mean_jm": 1.1186951708570152
+    },
+    {
+      "rank": 7,
+      "band_index": 20,
+      "band_name": "cloud_amp",
+      "mean_jm": 1.1179092181152213
+    },
+    {
+      "rank": 8,
+      "band_index": 1,
+      "band_name": "blue_max",
+      "mean_jm": 1.1168057859891896
+    },
+    {
+      "rank": 9,
+      "band_index": 21,
+      "band_name": "cloud_stdDev",
+      "mean_jm": 1.1082329408149962
+    },
+    {
+      "rank": 10,
+      "band_index": 116,
+      "band_name": "npv_min",
+      "mean_jm": 1.1064430456108125
+    }
+  ],
+  "status": "OK"
+}

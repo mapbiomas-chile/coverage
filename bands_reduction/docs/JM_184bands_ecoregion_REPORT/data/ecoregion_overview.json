@@ -1,0 +1,197 @@
+[
+  {
+    "eco_id": 1,
+    "eco_name": "E1_Puna_seca_andina",
+    "n_samples": 296,
+    "n_classes": 10,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "gv_min",
+    "top1_mean_jm": 1.3159611822905057,
+    "status": "OK"
+  },
+  {
+    "eco_id": 2,
+    "eco_name": "E2_Desierto_Atacama",
+    "n_samples": 361,
+    "n_classes": 11,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "gv_median",
+    "top1_mean_jm": 1.341174266547767,
+    "status": "OK"
+  },
+  {
+    "eco_id": 3,
+    "eco_name": "E3_Matorral_norte_1",
+    "n_samples": 117,
+    "n_classes": 10,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "npv_min",
+    "top1_mean_jm": 1.6023077316153436,
+    "status": "OK"
+  },
+  {
+    "eco_id": 4,
+    "eco_name": "E4_Estepa_andina",
+    "n_samples": 331,
+    "n_classes": 11,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "npv_min",
+    "top1_mean_jm": 1.3696241067352117,
+    "status": "OK"
+  },
+  {
+    "eco_id": 5,
+    "eco_name": "E5_Matorral_norte_2",
+    "n_samples": 396,
+    "n_classes": 12,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "cloud_min",
+    "top1_mean_jm": 1.1634434764525992,
+    "status": "OK"
+  },
+  {
+    "eco_id": 6,
+    "eco_name": "E6_Andes_norte",
+    "n_samples": 183,
+    "n_classes": 10,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "elevation",
+    "top1_mean_jm": 1.201782291614947,
+    "status": "OK"
+  },
+  {
+    "eco_id": 7,
+    "eco_name": "E7_Andes_central",
+    "n_samples": 627,
+    "n_classes": 13,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "npv_min",
+    "top1_mean_jm": 1.1612802967196896,
+    "status": "OK"
+  },
+  {
+    "eco_id": 8,
+    "eco_name": "E8_Matorral_sur",
+    "n_samples": 760,
+    "n_classes": 13,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "npv_min",
+    "top1_mean_jm": 1.1666873518296637,
+    "status": "OK"
+  },
+  {
+    "eco_id": 9,
+    "eco_name": "E9_Costa_Norte",
+    "n_samples": 1070,
+    "n_classes": 12,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "cai_median",
+    "top1_mean_jm": 1.1809452233939266,
+    "status": "OK"
+  },
+  {
+    "eco_id": 10,
+    "eco_name": "E10_Andes_Sur",
+    "n_samples": 430,
+    "n_classes": 13,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "hallheigth_amp",
+    "top1_mean_jm": 1.23051379240914,
+    "status": "OK"
+  },
+  {
+    "eco_id": 11,
+    "eco_name": "E11_Costa_Sur_1",
+    "n_samples": 570,
+    "n_classes": 11,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "ndvi_median",
+    "top1_mean_jm": 1.2527591996952796,
+    "status": "OK"
+  },
+  {
+    "eco_id": 12,
+    "eco_name": "E12_Costa_Sur_2",
+    "n_samples": 103,
+    "n_classes": 7,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "gv_median",
+    "top1_mean_jm": 1.614030375988022,
+    "status": "OK"
+  },
+  {
+    "eco_id": 13,
+    "eco_name": "E13_Andes_Sur_Costa",
+    "n_samples": 70,
+    "n_classes": 7,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "sefi_median_wet",
+    "top1_mean_jm": 1.999519208190155,
+    "status": "OK"
+  },
+  {
+    "eco_id": 14,
+    "eco_name": "E14_Estepa_patagonica",
+    "n_samples": 286,
+    "n_classes": 12,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "ndvi_median",
+    "top1_mean_jm": 1.2648444217820423,
+    "status": "OK"
+  },
+  {
+    "eco_id": 15,
+    "eco_name": "E15_Bosque_subpolar",
+    "n_samples": 396,
+    "n_classes": 11,
+    "exclude_classes": [
+      33,
+      34
+    ],
+    "top1_band": "gvs_max",
+    "top1_mean_jm": 1.2228674536820583,
+    "status": "OK"
+  }
+]

@@ -19,6 +19,12 @@ paths:
   ecoregions: /home/lserey/mapbiomas_land/ancillary_data/ecorregiones_col3_30m_alineado_lulc.tif
   results_dir: results
 
+# JM (Jeffries-Matusita): clases a excluir del ranking núcleo
+# 33=agua, 34=hielo/nieve (ya tienen reglas / no deben dominar la selección)
+jm:
+  exclude_classes: [33, 34]
+  min_count: 20
+
 qa:
   # Criterio de aceptación: caída máxima vs. full-band RF
   max_oa_drop: 0.02     # ⚙️ AJUSTAR (1–2 %)

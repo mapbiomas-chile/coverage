@@ -44,10 +44,21 @@ def main() -> None:
     parser.add_argument("--top-k", type=int, default=None)
     parser.add_argument("--min-mean-jm", type=float, default=None)
     parser.add_argument("--min-count", type=int, default=20)
+    parser.add_argument(
+        "--exclude-classes",
+        type=int,
+        nargs="*",
+        default=None,
+        help="Class ids to drop before JM (e.g. 33 34 for water/ice)",
+    )
     args = parser.parse_args()
 
     cfg_path = Path(args.config)
-    _ = load_yaml(ROOT / cfg_path if not cfg_path.is_absolute() else cfg_path)
+    cfg = load_yaml(ROOT / cfg_path if not cfg_path.is_absolute() else cfg_path)
+    exclude = args.exclude_classes
+    if exclude is None:
+        exclude = list(cfg.get("jm", {}).get("exclude_classes", []) or [])
+    exclude_set = {int(c) for c in exclude}
 
     band_list = load_band_list(args.band_list)
     bands = band_list["bands"]
@@ -60,14 +71,16 @@ def main() -> None:
         )
 
     X_full, y = data["X"], data["y"]
-    valid = y >= 0
+    valid = (y >= 0) & (~np.isin(y, list(exclude_set))) if exclude_set else (y >= 0)
+    n_before = int((y >= 0).sum())
     X_full = X_full[valid]
     y = y[valid]
     X = select_bands(X_full, bands)
 
     print(
-        f"JM ranking: n={X.shape[0]} samples, n_bands={X.shape[1]}, "
-        f"source={band_list.get('source')}"
+        f"JM ranking: n={X.shape[0]} samples (from {n_before} labeled), "
+        f"n_bands={X.shape[1]}, source={band_list.get('source')}, "
+        f"exclude_classes={sorted(exclude_set) or '[]'}"
     )
     scores = rank_bands_by_jm(
         X,
@@ -128,11 +141,14 @@ def main() -> None:
         "top_k": args.top_k,
         "min_mean_jm": args.min_mean_jm,
         "min_count": args.min_count,
+        "exclude_classes": sorted(exclude_set),
     }
     band_list_path = save_band_list(args.out_dir / "band_list_jm.json", out_band_list)
 
     summary = {
         "n_samples": int(X.shape[0]),
+        "n_samples_before_exclude": int(n_before),
+        "exclude_classes": sorted(exclude_set),
         "n_input_bands": len(bands),
         "n_selected_bands": len(selected_bands),
         "input_source": band_list.get("source"),
