@@ -1,128 +1,91 @@
-# Selección de Bandas para Clasificación LULC por Ecorregión
+# bands_reduction
 
-Reducción de bandas con **mínima pérdida de información** para clasificación de cobertura y uso de suelo (LULC), sobre un mosaico de **184 bandas** y **8 ecorregiones** (un modelo por ecorregión).
+Reducción no supervisada de bandas (184B) por ecorregión MapBiomas Chile.
 
-> **Estado:** en construcción. Los parámetros marcados con `⚙️ AJUSTAR` deben confirmarse antes de correr en producción.
-
-Metodología detallada: [`docs/metodologia.md`](docs/metodologia.md). Hoja de ruta: [`docs/roadmap.md`](docs/roadmap.md).
-
----
-
-## 1. Objetivo
-
-Encontrar, para cada ecorregión, el subconjunto **más pequeño** de bandas que conserve la información necesaria para clasificar LULC, verificando explícitamente la pérdida de información. Se busca:
-
-- Máxima reducción de dimensionalidad (de 184 → N bandas, N lo menor posible).
-- Mínima pérdida de información / separabilidad de clases.
-- Un procedimiento **replicable e idéntico en las 8 ecorregiones**, aunque el subconjunto final pueda diferir entre ellas.
-- Interpretabilidad física de cada banda seleccionada (importante para LULC).
-
----
-
-## 2. Enfoque metodológico
-
-Se descartan los métodos **embedded** por decisión de diseño. El foco es **no supervisado** y **semi-supervisado**, aprovechando que existen *algunas* muestras etiquetadas.
-
-Las **5 etapas** son una cadena (no métodos compitiendo): filtro base → clustering espectral → refinamiento JM → Boruta → ensamble SHCE. Verificación transversal tras las etapas 3, 4 y 5. Detalle en [`docs/metodologia.md`](docs/metodologia.md).
-
-### Método principal (recomendado)
-
-**Clustering espectral no supervisado + verificación semi-supervisada.**
-
-| Paso | Qué hace | Por qué |
-|------|----------|---------|
-| Selección | Agrupa las 184 bandas por redundancia (información mutua / correlación) y elige una banda representativa por grupo | No depende de etiquetas; conserva el sentido físico de la banda |
-| Verificación | Usa las muestras etiquetadas para medir separabilidad antes/después | Cierra el loop: confirma que la reducción no degrada las clases |
-
-Candidatos de selección (primera ronda):
-
-- **FCBF / CFS** — filtro base (etapa 1).
-- **WaLuDi** / **BandClust** — clustering espectral (etapa 2).
-- **Jeffries-Matusita** — refinamiento semi-supervisado (etapa 3).
-- **Boruta** — wrapper de verificación (etapa 4).
-- **SHCE** — ensamble final (etapa 5).
-
-Metaheurísticos (GA / PSO / GWO / WOA) y **autoencoder** quedan como **ronda 2 opcional**.
-
----
-
-## 3. Cómo verificar la pérdida de información
-
-Tres niveles, de menos a más costoso (control de calidad tras etapas 3, 4 y 5):
-
-1. **Redundancia / información** (sin etiquetas)
-   - Matriz de correlación espectral antes vs. después.
-   - Información mutua promedio del subconjunto.
-2. **Separabilidad de clases** (con muestras)
-   - Distancia **Jeffries-Matusita** o **Bhattacharyya** por par de clases.
-3. **Impacto en clasificación** (con muestras)
-   - Random Forest con 184 bandas vs. subconjunto reducido.
-   - Métricas: **Overall Accuracy**, **Kappa**, **Jaccard**, con validación cruzada.
-
-Criterio de aceptación sugerido `⚙️ AJUSTAR`: conservar el subconjunto más pequeño cuya caída de OA/Kappa respecto al set completo sea `≤ 1–2 %` y cuya separabilidad JM mínima entre clases se mantenga por encima de un umbral.
-
----
-
-## 4. Estructura del repositorio
-
-En Git se versionan código, configs, docs y tests. Los rasters/muestras/resultados pesados **no** se versionan (rutas locales vía config).
+## Pipeline oficial (eco unificada)
 
 ```
-bands_reduction/
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── configs/                  ← YAML por ecorregión y config global
-│   ├── global.yaml
-│   └── ecoregions/
-├── src/
-│   ├── io/                   ← lectura de raster y muestras
-│   ├── selection/            ← FCBF/CFS, WaLuDi, BandClust, JM, Boruta, SHCE
-│   ├── evaluation/           ← MI, JM/Bhattacharyya, RF, métricas
-│   ├── pipeline/             ← orquestación end-to-end (etapas 1–5)
-│   └── utils/                ← logging, config, helpers
-├── scripts/                  ← entrypoints CLI
-├── test/                     ← tests unitarios / de integración
-├── notebooks/                ← exploración (opcional, local)
-├── results/                  ← salidas locales (NO se versiona)
-│   ├── figures/
-│   ├── tables/
-│   └── selected_bands/
-└── docs/
-    ├── metodologia.md
-    └── roadmap.md
+inventario tiles ∩ eco
+    → muestreo merged (100k, balanceado por tile)
+    → |r| + clustering (0.95 / 0.90 / 0.85)
+    → representante central por cluster
+    → rescate de familias sin cobertura
+    → lista de bandas por ecorregión × umbral
 ```
 
-Rutas de datos (mosaico, muestras, interim) se declaran en `configs/global.yaml` apuntando a un directorio **fuera** de este repo.
+### Requisitos
 
----
+- Python env con: `numpy`, `scipy`, `pandas`, `rasterio`, `pyyaml`, `tqdm`, `geopandas` (solo inventario)
+- Mosaicos 184B y TIF de ecorregiones (rutas en config)
 
-## 5. Hoja de ruta
+### Config
 
-- [ ] **F0 — Setup.** Repo, entorno, lectura del mosaico de 184 bandas, carga de muestras.
-- [ ] **F1 — EDA espectral + filtro base.** Correlación / MI; etapa 1 (FCBF/CFS).
-- [ ] **F2 — Clustering espectral.** WaLuDi / BandClust por ecorregión (etapa 2).
-- [ ] **F3 — Refinamiento semi-supervisado.** Separabilidad JM con muestras (etapa 3) + QA.
-- [ ] **F4 — Wrapper Boruta.** Verificación (etapa 4) + QA.
-- [ ] **F5 — Ensamble SHCE.** Consolidación final por ecorregión (etapa 5) + QA.
-- [ ] **F6 (opcional).** Metaheurísticos / autoencoder como comparación (ronda 2).
+1. Revisar `configs/global.yaml` (parámetros científicos).
+2. Copiar `configs/local.yaml.example` → `configs/local.yaml` y poner rutas de la máquina  
+   (`local.yaml` está en `.gitignore`).
 
-Detalle en [`docs/roadmap.md`](docs/roadmap.md).
+Parámetros clave:
 
----
+| Clave | Valor acordado |
+|-------|----------------|
+| `sampling.n_pixels_eco` | 100000 |
+| `sampling.balance` | `equal_per_tile` |
+| `clustering.corr_thresholds` | `[0.95, 0.90, 0.85]` |
+| `representatives.method` | `central_mean_abs_r` |
+| `representatives.family_rescue` | `true` |
 
-## 6. Inicio rápido
+### Cómo correr (E2)
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+cd bands_reduction
+# opcional: conda activate mb_coverage
 
-# 1. Inspeccionar el mosaico (ruta local vía config o flag)
-python scripts/01_inspect_mosaic.py --config configs/global.yaml
-
-# 2. EDA de redundancia
-python scripts/02_spectral_eda.py --config configs/global.yaml
-
-# 3. Selección por ecorregión (cadena etapas 1–5)
-python scripts/03_run_selection.py --ecoregion configs/ecoregions/eco_01.yaml
+python scripts/06_inventory_eco_tiles.py --eco-id 2
+python scripts/10_sample_eco_merged.py --eco-id 2
+python scripts/11_cluster_eco_thresholds.py --eco-id 2
+python scripts/12_select_eco_representatives.py --eco-id 2
 ```
+
+NLHPC (después del inventario):
+
+```bash
+mkdir -p results/E2/2015/eco_merged/logs
+sbatch scripts/slurm/eco_merged_E2.sbatch
+```
+
+### Outputs
+
+```
+results/E{id}/{year}/
+  01_inventory/tiles.csv
+  eco_merged/
+    sample.npz
+    sample_meta.json
+    0.95|0.90|0.85/
+      clusters.json
+      band_cluster_assignment.csv
+      representatives/
+        representatives.json          # índices finales
+        representatives_named.csv     # nombres + familia + source
+        family_rescue.csv
+        family_coverage.csv
+```
+
+`results/` no se versiona.
+
+### Scripts legacy (piloto por tile)
+
+En `scripts/legacy/`:
+
+- `07_cluster_tile_thresholds.py` — clusters por tile
+- `08_summarize_tile_clusters.py`
+- `09_clusters_united_coassociation.py` — consenso co-asociación
+- `slurm/cluster_E2_per_tile.sbatch`
+
+Útiles para sensibilidad espacial; **no** son el flujo de producción.
+
+### Estructura `src/`
+
+- `src/io` — mosaicos, máscara eco, muestreo (tile y merged)
+- `src/evaluation` — `|r|`
+- `src/selection` — clustering, representantes centrales, family rescue, coasoc (legacy)

@@ -1,31 +1,54 @@
-# Config global — bands_reduction
-# ⚙️ AJUSTAR rutas y umbrales antes de producción
+# Config global — bands_reduction (compartible)
+# Paths de máquina: opcional configs/local.yaml (gitignored; ver local.yaml.example)
 
 project:
   name: bands_reduction
   n_bands_full: 184
-  n_ecoregions: 8
+  n_ecoregions: 15          # IDs 1–15 en el TIF alineado (0 = nodata)
+  mosaic_year: 2015
 
-# Rutas locales (fuera del repo; no versionar rasters/muestras)
+# Defaults; override en configs/local.yaml
 paths:
-  mosaic: null          # ej. /path/to/mosaico_184.tif
-  samples: null         # ej. /path/to/samples.gpkg
-  results_dir: results
+  mosaics_dir: /home/lserey/mapbiomas_land/test/mosaics/mosaics_184bands
+  mosaic_filename_template: "TMP-CHILE-{tile}-{year}-SBAND-184B.tif"
+  ecoregions: /home/lserey/mapbiomas_land/ancillary_data/ecorregiones_col3_30m_alineado_lulc.tif
+  samples: null
+  results_dir: results      # relativo al repo bands_reduction/
+
+# Pipeline oficial: eco unificada (merge tiles → máscara → |r| → clusters → reps)
+sampling:
+  n_pixels_eco: 100000      # total píxeles por ecorregión
+  balance: equal_per_tile   # equal_per_tile | area_proportional
+  random_state: 42
+  # legacy / piloto por tile
+  n_pixels: 50000
+  per_tile_n_pixels: 30000
+
+clustering:
+  distance_threshold: 0.10  # d = 1-|r| ↔ |r|>=0.90 (default single-cut)
+  linkage: average
+  corr_thresholds: [0.95, 0.90, 0.85]
+  # piloto legacy (scripts/legacy/)
+  coassoc_threshold: 0.70
+  coassoc_linkage: average
+
+representatives:
+  method: central_mean_abs_r
+  tie_break: min_band_index
+  family_rescue: true
 
 qa:
-  # Criterio de aceptación: caída máxima vs. full-band RF
-  max_oa_drop: 0.02     # ⚙️ AJUSTAR (1–2 %)
-  max_kappa_drop: 0.02  # ⚙️ AJUSTAR
-  cv_folds: 5           # ⚙️ AJUSTAR
+  max_oa_drop: 0.02
+  max_kappa_drop: 0.02
+  cv_folds: 5
 
 pipeline:
-  stages:
-    - filter_base       # 1 FCBF/CFS
-    - spectral_cluster  # 2 WaLuDi + BandClust
-    - jm_refine         # 3 Jeffries-Matusita
-    - boruta            # 4
-    - shce_ensemble     # 5
-  qa_after: [jm_refine, boruta, shce_ensemble]
+  official:
+    - inventory           # 06
+    - sample_eco_merged   # 10
+    - cluster_eco         # 11
+    - select_reps         # 12
+  start_unsupervised: true
 
 round_2_optional:
   metaheuristics: false
