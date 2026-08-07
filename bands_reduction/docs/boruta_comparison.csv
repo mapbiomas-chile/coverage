@@ -1,0 +1,16 @@
+eco_id,nombre,n_muestras,n_input_bands,boruta_1_kept,boruta_1_confirmed,boruta_1_tentative_kept,boruta_2_kept,boruta_2_confirmed,boruta_2_tentative_kept,boruta_3_kept,boruta_3_confirmed,boruta_3_tentative_kept
+1,Puna seca andina,296,133,1,1,0,7,1,6,0,0,0
+2,Desierto de Atacama,361,123,0,0,0,110,1,109,2,1,1
+3,Matorral norte 1,117,131,0,0,0,1,1,0,3,0,3
+4,Estepa andina,331,132,29,10,19,114,5,109,0,0,0
+5,Matorral norte 2,396,137,1,1,0,1,0,1,6,1,5
+6,Andes norte,183,133,10,1,9,9,1,8,17,2,15
+7,Andes central,627,133,1,1,0,4,1,3,0,0,0
+8,Matorral sur,760,139,23,8,15,2,1,1,9,1,8
+9,Costa norte,1070,133,0,0,0,117,1,116,1,1,0
+10,Andes sur,430,139,20,1,19,3,1,2,3,1,2
+11,Costa sur 1,570,115,3,1,2,10,1,9,14,2,12
+12,Costa sur 2,103,114,4,2,2,1,1,0,9,1,8
+13,Andes sur costa,70,126,4,1,3,3,0,3,3,1,2
+14,Estepa patagonica,286,139,18,3,15,1,1,0,4,1,3
+15,Bosque subpolar,396,132,9,2,7,6,1,5,4,1,3

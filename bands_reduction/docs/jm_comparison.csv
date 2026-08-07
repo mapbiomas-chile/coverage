@@ -1,0 +1,16 @@
+eco_id,nombre,n_muestras,n_clases,top1_184,top1_mean_jm,jm184_ge1.0,jm184_ge1.5,reps_input_095,jm_clu_ge1.0,jm_clu_ge1.5,reduccion_jm1.0_pct
+1,Puna seca andina,296,10,gv_min,1.3159611822905057,41,0,133,35,0,73.7
+2,Desierto de Atacama,361,11,gv_median,1.341174266547767,25,0,123,19,0,84.6
+3,Matorral norte 1,117,10,npv_min,1.6023077316153436,60,2,131,49,2,62.6
+4,Estepa andina,331,11,npv_min,1.3696241067352117,27,0,132,23,0,82.6
+5,Matorral norte 2,396,12,cloud_min,1.1634434764525992,11,0,137,9,0,93.4
+6,Andes norte,183,10,elevation,1.201782291614947,32,0,133,17,0,87.2
+7,Andes central,627,13,npv_min,1.1612802967196896,31,0,133,16,0,88.0
+8,Matorral sur,760,13,npv_min,1.1666873518296637,18,0,139,15,0,89.2
+9,Costa norte,1070,12,cai_median,1.1809452233939266,11,0,133,11,0,91.7
+10,Andes sur,430,13,hallheigth_amp,1.23051379240914,13,0,139,13,0,90.6
+11,Costa sur 1,570,11,ndvi_median,1.2527591996952796,33,0,115,28,0,75.7
+12,Costa sur 2,103,7,gv_median,1.614030375988022,64,11,114,43,7,62.3
+13,Andes sur costa,70,7,sefi_median_wet,1.999519208190155,59,35,126,49,30,61.1
+14,Estepa patagonica,286,12,ndvi_median,1.2648444217820423,40,0,139,35,0,74.8
+15,Bosque subpolar,396,11,gvs_max,1.2228674536820583,40,0,132,34,0,74.2
