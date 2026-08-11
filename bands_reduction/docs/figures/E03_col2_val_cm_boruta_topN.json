@@ -1,0 +1,98 @@
+{
+  "eco_id": 3,
+  "list_name": "boruta_topN",
+  "n_bands": 109,
+  "oa": 0.9019607843137255,
+  "kappa": 0.8831882730187814,
+  "n_train": 117,
+  "n_val": 51,
+  "classification_report": {
+    "labels": [
+      11,
+      12,
+      18,
+      23,
+      24,
+      25,
+      29,
+      61,
+      63,
+      66
+    ],
+    "report": {
+      "11": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "12": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 2.0
+      },
+      "18": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1.0
+      },
+      "23": {
+        "precision": 0.8181818181818182,
+        "recall": 0.9,
+        "f1-score": 0.8571428571428571,
+        "support": 10.0
+      },
+      "24": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3.0
+      },
+      "25": {
+        "precision": 0.8333333333333334,
+        "recall": 0.625,
+        "f1-score": 0.7142857142857143,
+        "support": 8.0
+      },
+      "29": {
+        "precision": 0.75,
+        "recall": 0.75,
+        "f1-score": 0.75,
+        "support": 4.0
+      },
+      "61": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 14.0
+      },
+      "63": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1-score": 0.6666666666666666,
+        "support": 1.0
+      },
+      "66": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "accuracy": 0.9019607843137255,
+      "macro avg": {
+        "precision": 0.8901515151515152,
+        "recall": 0.9275,
+        "f1-score": 0.8988095238095237,
+        "support": 51.0
+      },
+      "weighted avg": {
+        "precision": 0.9087938205585265,
+        "recall": 0.9019607843137255,
+        "f1-score": 0.9010270774976656,
+        "support": 51.0
+      }
+    }
+  }
+}

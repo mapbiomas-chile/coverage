@@ -10,9 +10,15 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import rasterio
-from shapely.geometry import Point
+from shapely.geometry import Point, box
 
-from src.io.mosaic import read_mosaic_info, resolve_mosaic_path
+from src.io.mosaic import (
+    MosaicLayout,
+    list_available_tiles,
+    read_mosaic_info,
+    resolve_mosaic_path,
+    tile_bounds_wgs84,
+)
 
 LayerName = Literal["train", "val"]
 ECO_GPKG = {
@@ -34,25 +40,25 @@ ECO_GPKG = {
 }
 
 
-def list_available_tiles(
+def load_tiles_gdf(
     mosaics_dir: Path,
+    tiles_gpkg: Path,
+    available_tiles: list[str],
+    *,
     year: int,
     filename_template: str,
-) -> list[str]:
-    tiles: list[str] = []
-    for d in sorted(mosaics_dir.iterdir()):
-        if not d.is_dir():
-            continue
-        tile = d.name
-        try:
-            resolve_mosaic_path(mosaics_dir, tile, year, filename_template)
-            tiles.append(tile)
-        except FileNotFoundError:
-            continue
-    return tiles
+    layout: MosaicLayout = "mgrs_subdir",
+) -> gpd.GeoDataFrame:
+    if layout == "cim_flat":
+        rows = []
+        for tile in available_tiles:
+            mosaic = resolve_mosaic_path(
+                mosaics_dir, tile, year, filename_template, layout=layout
+            )
+            west, south, east, north = tile_bounds_wgs84(mosaic)
+            rows.append({"tile": tile, "geometry": box(west, south, east, north)})
+        return gpd.GeoDataFrame(rows, crs="EPSG:4326")
 
-
-def load_tiles_gdf(tiles_gpkg: Path, available_tiles: list[str]) -> gpd.GeoDataFrame:
     gdf = gpd.read_file(tiles_gpkg)
     name_col = "Name" if "Name" in gdf.columns else gdf.columns[0]
     gdf = gdf[gdf[name_col].isin(available_tiles)].copy()
@@ -100,11 +106,21 @@ def extract_col2_layer(
     layer: LayerName,
     eco_ids: list[int] | None = None,
     exclude_classes: tuple[int, ...] = (33, 34),
+    mosaic_layout: MosaicLayout = "mgrs_subdir",
 ) -> tuple[np.ndarray, np.ndarray, pd.DataFrame, list[str]]:
     """Extract X, y, index for Col2 polygons from gpkg layers."""
     eco_ids = eco_ids or list(ECO_GPKG.keys())
-    available = list_available_tiles(mosaics_dir, year, filename_template)
-    tiles = load_tiles_gdf(tiles_gpkg, available)
+    available = list_available_tiles(
+        mosaics_dir, year, filename_template, layout=mosaic_layout
+    )
+    tiles = load_tiles_gdf(
+        mosaics_dir,
+        tiles_gpkg,
+        available,
+        year=year,
+        filename_template=filename_template,
+        layout=mosaic_layout,
+    )
 
     rows: list[dict[str, Any]] = []
     band_names: list[str] | None = None
@@ -131,7 +147,9 @@ def extract_col2_layer(
                 continue
             geom: Point = row.geometry
             point_crs = str(pts.crs) if pts.crs is not None else "EPSG:4326"
-            mosaic_path = resolve_mosaic_path(mosaics_dir, str(tile), year, filename_template)
+            mosaic_path = resolve_mosaic_path(
+                mosaics_dir, str(tile), year, filename_template, layout=mosaic_layout
+            )
             vals = sample_point_from_mosaic(
                 mosaic_path,
                 float(geom.x),
@@ -141,7 +159,6 @@ def extract_col2_layer(
             if vals is None:
                 continue
             if band_names is None:
-                info = read_mosaic_info(mosaic_path)
                 with rasterio.open(mosaic_path) as ds:
                     band_names = [
                         d if d else f"band_{i}" for i, d in enumerate(ds.descriptions, start=1)

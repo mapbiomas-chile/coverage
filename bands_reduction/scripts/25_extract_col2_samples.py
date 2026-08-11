@@ -12,11 +12,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.io.col2_extract import extract_col2_layer, save_col2_npz
-from src.utils.config import load_yaml
+from src.io.mosaic import mosaic_layout_from_paths
+from src.utils.config import load_yaml, resolve_results_dir
 
 DEFAULT_SAMPLES_DIR = Path("/home/lserey/mapbiomas_land/Muestras_Col2/particion_tv_col2")
 DEFAULT_TILES_GPKG = Path("/home/lserey/mapbiomas_land/ancillary_data/Tiles_Chile_Sentinel.gpkg")
-DEFAULT_OUT = ROOT / "results" / "QA" / "samples"
+DEFAULT_OUT = ROOT / "results" / "CIM2015" / "QA" / "samples"
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,7 +39,8 @@ def main() -> None:
     year = int(cfg["project"]["mosaic_year"])
     mosaics_dir = Path(paths["mosaics_dir"])
     template = paths.get("mosaic_filename_template", "TMP-CHILE-{tile}-{year}-SBAND-184B.tif")
-    eco_ids = args.eco_id or [2, 3]
+    layout = mosaic_layout_from_paths(paths)
+    eco_ids = args.eco_id or list(range(1, 16))
 
     X, y, idx, band_names = extract_col2_layer(
         samples_dir=Path(args.samples_dir),
@@ -49,6 +51,7 @@ def main() -> None:
         layer=args.layer,
         eco_ids=eco_ids,
         exclude_classes=tuple(args.exclude_classes),
+        mosaic_layout=layout,
     )
 
     scope = f"col2_{args.layer}_E{'_'.join(str(i) for i in eco_ids)}"

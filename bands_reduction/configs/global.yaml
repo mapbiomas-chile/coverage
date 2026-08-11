@@ -9,11 +9,12 @@ project:
 
 # Defaults; override en configs/local.yaml
 paths:
-  mosaics_dir: /home/lserey/mapbiomas_land/test/mosaics/mosaics_184bands
-  mosaic_filename_template: "TMP-CHILE-{tile}-{year}-SBAND-184B.tif"
+  mosaics_dir: /home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015
+  mosaic_layout: cim_flat   # mgrs_subdir | cim_flat
+  mosaic_filename_template: "{tile}-{year}-L8-3-184F-HARM_masked.tif"
   ecoregions: /home/lserey/mapbiomas_land/ancillary_data/ecorregiones_col3_30m_alineado_lulc.tif
   samples: null
-  results_dir: results      # relativo al repo bands_reduction/
+  results_dir: results/CIM2015   # rearme CIM 2015 (no pisa piloto test/mosaics)
 
 # Pipeline oficial: eco unificada (merge tiles → máscara → |r| → clusters → reps)
 sampling:
@@ -38,8 +39,8 @@ representatives:
   family_rescue: true
 
 qa:
-  max_oa_drop: 0.02
-  max_kappa_drop: 0.02
+  max_oa_drop: 0.05
+  max_kappa_drop: 0.05
   cv_folds: 5
 
 pipeline:

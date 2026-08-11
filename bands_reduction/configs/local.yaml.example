@@ -2,7 +2,8 @@
 # Se fusiona sobre global.yaml al correr los scripts.
 
 paths:
-  mosaics_dir: /path/to/mosaics_184bands
-  mosaic_filename_template: "TMP-CHILE-{tile}-{year}-SBAND-184B.tif"
+  mosaics_dir: /path/to/mosaic_184bands_mask_water/2015
+  mosaic_layout: cim_flat
+  mosaic_filename_template: "{tile}-{year}-L8-3-184F-HARM_masked.tif"
   ecoregions: /path/to/ecorregiones_col3_30m_alineado_lulc.tif
-  results_dir: results
+  results_dir: results/CIM2015

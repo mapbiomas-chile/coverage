@@ -1,6 +1,12 @@
 """I/O helpers for mosaics and ecoregion masks."""
 
-from .eco_sample import sample_ecoregion_merged, save_eco_merged_sample
+from .eco_sample import (
+    merge_eco_tile_samples,
+    sample_eco_tile,
+    sample_ecoregion_merged,
+    save_eco_merged_sample,
+    save_eco_tile_sample,
+)
 from .ecoregion import EcoMaskStats, warp_eco_mask_to_mosaic
 from .mosaic import MosaicInfo, read_mosaic_info, resolve_mosaic_path
 from .sample import PixelSample, sample_pixels_from_mask, save_pixel_sample
@@ -11,9 +17,12 @@ __all__ = [
     "PixelSample",
     "read_mosaic_info",
     "resolve_mosaic_path",
+    "merge_eco_tile_samples",
+    "sample_eco_tile",
     "sample_ecoregion_merged",
     "sample_pixels_from_mask",
     "save_eco_merged_sample",
+    "save_eco_tile_sample",
     "save_pixel_sample",
     "warp_eco_mask_to_mosaic",
 ]

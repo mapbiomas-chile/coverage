@@ -6,10 +6,14 @@ import json
 from pathlib import Path
 from typing import Any
 
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, cohen_kappa_score
+from sklearn.metrics import accuracy_score, classification_report, cohen_kappa_score, confusion_matrix
 from sklearn.model_selection import StratifiedKFold, cross_validate
 
 from src.evaluation.jm import load_train_samples
@@ -41,7 +45,8 @@ def run_rf_holdout(
     n_estimators: int = 200,
     n_jobs: int = 8,
     random_state: int = 42,
-) -> dict[str, float]:
+    return_pred: bool = False,
+) -> dict[str, Any]:
     rf = RandomForestClassifier(
         n_estimators=n_estimators,
         n_jobs=n_jobs,
@@ -52,12 +57,138 @@ def run_rf_holdout(
     X_va = X_val[:, band_indices]
     rf.fit(X_tr, y_train)
     pred = rf.predict(X_va)
-    return {
+    out: dict[str, Any] = {
         "oa": float(accuracy_score(y_val, pred)),
         "kappa": float(cohen_kappa_score(y_val, pred)),
         "n_train": int(X_tr.shape[0]),
         "n_val": int(X_va.shape[0]),
     }
+    if return_pred:
+        out["y_true"] = y_val
+        out["y_pred"] = pred
+    return out
+
+
+def confusion_matrix_frame(y_true: np.ndarray, y_pred: np.ndarray) -> pd.DataFrame:
+    labels = sorted({int(v) for v in np.unique(y_true)} | {int(v) for v in np.unique(y_pred)})
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
+    index = [f"true_{c}" for c in labels]
+    columns = [f"pred_{c}" for c in labels]
+    return pd.DataFrame(cm, index=index, columns=columns)
+
+
+def classification_report_dict(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, Any]:
+    labels = sorted({int(v) for v in np.unique(y_true)} | {int(v) for v in np.unique(y_pred)})
+    report = classification_report(
+        y_true,
+        y_pred,
+        labels=labels,
+        output_dict=True,
+        zero_division=0,
+    )
+    return {"labels": labels, "report": report}
+
+
+def plot_confusion_matrix(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    out_png: Path,
+    *,
+    title: str,
+    normalize: str = "true",
+) -> pd.DataFrame:
+    """Save row-normalized confusion heatmap (counts annotated)."""
+    labels = sorted({int(v) for v in np.unique(y_true)} | {int(v) for v in np.unique(y_pred)})
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
+    if normalize == "true":
+        denom = cm.sum(axis=1, keepdims=True)
+        display = np.divide(cm, denom, where=denom > 0, out=np.zeros_like(cm, dtype=float))
+        cbar_label = "Fracción por fila (referencia)"
+    else:
+        display = cm.astype(float)
+        cbar_label = "Conteo"
+
+    label_str = [str(c) for c in labels]
+    fig_w = max(6.0, 0.55 * len(labels) + 2.5)
+    fig_h = max(5.0, 0.55 * len(labels) + 2.0)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    im = ax.imshow(display, cmap="Blues", vmin=0.0, vmax=1.0 if normalize == "true" else None)
+    ax.set_xticks(range(len(labels)))
+    ax.set_yticks(range(len(labels)))
+    ax.set_xticklabels(label_str, rotation=45, ha="right")
+    ax.set_yticklabels(label_str)
+    ax.set_xlabel("Predicción (clase MapBiomas)")
+    ax.set_ylabel("Referencia (gpkg val)")
+    ax.set_title(title)
+
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            count = int(cm[i, j])
+            frac = display[i, j]
+            if normalize == "true":
+                text = f"{count}\n({frac:.0%})" if count else ""
+            else:
+                text = str(count) if count else ""
+            if text:
+                color = "white" if display[i, j] > 0.55 else "black"
+                ax.text(j, i, text, ha="center", va="center", color=color, fontsize=8)
+
+    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label=cbar_label)
+    fig.tight_layout()
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_png, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    return confusion_matrix_frame(y_true, y_pred)
+
+
+def save_holdout_confusion(
+    X_train: np.ndarray,
+    y_train: np.ndarray,
+    X_val: np.ndarray,
+    y_val: np.ndarray,
+    band_indices: list[int],
+    out_stem: Path,
+    *,
+    list_name: str,
+    eco_id: int,
+    n_estimators: int = 200,
+    n_jobs: int = 8,
+    random_state: int = 42,
+) -> dict[str, Any]:
+    """Train RF hold-out, write CM csv/png + classification report json."""
+    metrics = run_rf_holdout(
+        X_train,
+        y_train,
+        X_val,
+        y_val,
+        band_indices,
+        n_estimators=n_estimators,
+        n_jobs=n_jobs,
+        random_state=random_state,
+        return_pred=True,
+    )
+    y_true = metrics.pop("y_true")
+    y_pred = metrics.pop("y_pred")
+    out_stem.parent.mkdir(parents=True, exist_ok=True)
+
+    plot_confusion_matrix(
+        y_true,
+        y_pred,
+        out_stem.with_suffix(".png"),
+        title=f"E{eco_id} val Col2 — {list_name} (n={len(band_indices)} bandas, OA={metrics['oa']:.3f})",
+        normalize="true",
+    )
+    confusion_matrix_frame(y_true, y_pred).to_csv(out_stem.with_suffix(".csv"))
+
+    meta = {
+        "eco_id": eco_id,
+        "list_name": list_name,
+        "n_bands": len(band_indices),
+        **metrics,
+        "classification_report": classification_report_dict(y_true, y_pred),
+    }
+    out_stem.with_suffix(".json").write_text(json.dumps(meta, indent=2) + "\n")
+    return meta
 
 
 def evaluate_holdout_band_sets(
@@ -83,6 +214,20 @@ def evaluate_holdout_band_sets(
     )
     rows: list[dict[str, Any]] = []
     for name, indices in band_sets.items():
+        if not indices:
+            rows.append(
+                {
+                    "list_name": name,
+                    "n_bands": 0,
+                    "oa_val": float("nan"),
+                    "kappa_val": float("nan"),
+                    "n_train": int(X_train.shape[0]),
+                    "n_val": int(X_val.shape[0]),
+                    "delta_oa_vs_184": float("nan"),
+                    "delta_kappa_vs_184": float("nan"),
+                }
+            )
+            continue
         m = run_rf_holdout(
             X_train,
             y_train,
@@ -128,62 +273,91 @@ def triple_indices(unsup: list[int], jm: list[int], boruta: list[int]) -> list[i
     return sorted(s)
 
 
-def nucleo_union_indices(results_dir: Path, eco_ids: tuple[int, ...] = (2, 3)) -> list[int]:
+def representatives_path(results_dir: Path, eco_id: int, corr_threshold: str) -> Path:
+    return (
+        results_dir
+        / f"E{eco_id}"
+        / "2015"
+        / "eco_merged"
+        / corr_threshold
+        / "representatives"
+        / "representatives.json"
+    )
+
+
+def resolve_jm_ranking_csv(results_dir: Path, eco_id: int) -> Path:
+    candidates = [
+        results_dir / "JM" / "184bands_ecorregion" / f"E{eco_id:02d}" / "jm_ranking.csv",
+        results_dir / "JM_test_PE" / "184bands_ecorregion_stratified" / f"E{eco_id:02d}" / "jm_ranking.csv",
+        results_dir / "JM_test_PE" / "184bands_ecorregion" / f"E{eco_id:02d}" / "jm_ranking.csv",
+    ]
+    for path in candidates:
+        if path.is_file():
+            return path
+    raise FileNotFoundError(f"JM ranking not found for E{eco_id:02d} under {results_dir}")
+
+
+def resolve_boruta_decisions_csv(results_dir: Path, eco_id: int) -> Path:
+    candidates = [
+        results_dir / "Boruta" / f"E{eco_id:02d}_all184" / "boruta_decisions.csv",
+        results_dir / "Boruta_PE" / f"E{eco_id:02d}_all184" / "boruta_decisions.csv",
+        results_dir / "Boruta_PE" / f"E{eco_id:02d}_reps095" / "boruta_decisions.csv",
+    ]
+    for path in candidates:
+        if path.is_file():
+            return path
+    raise FileNotFoundError(f"Boruta decisions not found for E{eco_id:02d} under {results_dir}")
+
+
+def build_method_band_sets(
+    results_dir: Path,
+    eco_id: int,
+    *,
+    corr_threshold: str = "0.95",
+) -> dict[str, list[int]]:
+    """Per-method band lists: baseline + unsup @corr_threshold + JM/Boruta top-N (N = |unsup|)."""
+    rep_path = representatives_path(results_dir, eco_id, corr_threshold)
+    unsup = load_representatives(rep_path)
+    n = len(unsup)
+    jm = jm_top_indices(resolve_jm_ranking_csv(results_dir, eco_id), n)
+    bor = boruta_top_indices(resolve_boruta_decisions_csv(results_dir, eco_id), n)
+    unsup_key = f"unsup_{corr_threshold.replace('.', '')}"
+
+    return {
+        "baseline_184": list(range(184)),
+        unsup_key: unsup,
+        "jm_topN": jm,
+        "boruta_topN": bor,
+        "nucleo_triple": triple_indices(unsup, jm, bor),
+        "pool_union": sorted(set(unsup) | set(jm) | set(bor)),
+    }
+
+
+def nucleo_union_indices(
+    results_dir: Path,
+    eco_ids: tuple[int, ...] = (2, 3),
+    *,
+    corr_threshold: str = "0.90",
+) -> list[int]:
     triples: list[set[int]] = []
     for eco_id in eco_ids:
-        rep_path = (
-            results_dir
-            / f"E{eco_id}"
-            / "2015"
-            / "eco_merged"
-            / "0.90"
-            / "representatives"
-            / "representatives.json"
-        )
-        unsup = load_representatives(rep_path)
+        unsup = load_representatives(representatives_path(results_dir, eco_id, corr_threshold))
         n = len(unsup)
-        jm = jm_top_indices(
-            results_dir
-            / "JM_test_PE"
-            / "184bands_ecorregion_stratified"
-            / f"E{eco_id:02d}"
-            / "jm_ranking.csv",
-            n,
-        )
-        bor = boruta_top_indices(
-            results_dir / "Boruta_PE" / f"E{eco_id:02d}_reps095" / "boruta_decisions.csv",
-            n,
-        )
+        jm = jm_top_indices(resolve_jm_ranking_csv(results_dir, eco_id), n)
+        bor = boruta_top_indices(resolve_boruta_decisions_csv(results_dir, eco_id), n)
         triples.append(set(triple_indices(unsup, jm, bor)))
     return sorted(set.union(*triples))
 
 
 def build_pilot_band_sets(results_dir: Path, eco_id: int) -> dict[str, list[int]]:
     """Band lists for QA pilot: baseline, unsup, jm/boruta top-N, nucleo, nucleo_union."""
-    rep_path = (
-        results_dir
-        / f"E{eco_id}"
-        / "2015"
-        / "eco_merged"
-        / "0.90"
-        / "representatives"
-        / "representatives.json"
-    )
+    corr_threshold = "0.90"
+    rep_path = representatives_path(results_dir, eco_id, corr_threshold)
     unsup = load_representatives(rep_path)
     n = len(unsup)
-    jm = jm_top_indices(
-        results_dir
-        / "JM_test_PE"
-        / "184bands_ecorregion_stratified"
-        / f"E{eco_id:02d}"
-        / "jm_ranking.csv",
-        n,
-    )
-    bor = boruta_top_indices(
-        results_dir / "Boruta_PE" / f"E{eco_id:02d}_reps095" / "boruta_decisions.csv",
-        n,
-    )
-    union67 = nucleo_union_indices(results_dir, eco_ids=(2, 3))
+    jm = jm_top_indices(resolve_jm_ranking_csv(results_dir, eco_id), n)
+    bor = boruta_top_indices(resolve_boruta_decisions_csv(results_dir, eco_id), n)
+    union67 = nucleo_union_indices(results_dir, eco_ids=(2, 3), corr_threshold=corr_threshold)
 
     return {
         "baseline_184": list(range(184)),

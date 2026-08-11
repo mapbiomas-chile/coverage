@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.io.mosaic import mosaic_layout_from_paths
 from src.io import sample_ecoregion_merged, save_eco_merged_sample
 from src.utils import (
     eco_merged_dir,
@@ -44,6 +45,12 @@ def parse_args() -> argparse.Namespace:
         help="Default: results/E{eco}/{year}/01_inventory/tiles.txt",
     )
     p.add_argument("--out-dir", default=None)
+    p.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Parallel tile workers (ProcessPool); e.g. 4 for CIM smoke",
+    )
     return p.parse_args()
 
 
@@ -82,6 +89,7 @@ def main() -> int:
                 "n_tiles": len(tiles),
                 "n_pixels": n_pixels,
                 "balance": balance,
+                "workers": args.workers,
             }
         )
     )
@@ -99,6 +107,8 @@ def main() -> int:
         n_pixels=n_pixels,
         balance=balance,
         random_state=random_state,
+        mosaic_layout=mosaic_layout_from_paths(paths),
+        n_workers=args.workers,
     )
     meta = save_eco_merged_sample(out_dir, payload)
     print(json.dumps(meta, indent=2))
