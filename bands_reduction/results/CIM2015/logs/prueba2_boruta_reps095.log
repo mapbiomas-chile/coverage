@@ -1,0 +1,75 @@
+=== Boruta reps095 E1 ===
+E1 Boruta (reps095): 296 samples, 10 classes, 59 input bands
+  confirmed=59 tentative=0 kept=59 iters=37
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E01_reps095/boruta_decisions.csv
+=== Boruta reps095 E2 ===
+E2 Boruta (reps095): 359 samples, 11 classes, 80 input bands
+  confirmed=80 tentative=0 kept=80 iters=19
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E02_reps095/boruta_decisions.csv
+=== Boruta reps095 E3 ===
+E3 Boruta (reps095): 117 samples, 10 classes, 67 input bands
+  confirmed=51 tentative=3 kept=54 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E03_reps095/boruta_decisions.csv
+=== Boruta reps095 E4 ===
+E4 Boruta (reps095): 331 samples, 11 classes, 51 input bands
+  confirmed=49 tentative=1 kept=50 iters=49
+  top kept: band_154 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E04_reps095/boruta_decisions.csv
+=== Boruta reps095 E5 ===
+E5 Boruta (reps095): 396 samples, 12 classes, 76 input bands
+  confirmed=72 tentative=1 kept=73 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E05_reps095/boruta_decisions.csv
+=== Boruta reps095 E6 ===
+E6 Boruta (reps095): 183 samples, 10 classes, 57 input bands
+  confirmed=56 tentative=0 kept=56 iters=22
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E06_reps095/boruta_decisions.csv
+=== Boruta reps095 E7 ===
+E7 Boruta (reps095): 627 samples, 13 classes, 46 input bands
+  confirmed=45 tentative=0 kept=45 iters=35
+  top kept: band_154 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E07_reps095/boruta_decisions.csv
+=== Boruta reps095 E8 ===
+E8 Boruta (reps095): 760 samples, 13 classes, 66 input bands
+  confirmed=42 tentative=12 kept=54 iters=49
+  top kept: band_154 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E08_reps095/boruta_decisions.csv
+=== Boruta reps095 E9 ===
+E9 Boruta (reps095): 1070 samples, 12 classes, 47 input bands
+  confirmed=47 tentative=0 kept=47 iters=12
+  top kept: band_92 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E09_reps095/boruta_decisions.csv
+=== Boruta reps095 E10 ===
+E10 Boruta (reps095): 430 samples, 13 classes, 46 input bands
+  confirmed=46 tentative=0 kept=46 iters=8
+  top kept: band_90 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E10_reps095/boruta_decisions.csv
+=== Boruta reps095 E11 ===
+E11 Boruta (reps095): 570 samples, 11 classes, 15 input bands
+  confirmed=8 tentative=1 kept=9 iters=49
+  top kept: band_38 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E11_reps095/boruta_decisions.csv
+=== Boruta reps095 E12 ===
+E12 Boruta (reps095): 103 samples, 7 classes, 53 input bands
+  confirmed=32 tentative=5 kept=37 iters=49
+  top kept: band_94 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E12_reps095/boruta_decisions.csv
+=== Boruta reps095 E13 ===
+E13 Boruta (reps095): 70 samples, 7 classes, 51 input bands
+  confirmed=21 tentative=6 kept=27 iters=49
+  top kept: band_38 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E13_reps095/boruta_decisions.csv
+=== Boruta reps095 E14 ===
+E14 Boruta (reps095): 286 samples, 12 classes, 39 input bands
+  confirmed=39 tentative=0 kept=39 iters=49
+  top kept: band_154 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E14_reps095/boruta_decisions.csv
+=== Boruta reps095 E15 ===
+E15 Boruta (reps095): 396 samples, 11 classes, 34 input bands
+  confirmed=34 tentative=0 kept=34 iters=8
+  top kept: band_177 (hit_rate=1.000)
+  wrote results/CIM2015/Prueba2/Boruta/E15_reps095/boruta_decisions.csv

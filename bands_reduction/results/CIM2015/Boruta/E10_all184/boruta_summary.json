@@ -1,0 +1,52 @@
+{
+  "eco_id": 10,
+  "eco_name": "E10_Andes_sur",
+  "status": "OK",
+  "n_samples": 430,
+  "n_classes": 13,
+  "class_counts": {
+    "11": 67,
+    "12": 22,
+    "15": 28,
+    "23": 29,
+    "24": 32,
+    "25": 6,
+    "29": 6,
+    "59": 48,
+    "60": 40,
+    "66": 25,
+    "67": 45,
+    "79": 57,
+    "80": 25
+  },
+  "n_input_bands": 184,
+  "corr_threshold_parent": null,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "split": "train",
+  "n_confirmed": 155,
+  "n_tentative": 9,
+  "n_rejected": 20,
+  "n_tentative_kept_hitrate_ge": 9,
+  "tentative_min_hit_rate": 0.4,
+  "n_kept_total": 164,
+  "n_iters": 49,
+  "params": {
+    "max_iter": 50,
+    "n_estimators": 200,
+    "perc": 95.0,
+    "alpha": 0.05,
+    "n_jobs": 8,
+    "random_state": 42
+  },
+  "parent_source": "all184bands",
+  "representatives_json": null,
+  "samples_npz": "results/CIM2015/QA/samples/chile_train_184.npz",
+  "samples_index": "results/CIM2015/QA/samples/chile_train_184_index.csv",
+  "sample_set": "official",
+  "decisions_csv": "results/CIM2015/Boruta/E10_all184/boruta_decisions.csv",
+  "band_list_boruta": "results/CIM2015/Boruta/E10_all184/band_list_boruta.json",
+  "note": "Confirmed always kept. Tentative kept only if hit_rate >= 0.4 (strict). Weak tentatives listed in CSV only."
+}

@@ -1,0 +1,5 @@
+=== Col2 train extract CIM start 2026-08-10T14:20:05-04:00 host=fn002 ===
+Extracted 5994 samples (train), 184 bands
+  npz:   results/CIM2015/QA/samples/chile_train_184.npz
+  index: results/CIM2015/QA/samples/chile_train_184_index.csv
+=== Col2 train extract DONE 2026-08-10T16:09:36-04:00 ===

@@ -1,0 +1,27 @@
+{
+  "method": "central_mean_abs_r",
+  "family_rescue": true,
+  "n_representatives": 8,
+  "n_central": 8,
+  "n_rescued": 0,
+  "representatives": [
+    0,
+    14,
+    38,
+    40,
+    41,
+    42,
+    72,
+    87
+  ],
+  "band_names": [
+    "band_0",
+    "band_14",
+    "band_38",
+    "band_40",
+    "band_41",
+    "band_42",
+    "band_72",
+    "band_87"
+  ]
+}

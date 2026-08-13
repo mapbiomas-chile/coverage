@@ -1,0 +1,49 @@
+{
+  "eco_id": 3,
+  "eco_name": "E3_Matorral_norte_1",
+  "status": "OK",
+  "n_samples": 117,
+  "n_classes": 10,
+  "class_counts": {
+    "11": 10,
+    "12": 6,
+    "18": 2,
+    "23": 22,
+    "24": 6,
+    "25": 20,
+    "29": 8,
+    "61": 31,
+    "63": 1,
+    "66": 11
+  },
+  "n_input_bands": 184,
+  "corr_threshold_parent": null,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "split": "train",
+  "n_confirmed": 113,
+  "n_tentative": 26,
+  "n_rejected": 45,
+  "n_tentative_kept_hitrate_ge": 26,
+  "tentative_min_hit_rate": 0.4,
+  "n_kept_total": 139,
+  "n_iters": 49,
+  "params": {
+    "max_iter": 50,
+    "n_estimators": 200,
+    "perc": 95.0,
+    "alpha": 0.05,
+    "n_jobs": 8,
+    "random_state": 42
+  },
+  "parent_source": "all184bands",
+  "representatives_json": null,
+  "samples_npz": "results/CIM2015/QA/samples/chile_train_184.npz",
+  "samples_index": "results/CIM2015/QA/samples/chile_train_184_index.csv",
+  "sample_set": "official",
+  "decisions_csv": "results/CIM2015/Boruta/E03_all184/boruta_decisions.csv",
+  "band_list_boruta": "results/CIM2015/Boruta/E03_all184/band_list_boruta.json",
+  "note": "Confirmed always kept. Tentative kept only if hit_rate >= 0.4 (strict). Weak tentatives listed in CSV only."
+}

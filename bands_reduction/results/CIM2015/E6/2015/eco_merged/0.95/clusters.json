@@ -1,0 +1,528 @@
+[
+  {
+    "cluster_id": 26,
+    "size": 84,
+    "bands": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      73,
+      74,
+      75,
+      76,
+      77,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      168,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183
+    ]
+  },
+  {
+    "cluster_id": 44,
+    "size": 10,
+    "bands": [
+      1,
+      6,
+      44,
+      49,
+      78,
+      79,
+      105,
+      110,
+      126,
+      131
+    ]
+  },
+  {
+    "cluster_id": 18,
+    "size": 6,
+    "bands": [
+      23,
+      24,
+      26,
+      133,
+      134,
+      136
+    ]
+  },
+  {
+    "cluster_id": 17,
+    "size": 4,
+    "bands": [
+      25,
+      27,
+      135,
+      137
+    ]
+  },
+  {
+    "cluster_id": 22,
+    "size": 4,
+    "bands": [
+      163,
+      165,
+      170,
+      172
+    ]
+  },
+  {
+    "cluster_id": 42,
+    "size": 4,
+    "bands": [
+      3,
+      46,
+      107,
+      128
+    ]
+  },
+  {
+    "cluster_id": 43,
+    "size": 4,
+    "bands": [
+      7,
+      50,
+      111,
+      132
+    ]
+  },
+  {
+    "cluster_id": 0,
+    "size": 3,
+    "bands": [
+      37,
+      42,
+      43
+    ]
+  },
+  {
+    "cluster_id": 23,
+    "size": 3,
+    "bands": [
+      4,
+      47,
+      129
+    ]
+  },
+  {
+    "cluster_id": 24,
+    "size": 3,
+    "bands": [
+      5,
+      48,
+      130
+    ]
+  },
+  {
+    "cluster_id": 51,
+    "size": 3,
+    "bands": [
+      2,
+      45,
+      127
+    ]
+  },
+  {
+    "cluster_id": 12,
+    "size": 2,
+    "bands": [
+      28,
+      138
+    ]
+  },
+  {
+    "cluster_id": 15,
+    "size": 2,
+    "bands": [
+      92,
+      94
+    ]
+  },
+  {
+    "cluster_id": 20,
+    "size": 2,
+    "bands": [
+      167,
+      174
+    ]
+  },
+  {
+    "cluster_id": 21,
+    "size": 2,
+    "bands": [
+      162,
+      169
+    ]
+  },
+  {
+    "cluster_id": 25,
+    "size": 2,
+    "bands": [
+      29,
+      139
+    ]
+  },
+  {
+    "cluster_id": 28,
+    "size": 2,
+    "bands": [
+      164,
+      171
+    ]
+  },
+  {
+    "cluster_id": 29,
+    "size": 2,
+    "bands": [
+      166,
+      173
+    ]
+  },
+  {
+    "cluster_id": 40,
+    "size": 2,
+    "bands": [
+      8,
+      13
+    ]
+  },
+  {
+    "cluster_id": 41,
+    "size": 2,
+    "bands": [
+      71,
+      72
+    ]
+  },
+  {
+    "cluster_id": 45,
+    "size": 2,
+    "bands": [
+      9,
+      11
+    ]
+  },
+  {
+    "cluster_id": 1,
+    "size": 1,
+    "bands": [
+      97
+    ]
+  },
+  {
+    "cluster_id": 2,
+    "size": 1,
+    "bands": [
+      104
+    ]
+  },
+  {
+    "cluster_id": 3,
+    "size": 1,
+    "bands": [
+      96
+    ]
+  },
+  {
+    "cluster_id": 4,
+    "size": 1,
+    "bands": [
+      98
+    ]
+  },
+  {
+    "cluster_id": 5,
+    "size": 1,
+    "bands": [
+      103
+    ]
+  },
+  {
+    "cluster_id": 6,
+    "size": 1,
+    "bands": [
+      124
+    ]
+  },
+  {
+    "cluster_id": 7,
+    "size": 1,
+    "bands": [
+      125
+    ]
+  },
+  {
+    "cluster_id": 8,
+    "size": 1,
+    "bands": [
+      119
+    ]
+  },
+  {
+    "cluster_id": 9,
+    "size": 1,
+    "bands": [
+      154
+    ]
+  },
+  {
+    "cluster_id": 10,
+    "size": 1,
+    "bands": [
+      122
+    ]
+  },
+  {
+    "cluster_id": 11,
+    "size": 1,
+    "bands": [
+      123
+    ]
+  },
+  {
+    "cluster_id": 13,
+    "size": 1,
+    "bands": [
+      80
+    ]
+  },
+  {
+    "cluster_id": 14,
+    "size": 1,
+    "bands": [
+      81
+    ]
+  },
+  {
+    "cluster_id": 16,
+    "size": 1,
+    "bands": [
+      93
+    ]
+  },
+  {
+    "cluster_id": 19,
+    "size": 1,
+    "bands": [
+      91
+    ]
+  },
+  {
+    "cluster_id": 27,
+    "size": 1,
+    "bands": [
+      120
+    ]
+  },
+  {
+    "cluster_id": 30,
+    "size": 1,
+    "bands": [
+      106
+    ]
+  },
+  {
+    "cluster_id": 31,
+    "size": 1,
+    "bands": [
+      108
+    ]
+  },
+  {
+    "cluster_id": 32,
+    "size": 1,
+    "bands": [
+      109
+    ]
+  },
+  {
+    "cluster_id": 33,
+    "size": 1,
+    "bands": [
+      89
+    ]
+  },
+  {
+    "cluster_id": 34,
+    "size": 1,
+    "bands": [
+      12
+    ]
+  },
+  {
+    "cluster_id": 35,
+    "size": 1,
+    "bands": [
+      41
+    ]
+  },
+  {
+    "cluster_id": 36,
+    "size": 1,
+    "bands": [
+      95
+    ]
+  },
+  {
+    "cluster_id": 37,
+    "size": 1,
+    "bands": [
+      38
+    ]
+  },
+  {
+    "cluster_id": 38,
+    "size": 1,
+    "bands": [
+      39
+    ]
+  },
+  {
+    "cluster_id": 39,
+    "size": 1,
+    "bands": [
+      40
+    ]
+  },
+  {
+    "cluster_id": 46,
+    "size": 1,
+    "bands": [
+      22
+    ]
+  },
+  {
+    "cluster_id": 47,
+    "size": 1,
+    "bands": [
+      121
+    ]
+  },
+  {
+    "cluster_id": 48,
+    "size": 1,
+    "bands": [
+      99
+    ]
+  },
+  {
+    "cluster_id": 49,
+    "size": 1,
+    "bands": [
+      101
+    ]
+  },
+  {
+    "cluster_id": 50,
+    "size": 1,
+    "bands": [
+      100
+    ]
+  },
+  {
+    "cluster_id": 52,
+    "size": 1,
+    "bands": [
+      90
+    ]
+  },
+  {
+    "cluster_id": 53,
+    "size": 1,
+    "bands": [
+      102
+    ]
+  },
+  {
+    "cluster_id": 54,
+    "size": 1,
+    "bands": [
+      10
+    ]
+  },
+  {
+    "cluster_id": 55,
+    "size": 1,
+    "bands": [
+      0
+    ]
+  },
+  {
+    "cluster_id": 56,
+    "size": 1,
+    "bands": [
+      14
+    ]
+  }
+]

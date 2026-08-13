@@ -1,0 +1,40 @@
+{
+  "method": "central_mean_abs_r",
+  "tie_break": "min_band_index",
+  "n_clusters": 14,
+  "n_representatives": 14,
+  "n_singletons": 5,
+  "n_multi": 9,
+  "representatives": [
+    0,
+    8,
+    10,
+    14,
+    37,
+    38,
+    42,
+    71,
+    80,
+    96,
+    99,
+    105,
+    124,
+    177
+  ],
+  "status": "PASS",
+  "out_dir": "/home/perazo/coverage/bands_reduction/results/CIM2015/E14/2015/eco_merged/0.85/representatives",
+  "representatives_json": "/home/perazo/coverage/bands_reduction/results/CIM2015/E14/2015/eco_merged/0.85/representatives/representatives.json",
+  "detail_json": "/home/perazo/coverage/bands_reduction/results/CIM2015/E14/2015/eco_merged/0.85/representatives/representatives_detail.json",
+  "csv": "/home/perazo/coverage/bands_reduction/results/CIM2015/E14/2015/eco_merged/0.85/representatives/representatives.csv",
+  "source": {
+    "eco_id": 14,
+    "year": 2015,
+    "corr_threshold": 0.85,
+    "family_rescue": true,
+    "n_rescued": 0
+  },
+  "summary_json": "/home/perazo/coverage/bands_reduction/results/CIM2015/E14/2015/eco_merged/0.85/representatives/representatives_summary.json",
+  "n_representatives_final": 14,
+  "n_rescued": 0,
+  "corr_threshold": 0.85
+}

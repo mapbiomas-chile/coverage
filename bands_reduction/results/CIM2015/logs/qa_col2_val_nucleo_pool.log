@@ -1,0 +1,120 @@
+=== Col2 val QA E1 (train 296 → val 129) ===
+  baseline_184         n=184  OA=0.8605  K=0.8436  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 59  OA=0.8760  K=0.8606  dOA=+0.0155  dK=+0.0170
+  jm_topN              n= 59  OA=0.7907  K=0.7651  dOA=-0.0698  dK=-0.0785
+  boruta_topN          n= 59  OA=0.8450  K=0.8261  dOA=-0.0155  dK=-0.0175
+  nucleo_triple        n=  2  OA=0.7132  K=0.6801  dOA=-0.1473  dK=-0.1635
+  pool_union           n=134  OA=0.8760  K=0.8608  dOA=+0.0155  dK=+0.0172
+Wrote results/CIM2015/QA/col2_val/E01_qa_col2_val_compare.csv
+=== Col2 val QA E2 (train 359 → val 155) ===
+  baseline_184         n=184  OA=0.7871  K=0.7623  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 80  OA=0.8387  K=0.8202  dOA=+0.0516  dK=+0.0579
+  jm_topN              n= 80  OA=0.8194  K=0.7985  dOA=+0.0323  dK=+0.0362
+  boruta_topN          n= 80  OA=0.8194  K=0.7984  dOA=+0.0323  dK=+0.0361
+  nucleo_triple        n= 11  OA=0.8129  K=0.7915  dOA=+0.0258  dK=+0.0292
+  pool_union           n=156  OA=0.8194  K=0.7986  dOA=+0.0323  dK=+0.0363
+Wrote results/CIM2015/QA/col2_val/E02_qa_col2_val_compare.csv
+=== Col2 val QA E3 (train 117 → val 51) ===
+  baseline_184         n=184  OA=0.8627  K=0.8354  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 67  OA=0.8824  K=0.8589  dOA=+0.0196  dK=+0.0234
+  jm_topN              n= 67  OA=0.8235  K=0.7873  dOA=-0.0392  dK=-0.0481
+  boruta_topN          n= 67  OA=0.8824  K=0.8594  dOA=+0.0196  dK=+0.0240
+  nucleo_triple        n=  9  OA=0.8627  K=0.8355  dOA=+0.0000  dK=+0.0001
+  pool_union           n=145  OA=0.8627  K=0.8365  dOA=+0.0000  dK=+0.0011
+Wrote results/CIM2015/QA/col2_val/E03_qa_col2_val_compare.csv
+=== Col2 val QA E4 (train 331 → val 140) ===
+  baseline_184         n=184  OA=0.6643  K=0.6292  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 51  OA=0.7071  K=0.6766  dOA=+0.0429  dK=+0.0474
+  jm_topN              n= 51  OA=0.6643  K=0.6291  dOA=+0.0000  dK=-0.0001
+  boruta_topN          n= 51  OA=0.6857  K=0.6532  dOA=+0.0214  dK=+0.0240
+  nucleo_triple        n= 10  OA=0.6429  K=0.6051  dOA=-0.0214  dK=-0.0241
+  pool_union           n=109  OA=0.6786  K=0.6451  dOA=+0.0143  dK=+0.0159
+Wrote results/CIM2015/QA/col2_val/E04_qa_col2_val_compare.csv
+=== Col2 val QA E5 (train 396 → val 169) ===
+  baseline_184         n=184  OA=0.8521  K=0.8350  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 76  OA=0.8462  K=0.8280  dOA=-0.0059  dK=-0.0070
+  jm_topN              n= 76  OA=0.8639  K=0.8480  dOA=+0.0118  dK=+0.0130
+  boruta_topN          n= 76  OA=0.8521  K=0.8348  dOA=+0.0000  dK=-0.0003
+  nucleo_triple        n= 21  OA=0.8698  K=0.8550  dOA=+0.0178  dK=+0.0199
+  pool_union           n=142  OA=0.8402  K=0.8216  dOA=-0.0118  dK=-0.0135
+Wrote results/CIM2015/QA/col2_val/E05_qa_col2_val_compare.csv
+=== Col2 val QA E6 (train 183 → val 79) ===
+  baseline_184         n=184  OA=0.8608  K=0.8418  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 57  OA=0.9114  K=0.8989  dOA=+0.0506  dK=+0.0571
+  jm_topN              n= 57  OA=0.8228  K=0.7982  dOA=-0.0380  dK=-0.0436
+  boruta_topN          n= 57  OA=0.8734  K=0.8557  dOA=+0.0127  dK=+0.0139
+  nucleo_triple        n=  5  OA=0.7215  K=0.6819  dOA=-0.1392  dK=-0.1599
+  pool_union           n=121  OA=0.8861  K=0.8702  dOA=+0.0253  dK=+0.0284
+Wrote results/CIM2015/QA/col2_val/E06_qa_col2_val_compare.csv
+=== Col2 val QA E7 (train 627 → val 270) ===
+  baseline_184         n=184  OA=0.8407  K=0.8119  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 46  OA=0.8481  K=0.8189  dOA=+0.0074  dK=+0.0070
+  jm_topN              n= 46  OA=0.8111  K=0.7781  dOA=-0.0296  dK=-0.0338
+  boruta_topN          n= 46  OA=0.8370  K=0.8069  dOA=-0.0037  dK=-0.0050
+  nucleo_triple        n=  2  OA=0.4370  K=0.3687  dOA=-0.4037  dK=-0.4433
+  pool_union           n=104  OA=0.8481  K=0.8207  dOA=+0.0074  dK=+0.0087
+Wrote results/CIM2015/QA/col2_val/E07_qa_col2_val_compare.csv
+=== Col2 val QA E8 (train 760 → val 324) ===
+  baseline_184         n=184  OA=0.8272  K=0.8018  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 66  OA=0.8241  K=0.7980  dOA=-0.0031  dK=-0.0038
+  jm_topN              n= 66  OA=0.7932  K=0.7637  dOA=-0.0340  dK=-0.0381
+  boruta_topN          n= 66  OA=0.8179  K=0.7910  dOA=-0.0093  dK=-0.0108
+  nucleo_triple        n= 11  OA=0.7222  K=0.6845  dOA=-0.1049  dK=-0.1173
+  pool_union           n=134  OA=0.8272  K=0.8023  dOA=+0.0000  dK=+0.0005
+Wrote results/CIM2015/QA/col2_val/E08_qa_col2_val_compare.csv
+=== Col2 val QA E9 (train 1070 → val 459) ===
+  baseline_184         n=184  OA=0.8497  K=0.7579  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 47  OA=0.8606  K=0.7739  dOA=+0.0109  dK=+0.0160
+  jm_topN              n= 47  OA=0.8431  K=0.7468  dOA=-0.0065  dK=-0.0111
+  boruta_topN          n= 47  OA=0.8453  K=0.7531  dOA=-0.0044  dK=-0.0048
+  nucleo_triple        n=  2  OA=0.4118  K=0.2743  dOA=-0.4379  dK=-0.4836
+  pool_union           n=114  OA=0.8627  K=0.7785  dOA=+0.0131  dK=+0.0206
+Wrote results/CIM2015/QA/col2_val/E09_qa_col2_val_compare.csv
+=== Col2 val QA E10 (train 430 → val 183) ===
+  baseline_184         n=184  OA=0.8689  K=0.8546  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 46  OA=0.8470  K=0.8298  dOA=-0.0219  dK=-0.0247
+  jm_topN              n= 46  OA=0.8579  K=0.8425  dOA=-0.0109  dK=-0.0121
+  boruta_topN          n= 46  OA=0.8470  K=0.8302  dOA=-0.0219  dK=-0.0244
+  nucleo_triple        n=  5  OA=0.7814  K=0.7572  dOA=-0.0874  dK=-0.0974
+  pool_union           n=104  OA=0.8852  K=0.8726  dOA=+0.0164  dK=+0.0180
+Wrote results/CIM2015/QA/col2_val/E10_qa_col2_val_compare.csv
+=== Col2 val QA E11 (train 570 → val 244) ===
+  baseline_184         n=184  OA=0.7992  K=0.7181  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 15  OA=0.7049  K=0.5973  dOA=-0.0943  dK=-0.1208
+  jm_topN              n= 15  OA=0.6721  K=0.5598  dOA=-0.1270  dK=-0.1583
+  boruta_topN          n= 15  OA=0.8074  K=0.7297  dOA=+0.0082  dK=+0.0116
+  nucleo_triple        n=  0  OA=nan  K=nan  dOA=+nan  dK=+nan
+  pool_union           n= 43  OA=0.8074  K=0.7295  dOA=+0.0082  dK=+0.0114
+Wrote results/CIM2015/QA/col2_val/E11_qa_col2_val_compare.csv
+=== Col2 val QA E12 (train 103 → val 45) ===
+  baseline_184         n=184  OA=0.8222  K=0.7622  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 53  OA=0.7778  K=0.6998  dOA=-0.0444  dK=-0.0624
+  jm_topN              n= 53  OA=0.8000  K=0.7296  dOA=-0.0222  dK=-0.0326
+  boruta_topN          n= 53  OA=0.7556  K=0.6722  dOA=-0.0667  dK=-0.0900
+  nucleo_triple        n= 12  OA=0.7111  K=0.6136  dOA=-0.1111  dK=-0.1486
+  pool_union           n=114  OA=0.8222  K=0.7598  dOA=+0.0000  dK=-0.0024
+Wrote results/CIM2015/QA/col2_val/E12_qa_col2_val_compare.csv
+=== Col2 val QA E13 (train 70 → val 32) ===
+  baseline_184         n=184  OA=0.8438  K=0.7903  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 51  OA=0.8438  K=0.7892  dOA=+0.0000  dK=-0.0011
+  jm_topN              n= 51  OA=0.7500  K=0.6618  dOA=-0.0938  dK=-0.1285
+  boruta_topN          n= 51  OA=0.7500  K=0.6731  dOA=-0.0938  dK=-0.1172
+  nucleo_triple        n=  3  OA=0.6562  K=0.5605  dOA=-0.1875  dK=-0.2298
+  pool_union           n=115  OA=0.7812  K=0.7117  dOA=-0.0625  dK=-0.0786
+Wrote results/CIM2015/QA/col2_val/E13_qa_col2_val_compare.csv
+=== Col2 val QA E14 (train 286 → val 121) ===
+  baseline_184         n=184  OA=0.8512  K=0.8353  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 39  OA=0.8099  K=0.7897  dOA=-0.0413  dK=-0.0456
+  jm_topN              n= 39  OA=0.8347  K=0.8173  dOA=-0.0165  dK=-0.0180
+  boruta_topN          n= 39  OA=0.8678  K=0.8538  dOA=+0.0165  dK=+0.0185
+  nucleo_triple        n=  2  OA=0.6033  K=0.5628  dOA=-0.2479  dK=-0.2725
+  pool_union           n= 97  OA=0.8512  K=0.8353  dOA=+0.0000  dK=+0.0000
+Wrote results/CIM2015/QA/col2_val/E14_qa_col2_val_compare.csv
+=== Col2 val QA E15 (train 396 → val 169) ===
+  baseline_184         n=184  OA=0.7574  K=0.7283  dOA=+0.0000  dK=+0.0000
+  unsup_095            n= 34  OA=0.6982  K=0.6622  dOA=-0.0592  dK=-0.0661
+  jm_topN              n= 34  OA=0.7041  K=0.6688  dOA=-0.0533  dK=-0.0595
+  boruta_topN          n= 34  OA=0.7041  K=0.6691  dOA=-0.0533  dK=-0.0593
+  nucleo_triple        n=  3  OA=0.4556  K=0.3943  dOA=-0.3018  dK=-0.3341
+  pool_union           n= 87  OA=0.7515  K=0.7215  dOA=-0.0059  dK=-0.0068
+Wrote results/CIM2015/QA/col2_val/E15_qa_col2_val_compare.csv

@@ -1,0 +1,48 @@
+{
+  "source": "boruta",
+  "bands": [
+    38,
+    40,
+    39,
+    41,
+    123,
+    87,
+    42,
+    124,
+    72
+  ],
+  "ecoregion": 11,
+  "year": 2015,
+  "band_names": [
+    "band_38",
+    "band_40",
+    "band_39",
+    "band_41",
+    "band_123",
+    "band_87",
+    "band_42",
+    "band_124",
+    "band_72"
+  ],
+  "parent_source": "pe_eco_merged_0.95_reps",
+  "parent_n_bands": 15,
+  "split": "train",
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "tentative_min_hit_rate": 0.4,
+  "boruta": {
+    "n_iters": 49,
+    "perc": 95.0,
+    "alpha": 0.05,
+    "n_estimators": 200,
+    "random_state": 42,
+    "n_confirmed": 8,
+    "n_tentative": 1,
+    "n_rejected": 6,
+    "n_tentative_kept": 1,
+    "n_tentative_dropped_weak": 0,
+    "n_kept_total": 9
+  }
+}

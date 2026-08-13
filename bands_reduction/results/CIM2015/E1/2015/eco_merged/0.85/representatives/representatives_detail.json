@@ -1,0 +1,526 @@
+[
+  {
+    "cluster_id": 25,
+    "size": 6,
+    "representative": 62,
+    "band_name": "band_62",
+    "mean_abs_r_to_others": 0.9860553201287985,
+    "members": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      23,
+      24,
+      25,
+      26,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      73,
+      74,
+      75,
+      76,
+      77,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      92,
+      93,
+      94,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      133,
+      134,
+      135,
+      136,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      168,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 6,
+    "size": 6,
+    "representative": 131,
+    "band_name": "band_131",
+    "mean_abs_r_to_others": 0.9521086445221534,
+    "members": [
+      1,
+      6,
+      7,
+      44,
+      49,
+      50,
+      78,
+      79,
+      105,
+      110,
+      111,
+      126,
+      131,
+      132
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 15,
+    "size": 6,
+    "representative": 48,
+    "band_name": "band_48",
+    "mean_abs_r_to_others": 0.9339754751750401,
+    "members": [
+      4,
+      5,
+      47,
+      48,
+      108,
+      109,
+      129,
+      130
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 17,
+    "size": 6,
+    "representative": 163,
+    "band_name": "band_163",
+    "mean_abs_r_to_others": 0.9465530088969639,
+    "members": [
+      162,
+      163,
+      164,
+      165,
+      169,
+      170,
+      171,
+      172
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 5,
+    "size": 6,
+    "representative": 128,
+    "band_name": "band_128",
+    "mean_abs_r_to_others": 0.980239748954773,
+    "members": [
+      3,
+      46,
+      107,
+      128
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 14,
+    "size": 6,
+    "representative": 127,
+    "band_name": "band_127",
+    "mean_abs_r_to_others": 0.966435710589091,
+    "members": [
+      2,
+      45,
+      106,
+      127
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 23,
+    "size": 6,
+    "representative": 28,
+    "band_name": "band_28",
+    "mean_abs_r_to_others": 0.921963632106781,
+    "members": [
+      28,
+      97,
+      104,
+      138
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 0,
+    "size": 6,
+    "representative": 42,
+    "band_name": "band_42",
+    "mean_abs_r_to_others": 0.9997406601905823,
+    "members": [
+      37,
+      42,
+      43
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 24,
+    "size": 6,
+    "representative": 137,
+    "band_name": "band_137",
+    "mean_abs_r_to_others": 0.9914259910583496,
+    "members": [
+      27,
+      95,
+      137
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 27,
+    "size": 6,
+    "representative": 9,
+    "band_name": "band_9",
+    "mean_abs_r_to_others": 0.921724408864975,
+    "members": [
+      9,
+      11,
+      12
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 1,
+    "size": 6,
+    "representative": 124,
+    "band_name": "band_124",
+    "mean_abs_r_to_others": 0.8563278913497925,
+    "members": [
+      124,
+      125
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 2,
+    "size": 6,
+    "representative": 96,
+    "band_name": "band_96",
+    "mean_abs_r_to_others": 0.8895437121391296,
+    "members": [
+      96,
+      103
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 4,
+    "size": 6,
+    "representative": 8,
+    "band_name": "band_8",
+    "mean_abs_r_to_others": 0.9493831992149353,
+    "members": [
+      8,
+      13
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 7,
+    "size": 6,
+    "representative": 167,
+    "band_name": "band_167",
+    "mean_abs_r_to_others": 0.9772326350212097,
+    "members": [
+      167,
+      174
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 8,
+    "size": 6,
+    "representative": 71,
+    "band_name": "band_71",
+    "mean_abs_r_to_others": 0.9109665155410767,
+    "members": [
+      71,
+      72
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 9,
+    "size": 6,
+    "representative": 38,
+    "band_name": "band_38",
+    "mean_abs_r_to_others": 0.8687343597412109,
+    "members": [
+      38,
+      39
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 16,
+    "size": 6,
+    "representative": 166,
+    "band_name": "band_166",
+    "mean_abs_r_to_others": 0.9781417846679688,
+    "members": [
+      166,
+      173
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 18,
+    "size": 6,
+    "representative": 80,
+    "band_name": "band_80",
+    "mean_abs_r_to_others": 0.9696463346481323,
+    "members": [
+      80,
+      81
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 19,
+    "size": 6,
+    "representative": 89,
+    "band_name": "band_89",
+    "mean_abs_r_to_others": 0.9374281764030457,
+    "members": [
+      89,
+      90
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 20,
+    "size": 6,
+    "representative": 99,
+    "band_name": "band_99",
+    "mean_abs_r_to_others": 0.8967335224151611,
+    "members": [
+      99,
+      100
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 22,
+    "size": 6,
+    "representative": 98,
+    "band_name": "band_98",
+    "mean_abs_r_to_others": 0.9068223237991333,
+    "members": [
+      98,
+      119
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 26,
+    "size": 6,
+    "representative": 120,
+    "band_name": "band_120",
+    "mean_abs_r_to_others": 0.897193193435669,
+    "members": [
+      120,
+      121
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 3,
+    "size": 6,
+    "representative": 91,
+    "band_name": "band_91",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      91
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 10,
+    "size": 6,
+    "representative": 40,
+    "band_name": "band_40",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      40
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 11,
+    "size": 6,
+    "representative": 41,
+    "band_name": "band_41",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      41
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 12,
+    "size": 6,
+    "representative": 102,
+    "band_name": "band_102",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      102
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 13,
+    "size": 6,
+    "representative": 123,
+    "band_name": "band_123",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      123
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 21,
+    "size": 6,
+    "representative": 101,
+    "band_name": "band_101",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      101
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 28,
+    "size": 6,
+    "representative": 10,
+    "band_name": "band_10",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      10
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 29,
+    "size": 6,
+    "representative": 22,
+    "band_name": "band_22",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      22
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 30,
+    "size": 6,
+    "representative": 122,
+    "band_name": "band_122",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      122
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 31,
+    "size": 6,
+    "representative": 154,
+    "band_name": "band_154",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      154
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 32,
+    "size": 6,
+    "representative": 0,
+    "band_name": "band_0",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      0
+    ],
+    "source": "central"
+  },
+  {
+    "cluster_id": 33,
+    "size": 6,
+    "representative": 14,
+    "band_name": "band_14",
+    "mean_abs_r_to_others": 1.0,
+    "members": [
+      14
+    ],
+    "source": "central"
+  }
+]

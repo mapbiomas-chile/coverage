@@ -1,0 +1,76 @@
+{
+  "eco_id": 11,
+  "protocol": "col2_train_to_val_holdout",
+  "n_train": 570,
+  "n_val": 244,
+  "n_estimators": 200,
+  "corr_threshold": "0.95",
+  "train_npz": "/home/perazo/coverage/bands_reduction/results/CIM2015/QA/samples/chile_train_184.npz",
+  "val_npz": "/home/perazo/coverage/bands_reduction/results/CIM2015/QA/samples/chile_val_184.npz",
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "results": [
+    {
+      "list_name": "baseline_184",
+      "n_bands": 184,
+      "oa_val": 0.7991803278688525,
+      "kappa_val": 0.7181052979039445,
+      "n_train": 570,
+      "n_val": 244,
+      "delta_oa_vs_184": 0.0,
+      "delta_kappa_vs_184": 0.0
+    },
+    {
+      "list_name": "unsup_095",
+      "n_bands": 15,
+      "oa_val": 0.7049180327868853,
+      "kappa_val": 0.5973320497834009,
+      "n_train": 570,
+      "n_val": 244,
+      "delta_oa_vs_184": -0.09426229508196726,
+      "delta_kappa_vs_184": -0.12077324812054357
+    },
+    {
+      "list_name": "jm_topN",
+      "n_bands": 15,
+      "oa_val": 0.6721311475409836,
+      "kappa_val": 0.5598051596608336,
+      "n_train": 570,
+      "n_val": 244,
+      "delta_oa_vs_184": -0.12704918032786894,
+      "delta_kappa_vs_184": -0.15830013824311095
+    },
+    {
+      "list_name": "boruta_topN",
+      "n_bands": 15,
+      "oa_val": 0.8073770491803278,
+      "kappa_val": 0.7297322775263952,
+      "n_train": 570,
+      "n_val": 244,
+      "delta_oa_vs_184": 0.008196721311475308,
+      "delta_kappa_vs_184": 0.01162697962245074
+    },
+    {
+      "list_name": "nucleo_triple",
+      "n_bands": 0,
+      "oa_val": NaN,
+      "kappa_val": NaN,
+      "n_train": 570,
+      "n_val": 244,
+      "delta_oa_vs_184": NaN,
+      "delta_kappa_vs_184": NaN
+    },
+    {
+      "list_name": "pool_union",
+      "n_bands": 43,
+      "oa_val": 0.8073770491803278,
+      "kappa_val": 0.7295474376812962,
+      "n_train": 570,
+      "n_val": 244,
+      "delta_oa_vs_184": 0.008196721311475308,
+      "delta_kappa_vs_184": 0.011442139777351645
+    }
+  ]
+}

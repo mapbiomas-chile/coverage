@@ -1,0 +1,23 @@
+{
+  "n_bands": 184,
+  "n_clusters": 9,
+  "n_singletons": 5,
+  "n_multi": 4,
+  "max_cluster_size": 171,
+  "distance_threshold": 0.09999999999999998,
+  "corr_threshold_equiv": 0.9,
+  "linkage": "average",
+  "distance": "1 - |r|",
+  "status": "PASS",
+  "source": {
+    "eco_id": 11,
+    "year": 2015,
+    "corr_threshold": 0.9,
+    "n_finite_samples": 99997,
+    "sample_dir": "/home/perazo/coverage/bands_reduction/results/CIM2015/E11/2015/eco_merged",
+    "method": "eco_merged_correlation_cluster"
+  },
+  "out_dir": "/home/perazo/coverage/bands_reduction/results/CIM2015/E11/2015/eco_merged/0.90",
+  "assignment_csv": "/home/perazo/coverage/bands_reduction/results/CIM2015/E11/2015/eco_merged/0.90/band_cluster_assignment.csv",
+  "clusters_json": "/home/perazo/coverage/bands_reduction/results/CIM2015/E11/2015/eco_merged/0.90/clusters.json"
+}

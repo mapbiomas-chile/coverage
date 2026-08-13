@@ -1,0 +1,76 @@
+{
+  "eco_id": 8,
+  "protocol": "col2_train_to_val_holdout",
+  "n_train": 760,
+  "n_val": 324,
+  "n_estimators": 200,
+  "corr_threshold": "0.95",
+  "train_npz": "/home/perazo/coverage/bands_reduction/results/CIM2015/QA/samples/chile_train_184.npz",
+  "val_npz": "/home/perazo/coverage/bands_reduction/results/CIM2015/QA/samples/chile_val_184.npz",
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "results": [
+    {
+      "list_name": "baseline_184",
+      "n_bands": 184,
+      "oa_val": 0.8271604938271605,
+      "kappa_val": 0.8017742428877332,
+      "n_train": 760,
+      "n_val": 324,
+      "delta_oa_vs_184": 0.0,
+      "delta_kappa_vs_184": 0.0
+    },
+    {
+      "list_name": "unsup_095",
+      "n_bands": 66,
+      "oa_val": 0.8240740740740741,
+      "kappa_val": 0.7979895210072084,
+      "n_train": 760,
+      "n_val": 324,
+      "delta_oa_vs_184": -0.0030864197530864335,
+      "delta_kappa_vs_184": -0.0037847218805248106
+    },
+    {
+      "list_name": "jm_topN",
+      "n_bands": 66,
+      "oa_val": 0.7932098765432098,
+      "kappa_val": 0.7637044455087735,
+      "n_train": 760,
+      "n_val": 324,
+      "delta_oa_vs_184": -0.03395061728395066,
+      "delta_kappa_vs_184": -0.03806979737895977
+    },
+    {
+      "list_name": "boruta_topN",
+      "n_bands": 66,
+      "oa_val": 0.8179012345679012,
+      "kappa_val": 0.7910134470318138,
+      "n_train": 760,
+      "n_val": 324,
+      "delta_oa_vs_184": -0.0092592592592593,
+      "delta_kappa_vs_184": -0.010760795855919492
+    },
+    {
+      "list_name": "nucleo_triple",
+      "n_bands": 11,
+      "oa_val": 0.7222222222222222,
+      "kappa_val": 0.6845043602449528,
+      "n_train": 760,
+      "n_val": 324,
+      "delta_oa_vs_184": -0.1049382716049383,
+      "delta_kappa_vs_184": -0.11726988264278049
+    },
+    {
+      "list_name": "pool_union",
+      "n_bands": 134,
+      "oa_val": 0.8271604938271605,
+      "kappa_val": 0.8022818660302723,
+      "n_train": 760,
+      "n_val": 324,
+      "delta_oa_vs_184": 0.0,
+      "delta_kappa_vs_184": 0.0005076231425390487
+    }
+  ]
+}

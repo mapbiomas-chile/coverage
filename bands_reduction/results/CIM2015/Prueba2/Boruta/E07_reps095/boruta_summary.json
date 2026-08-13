@@ -1,0 +1,52 @@
+{
+  "eco_id": 7,
+  "eco_name": "E7_Andes_central",
+  "status": "OK",
+  "n_samples": 627,
+  "n_classes": 13,
+  "class_counts": {
+    "11": 30,
+    "12": 41,
+    "15": 24,
+    "18": 39,
+    "23": 22,
+    "24": 28,
+    "25": 33,
+    "29": 35,
+    "59": 43,
+    "60": 43,
+    "66": 28,
+    "67": 31,
+    "80": 230
+  },
+  "n_input_bands": 46,
+  "corr_threshold_parent": 0.95,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "split": "train",
+  "n_confirmed": 45,
+  "n_tentative": 0,
+  "n_rejected": 1,
+  "n_tentative_kept_hitrate_ge": 0,
+  "tentative_min_hit_rate": 0.4,
+  "n_kept_total": 45,
+  "n_iters": 35,
+  "params": {
+    "max_iter": 50,
+    "n_estimators": 200,
+    "perc": 95.0,
+    "alpha": 0.05,
+    "n_jobs": 8,
+    "random_state": 42
+  },
+  "parent_source": "pe_eco_merged_0.95_reps",
+  "representatives_json": "/home/perazo/coverage/bands_reduction/results/CIM2015/E7/2015/eco_merged/0.95/representatives/representatives.json",
+  "samples_npz": "results/CIM2015/QA/samples/chile_train_184.npz",
+  "samples_index": "results/CIM2015/QA/samples/chile_train_184_index.csv",
+  "sample_set": "official",
+  "decisions_csv": "results/CIM2015/Prueba2/Boruta/E07_reps095/boruta_decisions.csv",
+  "band_list_boruta": "results/CIM2015/Prueba2/Boruta/E07_reps095/band_list_boruta.json",
+  "note": "Confirmed always kept. Tentative kept only if hit_rate >= 0.4 (strict). Weak tentatives listed in CSV only."
+}

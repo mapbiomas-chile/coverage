@@ -1,5 +1,7 @@
 # Local / generated — keep Git lean
-results/
+results/*
+!results/CIM2015/
+!results/CIM2015/**
 notebooks/.ipynb_checkpoints/
 .venv/
 venv/

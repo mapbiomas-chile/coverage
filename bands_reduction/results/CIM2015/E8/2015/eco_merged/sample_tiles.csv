@@ -1,0 +1,15 @@
+tile,n_eco,pct_eco,quota,n_finite,mosaic_path,n_requested,n_drawn
+CHILE-SI-18-Z-D,513547,2.4656331320037257,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SI-18-Z-D-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SI-19-V-A,2487422,11.945765723581921,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SI-19-V-A-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SI-19-V-B,589462,2.8308726685516357,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SI-19-V-B-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SI-19-V-C,15823130,75.99008290261195,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SI-19-V-C-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SI-19-V-D,439717,2.111727027692234,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SI-19-V-D-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SI-19-Y-A,13256638,63.647545155126224,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SI-19-Y-A-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SI-19-Y-C,9090777,43.646484093680684,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SI-19-Y-C-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SJ-18-X-B,6117006,29.376728438417345,7143,7142,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SJ-18-X-B-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SJ-18-X-D,8673063,41.640962733217464,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SJ-18-X-D-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SJ-18-Z-B,10373187,49.79463742592143,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SJ-18-Z-B-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SJ-18-Z-D,3189775,15.307849612756073,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SJ-18-Z-D-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SJ-19-V-A,3721838,17.87400964095545,7143,7143,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SJ-19-V-A-2015-L8-3-184F-HARM_masked.tif,7143,7143
+CHILE-SJ-19-V-C,1822937,8.750684525912522,7142,7142,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SJ-19-V-C-2015-L8-3-184F-HARM_masked.tif,7142,7142
+CHILE-SJ-19-Y-A,203962,0.9790832690730232,7142,7142,/home/lserey/mapbiomas_land/mosaic_184bands_mask_water/2015/CHILE-SJ-19-Y-A-2015-L8-3-184F-HARM_masked.tif,7142,7142

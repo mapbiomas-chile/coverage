@@ -1,0 +1,126 @@
+{
+  "eco_id": 10,
+  "eco_name": "E10_Andes_sur",
+  "n_samples": 430,
+  "n_samples_after_exclude": 430,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "n_bands": 184,
+  "n_classes": 13,
+  "class_counts": {
+    "11": 67,
+    "12": 22,
+    "15": 28,
+    "23": 29,
+    "24": 32,
+    "25": 6,
+    "29": 6,
+    "59": 48,
+    "60": 40,
+    "66": 25,
+    "67": 45,
+    "79": 57,
+    "80": 25
+  },
+  "mean_jm_min": 1.0,
+  "n_bands_ge_cut": 0,
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 19,
+      "band_name": "band_19",
+      "mean_jm": 0.8115650289029447,
+      "min_jm": 0.0,
+      "n_pairs": 78,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 2,
+      "band_index": 116,
+      "band_name": "band_116",
+      "mean_jm": 0.615870779125771,
+      "min_jm": 0.0,
+      "n_pairs": 21,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 3,
+      "band_index": 16,
+      "band_name": "band_16",
+      "mean_jm": 0.5677519186415803,
+      "min_jm": 0.0,
+      "n_pairs": 78,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 4,
+      "band_index": 18,
+      "band_name": "band_18",
+      "mean_jm": 0.5221389064794744,
+      "min_jm": 0.0,
+      "n_pairs": 78,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 5,
+      "band_index": 159,
+      "band_name": "band_159",
+      "mean_jm": 0.5062523965378194,
+      "min_jm": 0.0,
+      "n_pairs": 55,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 6,
+      "band_index": 118,
+      "band_name": "band_118",
+      "mean_jm": 0.5045962626156655,
+      "min_jm": 0.0,
+      "n_pairs": 66,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 7,
+      "band_index": 114,
+      "band_name": "band_114",
+      "mean_jm": 0.4576441471575883,
+      "min_jm": 0.0,
+      "n_pairs": 66,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 8,
+      "band_index": 156,
+      "band_name": "band_156",
+      "mean_jm": 0.38196624210166363,
+      "min_jm": 0.0,
+      "n_pairs": 78,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 9,
+      "band_index": 113,
+      "band_name": "band_113",
+      "mean_jm": 0.33510925544259457,
+      "min_jm": 0.0,
+      "n_pairs": 45,
+      "n_classes_used": 13
+    },
+    {
+      "rank": 10,
+      "band_index": 115,
+      "band_name": "band_115",
+      "mean_jm": 0.3293123681762063,
+      "min_jm": 0.0,
+      "n_pairs": 28,
+      "n_classes_used": 13
+    }
+  ],
+  "samples_npz": "results/CIM2015/QA/samples/chile_train_184.npz",
+  "samples_index": "results/CIM2015/QA/samples/chile_train_184_index.csv",
+  "sample_set": "official",
+  "formula": "JM = sqrt(2 * (1 - BC)), BC Gaussian Bhattacharyya",
+  "status": "OK"
+}

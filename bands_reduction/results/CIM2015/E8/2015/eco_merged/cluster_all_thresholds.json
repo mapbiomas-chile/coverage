@@ -1,0 +1,34 @@
+{
+  "eco_id": 8,
+  "year": 2015,
+  "n_finite": 99999,
+  "n_bands": 184,
+  "linkage": "average",
+  "thresholds": [
+    {
+      "corr_threshold": 0.95,
+      "n_clusters": 66,
+      "n_singletons": 43,
+      "n_multi": 23,
+      "out_dir": "/home/perazo/coverage/bands_reduction/results/CIM2015/E8/2015/eco_merged/0.95",
+      "status": "PASS"
+    },
+    {
+      "corr_threshold": 0.9,
+      "n_clusters": 50,
+      "n_singletons": 25,
+      "n_multi": 25,
+      "out_dir": "/home/perazo/coverage/bands_reduction/results/CIM2015/E8/2015/eco_merged/0.90",
+      "status": "PASS"
+    },
+    {
+      "corr_threshold": 0.85,
+      "n_clusters": 35,
+      "n_singletons": 14,
+      "n_multi": 21,
+      "out_dir": "/home/perazo/coverage/bands_reduction/results/CIM2015/E8/2015/eco_merged/0.85",
+      "status": "PASS"
+    }
+  ],
+  "sample_dir": "/home/perazo/coverage/bands_reduction/results/CIM2015/E8/2015/eco_merged"
+}

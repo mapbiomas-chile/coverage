@@ -1,0 +1,76 @@
+{
+  "eco_id": 13,
+  "protocol": "col2_train_to_val_holdout",
+  "n_train": 70,
+  "n_val": 32,
+  "n_estimators": 200,
+  "corr_threshold": "0.95",
+  "train_npz": "/home/perazo/coverage/bands_reduction/results/CIM2015/QA/samples/chile_train_184.npz",
+  "val_npz": "/home/perazo/coverage/bands_reduction/results/CIM2015/QA/samples/chile_val_184.npz",
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "results": [
+    {
+      "list_name": "baseline_184",
+      "n_bands": 184,
+      "oa_val": 0.84375,
+      "kappa_val": 0.7903014416775884,
+      "n_train": 70,
+      "n_val": 32,
+      "delta_oa_vs_184": 0.0,
+      "delta_kappa_vs_184": 0.0
+    },
+    {
+      "list_name": "unsup_095",
+      "n_bands": 51,
+      "oa_val": 0.84375,
+      "kappa_val": 0.7891963109354414,
+      "n_train": 70,
+      "n_val": 32,
+      "delta_oa_vs_184": 0.0,
+      "delta_kappa_vs_184": -0.0011051307421470202
+    },
+    {
+      "list_name": "jm_topN",
+      "n_bands": 51,
+      "oa_val": 0.75,
+      "kappa_val": 0.6618229854689563,
+      "n_train": 70,
+      "n_val": 32,
+      "delta_oa_vs_184": -0.09375,
+      "delta_kappa_vs_184": -0.12847845620863207
+    },
+    {
+      "list_name": "boruta_topN",
+      "n_bands": 51,
+      "oa_val": 0.75,
+      "kappa_val": 0.6730523627075351,
+      "n_train": 70,
+      "n_val": 32,
+      "delta_oa_vs_184": -0.09375,
+      "delta_kappa_vs_184": -0.11724907897005332
+    },
+    {
+      "list_name": "nucleo_triple",
+      "n_bands": 3,
+      "oa_val": 0.65625,
+      "kappa_val": 0.5605493133583022,
+      "n_train": 70,
+      "n_val": 32,
+      "delta_oa_vs_184": -0.1875,
+      "delta_kappa_vs_184": -0.22975212831928626
+    },
+    {
+      "list_name": "pool_union",
+      "n_bands": 115,
+      "oa_val": 0.78125,
+      "kappa_val": 0.7117117117117118,
+      "n_train": 70,
+      "n_val": 32,
+      "delta_oa_vs_184": -0.0625,
+      "delta_kappa_vs_184": -0.07858972996587665
+    }
+  ]
+}

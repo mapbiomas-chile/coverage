@@ -1,0 +1,16 @@
+representative,band_name,cluster_id,size,source,family
+0,band_0,11,6,central,band
+13,band_13,10,6,central,band
+14,band_14,12,6,central,band
+38,band_38,0,6,central,band
+39,band_39,1,6,central,band
+40,band_40,14,6,central,band
+41,band_41,2,6,central,band
+42,band_42,13,6,central,band
+71,band_71,5,6,central,band
+72,band_72,3,6,central,band
+78,band_78,4,6,central,band
+87,band_87,7,6,central,band
+103,band_103,6,6,central,band
+123,band_123,8,6,central,band
+124,band_124,9,6,central,band

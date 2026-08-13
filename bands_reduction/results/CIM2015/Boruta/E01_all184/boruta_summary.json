@@ -1,0 +1,49 @@
+{
+  "eco_id": 1,
+  "eco_name": "E1_Puna_seca_andina",
+  "status": "OK",
+  "n_samples": 296,
+  "n_classes": 10,
+  "class_counts": {
+    "11": 26,
+    "18": 22,
+    "23": 21,
+    "24": 35,
+    "25": 39,
+    "29": 22,
+    "59": 29,
+    "61": 32,
+    "63": 48,
+    "66": 22
+  },
+  "n_input_bands": 184,
+  "corr_threshold_parent": null,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "split": "train",
+  "n_confirmed": 169,
+  "n_tentative": 4,
+  "n_rejected": 11,
+  "n_tentative_kept_hitrate_ge": 4,
+  "tentative_min_hit_rate": 0.4,
+  "n_kept_total": 173,
+  "n_iters": 49,
+  "params": {
+    "max_iter": 50,
+    "n_estimators": 200,
+    "perc": 95.0,
+    "alpha": 0.05,
+    "n_jobs": 8,
+    "random_state": 42
+  },
+  "parent_source": "all184bands",
+  "representatives_json": null,
+  "samples_npz": "results/CIM2015/QA/samples/chile_train_184.npz",
+  "samples_index": "results/CIM2015/QA/samples/chile_train_184_index.csv",
+  "sample_set": "official",
+  "decisions_csv": "results/CIM2015/Boruta/E01_all184/boruta_decisions.csv",
+  "band_list_boruta": "results/CIM2015/Boruta/E01_all184/band_list_boruta.json",
+  "note": "Confirmed always kept. Tentative kept only if hit_rate >= 0.4 (strict). Weak tentatives listed in CSV only."
+}

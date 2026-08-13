@@ -1,0 +1,124 @@
+{
+  "eco_id": 2,
+  "eco_name": "E2_Desierto_Atacama",
+  "n_samples": 359,
+  "n_samples_after_exclude": 359,
+  "exclude_classes": [
+    33,
+    34
+  ],
+  "n_bands": 184,
+  "n_classes": 11,
+  "class_counts": {
+    "11": 21,
+    "18": 23,
+    "23": 29,
+    "24": 42,
+    "25": 41,
+    "29": 22,
+    "59": 62,
+    "61": 33,
+    "62": 34,
+    "63": 25,
+    "66": 27
+  },
+  "mean_jm_min": 1.0,
+  "n_bands_ge_cut": 0,
+  "top10": [
+    {
+      "rank": 1,
+      "band_index": 58,
+      "band_name": "band_58",
+      "mean_jm": 0.9127255922818227,
+      "min_jm": 0.0,
+      "n_pairs": 55,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 2,
+      "band_index": 56,
+      "band_name": "band_56",
+      "mean_jm": 0.7445165983437984,
+      "min_jm": 0.0,
+      "n_pairs": 36,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 3,
+      "band_index": 116,
+      "band_name": "band_116",
+      "mean_jm": 0.7246506220163568,
+      "min_jm": 0.0,
+      "n_pairs": 55,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 4,
+      "band_index": 53,
+      "band_name": "band_53",
+      "mean_jm": 0.6692351410233301,
+      "min_jm": 0.0,
+      "n_pairs": 45,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 5,
+      "band_index": 118,
+      "band_name": "band_118",
+      "mean_jm": 0.5212364604491828,
+      "min_jm": 0.0,
+      "n_pairs": 45,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 6,
+      "band_index": 55,
+      "band_name": "band_55",
+      "mean_jm": 0.5202403166249523,
+      "min_jm": 0.0,
+      "n_pairs": 55,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 7,
+      "band_index": 54,
+      "band_name": "band_54",
+      "mean_jm": 0.48957557172849736,
+      "min_jm": 0.0,
+      "n_pairs": 36,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 8,
+      "band_index": 62,
+      "band_name": "band_62",
+      "mean_jm": 0.30250045553657273,
+      "min_jm": 0.0,
+      "n_pairs": 55,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 9,
+      "band_index": 60,
+      "band_name": "band_60",
+      "mean_jm": 0.22579840805703802,
+      "min_jm": 0.0,
+      "n_pairs": 45,
+      "n_classes_used": 11
+    },
+    {
+      "rank": 10,
+      "band_index": 16,
+      "band_name": "band_16",
+      "mean_jm": 0.21130466900485725,
+      "min_jm": 0.0,
+      "n_pairs": 55,
+      "n_classes_used": 11
+    }
+  ],
+  "samples_npz": "results/CIM2015/QA/samples/chile_train_184.npz",
+  "samples_index": "results/CIM2015/QA/samples/chile_train_184_index.csv",
+  "sample_set": "official",
+  "formula": "JM = sqrt(2 * (1 - BC)), BC Gaussian Bhattacharyya",
+  "status": "OK"
+}

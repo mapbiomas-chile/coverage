@@ -1,0 +1,107 @@
+=== Boruta E1-E15 start 2026-08-11T13:26:52-04:00 ===
+
+=== E1 2026-08-11T13:26:52-04:00 ===
+E1 Boruta (all184): 296 samples, 10 classes, 184 input bands
+  confirmed=169 tentative=4 kept=173 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E01_all184/boruta_decisions.csv
+=== E1 DONE elapsed=13s ===
+
+=== E2 2026-08-11T13:27:05-04:00 ===
+E2 Boruta (all184): 359 samples, 11 classes, 184 input bands
+  confirmed=164 tentative=8 kept=172 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E02_all184/boruta_decisions.csv
+=== E2 DONE elapsed=14s ===
+
+=== E3 2026-08-11T13:27:19-04:00 ===
+E3 Boruta (all184): 117 samples, 10 classes, 184 input bands
+  confirmed=113 tentative=26 kept=139 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E03_all184/boruta_decisions.csv
+=== E3 DONE elapsed=13s ===
+
+=== E4 2026-08-11T13:27:32-04:00 ===
+E4 Boruta (all184): 331 samples, 11 classes, 184 input bands
+  confirmed=131 tentative=7 kept=138 iters=49
+  top kept: band_154 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E04_all184/boruta_decisions.csv
+=== E4 DONE elapsed=14s ===
+
+=== E5 2026-08-11T13:27:46-04:00 ===
+E5 Boruta (all184): 396 samples, 12 classes, 184 input bands
+  confirmed=142 tentative=9 kept=151 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E05_all184/boruta_decisions.csv
+=== E5 DONE elapsed=14s ===
+
+=== E6 2026-08-11T13:28:00-04:00 ===
+E6 Boruta (all184): 183 samples, 10 classes, 184 input bands
+  confirmed=163 tentative=7 kept=170 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E06_all184/boruta_decisions.csv
+=== E6 DONE elapsed=12s ===
+
+=== E7 2026-08-11T13:28:12-04:00 ===
+E7 Boruta (all184): 627 samples, 13 classes, 184 input bands
+  confirmed=178 tentative=1 kept=179 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E07_all184/boruta_decisions.csv
+=== E7 DONE elapsed=15s ===
+
+=== E8 2026-08-11T13:28:27-04:00 ===
+E8 Boruta (all184): 760 samples, 13 classes, 184 input bands
+  confirmed=95 tentative=15 kept=110 iters=49
+  top kept: band_154 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E08_all184/boruta_decisions.csv
+=== E8 DONE elapsed=17s ===
+
+=== E9 2026-08-11T13:28:44-04:00 ===
+E9 Boruta (all184): 1070 samples, 12 classes, 184 input bands
+  confirmed=164 tentative=7 kept=171 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E09_all184/boruta_decisions.csv
+=== E9 DONE elapsed=17s ===
+
+=== E10 2026-08-11T13:29:01-04:00 ===
+E10 Boruta (all184): 430 samples, 13 classes, 184 input bands
+  confirmed=155 tentative=9 kept=164 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E10_all184/boruta_decisions.csv
+=== E10 DONE elapsed=13s ===
+
+=== E11 2026-08-11T13:29:14-04:00 ===
+E11 Boruta (all184): 570 samples, 11 classes, 184 input bands
+  confirmed=106 tentative=13 kept=119 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E11_all184/boruta_decisions.csv
+=== E11 DONE elapsed=15s ===
+
+=== E12 2026-08-11T13:29:29-04:00 ===
+E12 Boruta (all184): 103 samples, 7 classes, 184 input bands
+  confirmed=79 tentative=14 kept=93 iters=49
+  top kept: band_127 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E12_all184/boruta_decisions.csv
+=== E12 DONE elapsed=12s ===
+
+=== E13 2026-08-11T13:29:41-04:00 ===
+E13 Boruta (all184): 70 samples, 7 classes, 184 input bands
+  confirmed=43 tentative=10 kept=53 iters=49
+  top kept: band_127 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E13_all184/boruta_decisions.csv
+=== E13 DONE elapsed=12s ===
+
+=== E14 2026-08-11T13:29:53-04:00 ===
+E14 Boruta (all184): 286 samples, 12 classes, 184 input bands
+  confirmed=154 tentative=9 kept=163 iters=49
+  top kept: band_22 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E14_all184/boruta_decisions.csv
+=== E14 DONE elapsed=13s ===
+
+=== E15 2026-08-11T13:30:06-04:00 ===
+E15 Boruta (all184): 396 samples, 11 classes, 184 input bands
+  confirmed=166 tentative=5 kept=171 iters=49
+  top kept: band_154 (hit_rate=1.000)
+  wrote results/CIM2015/Boruta/E15_all184/boruta_decisions.csv
+=== E15 DONE elapsed=14s ===
+=== Boruta batch DONE 2026-08-11T13:30:20-04:00 ===

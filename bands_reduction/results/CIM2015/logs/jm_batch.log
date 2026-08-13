@@ -1,0 +1,100 @@
+=== JM batch E2-E15 start 2026-08-11T13:16:59-04:00 ===
+
+=== E2 2026-08-11T13:16:59-04:00 ===
+E2 JM: 359 samples, 11 classes
+  top: band_58 (mean_jm=0.9127)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E02/jm_ranking.csv
+=== E2 DONE elapsed=3s ===
+
+=== E3 2026-08-11T13:17:02-04:00 ===
+E3 JM: 117 samples, 10 classes
+  top: band_116 (mean_jm=0.8451)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E03/jm_ranking.csv
+=== E3 DONE elapsed=1s ===
+
+=== E4 2026-08-11T13:17:03-04:00 ===
+E4 JM: 331 samples, 11 classes
+  top: band_115 (mean_jm=0.8222)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E04/jm_ranking.csv
+=== E4 DONE elapsed=2s ===
+
+=== E5 2026-08-11T13:17:05-04:00 ===
+E5 JM: 396 samples, 12 classes
+  top: band_116 (mean_jm=0.9401)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E05/jm_ranking.csv
+=== E5 DONE elapsed=3s ===
+
+=== E6 2026-08-11T13:17:08-04:00 ===
+E6 JM: 183 samples, 10 classes
+  top: band_19 (mean_jm=0.9179)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E06/jm_ranking.csv
+=== E6 DONE elapsed=1s ===
+
+=== E7 2026-08-11T13:17:09-04:00 ===
+E7 JM: 627 samples, 13 classes
+  top: band_19 (mean_jm=0.7467)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E07/jm_ranking.csv
+=== E7 DONE elapsed=2s ===
+
+=== E8 2026-08-11T13:17:11-04:00 ===
+E8 JM: 760 samples, 13 classes
+  top: band_116 (mean_jm=0.8440)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E08/jm_ranking.csv
+=== E8 DONE elapsed=2s ===
+
+=== E9 2026-08-11T13:17:13-04:00 ===
+E9 JM: 1070 samples, 12 classes
+  top: band_19 (mean_jm=0.8107)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E09/jm_ranking.csv
+=== E9 DONE elapsed=2s ===
+
+=== E10 2026-08-11T13:17:16-04:00 ===
+E10 JM: 430 samples, 13 classes
+  top: band_19 (mean_jm=0.8116)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E10/jm_ranking.csv
+=== E10 DONE elapsed=2s ===
+
+=== E11 2026-08-11T13:17:18-04:00 ===
+E11 JM: 570 samples, 11 classes
+  top: band_116 (mean_jm=0.8166)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E11/jm_ranking.csv
+=== E11 DONE elapsed=2s ===
+
+=== E12 2026-08-11T13:17:20-04:00 ===
+E12 JM: 103 samples, 7 classes
+  top: band_116 (mean_jm=0.9875)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E12/jm_ranking.csv
+=== E12 DONE elapsed=1s ===
+
+=== E13 2026-08-11T13:17:21-04:00 ===
+E13 JM: 70 samples, 7 classes
+  top: band_19 (mean_jm=0.8505)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E13/jm_ranking.csv
+=== E13 DONE elapsed=2s ===
+
+=== E14 2026-08-11T13:17:23-04:00 ===
+E14 JM: 286 samples, 12 classes
+  top: band_113 (mean_jm=0.7450)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E14/jm_ranking.csv
+=== E14 DONE elapsed=2s ===
+
+=== E15 2026-08-11T13:17:25-04:00 ===
+E15 JM: 396 samples, 11 classes
+  top: band_21 (mean_jm=0.4629)
+  bands @ mean_jm>=1.0: 0
+  wrote results/CIM2015/JM/184bands_ecorregion/E15/jm_ranking.csv
+=== E15 DONE elapsed=2s ===
+=== JM batch DONE 2026-08-11T13:17:27-04:00 ===
