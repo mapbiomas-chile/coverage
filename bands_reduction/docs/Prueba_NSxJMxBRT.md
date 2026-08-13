@@ -332,113 +332,113 @@ A la inversa, **Jeffries-Matusita top-N** puede empeorar aunque use la misma N (
 
 ---
 
+
 ## Anexo — Listas de bandas recomendadas por ecorregión
 
-Criterio: **mejor OA en validación Col2** (hold-out §4) entre las cinco listas reducidas. Si dos o más empatan, se listan todas. Índices de banda (`0`–`183`) del mosaico CIM 2015.
+Criterio: **mejor OA en validación Col2** (hold-out §4) entre las cinco listas reducidas. Si dos o más empatan, se listan todas. Nombres de banda del mosaico CIM 2015 (`band_0` … `band_183`).
 
 ### Ecorregión E01: "Puna seca andina"
 
 **Método 1:** No supervisado @0.95 (59 bandas)
 
-`0, 4, 5, 8, 9, 10, 12, 13, 14, 22, 28, 38, 39, 40, 41, 42, 45, 46, 48, 65, 71, 72, 79, 80, 89, 90, 91, 94, 96, 97, 98, 99, 100, 101, 102, 103, 104, 106, 107, 108, 109, 119, 120, 121, 122, 123, 124, 125, 131, 132, 134, 137, 154, 162, 164, 166, 167, 168, 170`
+`band_0, band_4, band_5, band_8, band_9, band_10, band_12, band_13, band_14, band_22, band_28, band_38, band_39, band_40, band_41, band_42, band_45, band_46, band_48, band_65, band_71, band_72, band_79, band_80, band_89, band_90, band_91, band_94, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_104, band_106, band_107, band_108, band_109, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_131, band_132, band_134, band_137, band_154, band_162, band_164, band_166, band_167, band_168, band_170`
 
 **Método 2:** Pool ampliado (134 bandas)
 
-`0, 2, 3, 4, 5, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36, 38, 39, 40, 41, 42, 45, 46, 47, 48, 51, 52, 53, 54, 55, 56, 58, 59, 60, 61, 62, 63, 65, 71, 72, 79, 80, 82, 83, 84, 85, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 106, 107, 108, 109, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 127, 129, 131, 132, 133, 134, 135, 136, 137, 140, 141, 142, 143, 144, 145, 146, 148, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 164, 166, 167, 168, 170, 176, 177, 178, 179, 180, 181, 183`
+`band_0, band_2, band_3, band_4, band_5, band_8, band_9, band_10, band_12, band_13, band_14, band_15, band_16, band_17, band_18, band_19, band_21, band_22, band_23, band_24, band_25, band_26, band_27, band_28, band_29, band_30, band_31, band_32, band_33, band_34, band_36, band_38, band_39, band_40, band_41, band_42, band_45, band_46, band_47, band_48, band_51, band_52, band_53, band_54, band_55, band_56, band_58, band_59, band_60, band_61, band_62, band_63, band_65, band_71, band_72, band_79, band_80, band_82, band_83, band_84, band_85, band_89, band_90, band_91, band_92, band_93, band_94, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_104, band_106, band_107, band_108, band_109, band_112, band_113, band_114, band_115, band_116, band_117, band_118, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_127, band_129, band_131, band_132, band_133, band_134, band_135, band_136, band_137, band_140, band_141, band_142, band_143, band_144, band_145, band_146, band_148, band_153, band_154, band_155, band_156, band_157, band_158, band_159, band_160, band_161, band_162, band_164, band_166, band_167, band_168, band_170, band_176, band_177, band_178, band_179, band_180, band_181, band_183`
 
 ### Ecorregión E02: "Desierto de Atacama"
 
 **Método 1:** No supervisado @0.95 (80 bandas)
 
-`0, 1, 2, 3, 5, 7, 8, 9, 12, 13, 14, 22, 25, 27, 28, 29, 38, 40, 41, 42, 47, 49, 51, 64, 66, 67, 68, 70, 71, 74, 77, 78, 80, 81, 82, 83, 85, 86, 90, 91, 92, 93, 95, 96, 97, 98, 99, 100, 102, 103, 104, 105, 106, 107, 108, 111, 119, 120, 121, 122, 123, 124, 130, 136, 140, 141, 142, 144, 145, 146, 148, 154, 156, 162, 163, 164, 165, 166, 168, 183`
+`band_0, band_1, band_2, band_3, band_5, band_7, band_8, band_9, band_12, band_13, band_14, band_22, band_25, band_27, band_28, band_29, band_38, band_40, band_41, band_42, band_47, band_49, band_51, band_64, band_66, band_67, band_68, band_70, band_71, band_74, band_77, band_78, band_80, band_81, band_82, band_83, band_85, band_86, band_90, band_91, band_92, band_93, band_95, band_96, band_97, band_98, band_99, band_100, band_102, band_103, band_104, band_105, band_106, band_107, band_108, band_111, band_119, band_120, band_121, band_122, band_123, band_124, band_130, band_136, band_140, band_141, band_142, band_144, band_145, band_146, band_148, band_154, band_156, band_162, band_163, band_164, band_165, band_166, band_168, band_183`
 
 ### Ecorregión E03: "Matorral norte 1"
 
 **Método 1:** No supervisado @0.95 (67 bandas)
 
-`0, 2, 3, 5, 8, 9, 11, 12, 13, 14, 22, 23, 24, 27, 28, 29, 38, 39, 41, 43, 47, 70, 71, 72, 78, 79, 80, 81, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 106, 107, 108, 119, 120, 121, 122, 123, 124, 125, 126, 130, 131, 132, 147, 154, 162, 163, 164, 165, 166, 167, 168`
+`band_0, band_2, band_3, band_5, band_8, band_9, band_11, band_12, band_13, band_14, band_22, band_23, band_24, band_27, band_28, band_29, band_38, band_39, band_41, band_43, band_47, band_70, band_71, band_72, band_78, band_79, band_80, band_81, band_89, band_90, band_91, band_92, band_93, band_94, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_104, band_106, band_107, band_108, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_126, band_130, band_131, band_132, band_147, band_154, band_162, band_163, band_164, band_165, band_166, band_167, band_168`
 
 **Método 2:** Boruta top-N (67 bandas)
 
-`22, 2, 45, 94, 3, 107, 127, 46, 106, 17, 16, 128, 1, 126, 24, 40, 92, 101, 11, 44, 4, 75, 135, 14, 25, 99, 144, 9, 93, 27, 120, 37, 74, 62, 8, 58, 90, 166, 134, 12, 15, 38, 137, 13, 105, 170, 146, 122, 29, 178, 51, 102, 154, 57, 6, 68, 67, 10, 85, 77, 39, 143, 129, 156, 100, 95, 171`
+`band_22, band_2, band_45, band_94, band_3, band_107, band_127, band_46, band_106, band_17, band_16, band_128, band_1, band_126, band_24, band_40, band_92, band_101, band_11, band_44, band_4, band_75, band_135, band_14, band_25, band_99, band_144, band_9, band_93, band_27, band_120, band_37, band_74, band_62, band_8, band_58, band_90, band_166, band_134, band_12, band_15, band_38, band_137, band_13, band_105, band_170, band_146, band_122, band_29, band_178, band_51, band_102, band_154, band_57, band_6, band_68, band_67, band_10, band_85, band_77, band_39, band_143, band_129, band_156, band_100, band_95, band_171`
 
 ### Ecorregión E04: "Estepa andina"
 
 **Método 1:** No supervisado @0.95 (51 bandas)
 
-`0, 8, 9, 10, 12, 14, 22, 28, 37, 38, 39, 40, 41, 47, 48, 49, 62, 71, 72, 79, 80, 89, 90, 91, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 119, 120, 121, 122, 123, 124, 125, 127, 128, 132, 154, 164, 166, 167, 172`
+`band_0, band_8, band_9, band_10, band_12, band_14, band_22, band_28, band_37, band_38, band_39, band_40, band_41, band_47, band_48, band_49, band_62, band_71, band_72, band_79, band_80, band_89, band_90, band_91, band_93, band_94, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_104, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_127, band_128, band_132, band_154, band_164, band_166, band_167, band_172`
 
 ### Ecorregión E05: "Matorral norte 2"
 
 **Método 1:** Núcleo triple (21 bandas)
 
-`8, 9, 11, 12, 17, 22, 23, 24, 26, 40, 81, 89, 90, 91, 92, 93, 94, 99, 101, 143, 154`
+`band_8, band_9, band_11, band_12, band_17, band_22, band_23, band_24, band_26, band_40, band_81, band_89, band_90, band_91, band_92, band_93, band_94, band_99, band_101, band_143, band_154`
 
 ### Ecorregión E06: "Andes norte"
 
 **Método 1:** No supervisado @0.95 (57 bandas)
 
-`0, 8, 9, 10, 12, 14, 22, 27, 28, 29, 30, 38, 39, 40, 41, 42, 45, 47, 48, 71, 80, 81, 89, 90, 91, 92, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 106, 108, 109, 119, 120, 121, 122, 123, 124, 125, 128, 131, 132, 136, 154, 162, 164, 166, 167, 170`
+`band_0, band_8, band_9, band_10, band_12, band_14, band_22, band_27, band_28, band_29, band_30, band_38, band_39, band_40, band_41, band_42, band_45, band_47, band_48, band_71, band_80, band_81, band_89, band_90, band_91, band_92, band_93, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_104, band_106, band_108, band_109, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_128, band_131, band_132, band_136, band_154, band_162, band_164, band_166, band_167, band_170`
 
 ### Ecorregión E07: "Andes central"
 
 **Método 1:** No supervisado @0.95 (46 bandas)
 
-`0, 8, 9, 10, 12, 14, 28, 38, 39, 40, 41, 42, 45, 47, 49, 57, 71, 72, 80, 89, 90, 93, 94, 96, 97, 98, 99, 100, 102, 103, 106, 108, 109, 119, 120, 121, 122, 123, 124, 125, 128, 132, 134, 154, 169, 171`
+`band_0, band_8, band_9, band_10, band_12, band_14, band_28, band_38, band_39, band_40, band_41, band_42, band_45, band_47, band_49, band_57, band_71, band_72, band_80, band_89, band_90, band_93, band_94, band_96, band_97, band_98, band_99, band_100, band_102, band_103, band_106, band_108, band_109, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_128, band_132, band_134, band_154, band_169, band_171`
 
 **Método 2:** Pool ampliado (104 bandas)
 
-`0, 1, 6, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 32, 35, 37, 38, 39, 40, 41, 42, 43, 45, 47, 49, 51, 52, 53, 55, 57, 58, 60, 62, 69, 71, 72, 80, 89, 90, 91, 92, 93, 94, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 128, 129, 132, 133, 134, 136, 137, 138, 139, 146, 148, 149, 150, 154, 157, 158, 159, 161, 164, 169, 170, 171, 172, 178, 180`
+`band_0, band_1, band_6, band_8, band_9, band_10, band_11, band_12, band_14, band_15, band_16, band_17, band_18, band_19, band_20, band_21, band_22, band_23, band_24, band_26, band_27, band_28, band_29, band_30, band_32, band_35, band_37, band_38, band_39, band_40, band_41, band_42, band_43, band_45, band_47, band_49, band_51, band_52, band_53, band_55, band_57, band_58, band_60, band_62, band_69, band_71, band_72, band_80, band_89, band_90, band_91, band_92, band_93, band_94, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_106, band_108, band_109, band_112, band_113, band_114, band_115, band_116, band_117, band_118, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_128, band_129, band_132, band_133, band_134, band_136, band_137, band_138, band_139, band_146, band_148, band_149, band_150, band_154, band_157, band_158, band_159, band_161, band_164, band_169, band_170, band_171, band_172, band_178, band_180`
 
 ### Ecorregión E08: "Matorral sur"
 
 **Método 1:** Pool ampliado (134 bandas)
 
-`0, 2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 33, 37, 38, 39, 40, 41, 42, 45, 46, 47, 48, 50, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 67, 69, 71, 74, 76, 80, 83, 85, 86, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 127, 128, 129, 130, 131, 133, 134, 135, 136, 139, 141, 143, 144, 148, 149, 150, 151, 153, 154, 156, 158, 159, 161, 162, 163, 164, 165, 166, 167, 168, 170, 171, 172, 173, 177, 178, 179, 180, 181, 182, 183`
+`band_0, band_2, band_3, band_4, band_8, band_9, band_10, band_11, band_12, band_13, band_14, band_16, band_17, band_18, band_19, band_21, band_22, band_23, band_24, band_25, band_26, band_27, band_28, band_29, band_33, band_37, band_38, band_39, band_40, band_41, band_42, band_45, band_46, band_47, band_48, band_50, band_52, band_53, band_54, band_55, band_56, band_57, band_58, band_59, band_60, band_61, band_62, band_63, band_67, band_69, band_71, band_74, band_76, band_80, band_83, band_85, band_86, band_89, band_90, band_91, band_92, band_93, band_94, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_104, band_105, band_106, band_107, band_108, band_109, band_111, band_112, band_113, band_114, band_115, band_116, band_117, band_118, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_127, band_128, band_129, band_130, band_131, band_133, band_134, band_135, band_136, band_139, band_141, band_143, band_144, band_148, band_149, band_150, band_151, band_153, band_154, band_156, band_158, band_159, band_161, band_162, band_163, band_164, band_165, band_166, band_167, band_168, band_170, band_171, band_172, band_173, band_177, band_178, band_179, band_180, band_181, band_182, band_183`
 
 ### Ecorregión E09: "Costa norte"
 
 **Método 1:** Pool ampliado (114 bandas)
 
-`0, 2, 4, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 31, 32, 36, 38, 39, 40, 41, 42, 44, 45, 47, 52, 53, 55, 57, 58, 60, 61, 62, 63, 67, 69, 71, 72, 74, 76, 78, 79, 80, 81, 83, 84, 86, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 105, 106, 108, 109, 110, 112, 113, 114, 115, 116, 117, 118, 119, 120, 122, 123, 124, 125, 127, 129, 133, 134, 135, 136, 139, 141, 142, 144, 151, 154, 155, 156, 157, 158, 159, 161, 163, 164, 169, 170, 172, 177, 178, 180, 183`
+`band_0, band_2, band_4, band_8, band_9, band_11, band_12, band_13, band_14, band_15, band_16, band_17, band_18, band_19, band_20, band_21, band_22, band_23, band_24, band_26, band_28, band_31, band_32, band_36, band_38, band_39, band_40, band_41, band_42, band_44, band_45, band_47, band_52, band_53, band_55, band_57, band_58, band_60, band_61, band_62, band_63, band_67, band_69, band_71, band_72, band_74, band_76, band_78, band_79, band_80, band_81, band_83, band_84, band_86, band_88, band_89, band_90, band_91, band_92, band_93, band_94, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_105, band_106, band_108, band_109, band_110, band_112, band_113, band_114, band_115, band_116, band_117, band_118, band_119, band_120, band_122, band_123, band_124, band_125, band_127, band_129, band_133, band_134, band_135, band_136, band_139, band_141, band_142, band_144, band_151, band_154, band_155, band_156, band_157, band_158, band_159, band_161, band_163, band_164, band_169, band_170, band_172, band_177, band_178, band_180, band_183`
 
 ### Ecorregión E10: "Andes sur"
 
 **Método 1:** Pool ampliado (104 bandas)
 
-`0, 2, 8, 9, 10, 11, 12, 13, 14, 16, 18, 19, 21, 22, 23, 24, 26, 28, 30, 31, 33, 35, 37, 38, 39, 40, 41, 42, 45, 46, 47, 49, 50, 52, 53, 55, 58, 59, 60, 61, 62, 67, 69, 71, 72, 74, 76, 78, 80, 81, 82, 83, 89, 90, 91, 92, 93, 94, 96, 97, 98, 99, 100, 101, 102, 103, 105, 106, 107, 108, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 127, 129, 133, 134, 136, 140, 148, 154, 156, 158, 159, 161, 163, 165, 170, 172, 177, 178, 180, 181`
+`band_0, band_2, band_8, band_9, band_10, band_11, band_12, band_13, band_14, band_16, band_18, band_19, band_21, band_22, band_23, band_24, band_26, band_28, band_30, band_31, band_33, band_35, band_37, band_38, band_39, band_40, band_41, band_42, band_45, band_46, band_47, band_49, band_50, band_52, band_53, band_55, band_58, band_59, band_60, band_61, band_62, band_67, band_69, band_71, band_72, band_74, band_76, band_78, band_80, band_81, band_82, band_83, band_89, band_90, band_91, band_92, band_93, band_94, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_105, band_106, band_107, band_108, band_112, band_113, band_114, band_115, band_116, band_117, band_118, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_127, band_129, band_133, band_134, band_136, band_140, band_148, band_154, band_156, band_158, band_159, band_161, band_163, band_165, band_170, band_172, band_177, band_178, band_180, band_181`
 
 ### Ecorregión E11: "Costa sur 1"
 
 **Método 1:** Boruta top-N (15 bandas)
 
-`22, 38, 45, 127, 92, 9, 99, 163, 94, 80, 170, 40, 106, 24, 101`
+`band_22, band_38, band_45, band_127, band_92, band_9, band_99, band_163, band_94, band_80, band_170, band_40, band_106, band_24, band_101`
 
 **Método 2:** Pool ampliado (43 bandas)
 
-`0, 9, 13, 14, 16, 18, 19, 22, 24, 31, 38, 39, 40, 41, 42, 45, 58, 60, 71, 72, 78, 80, 87, 92, 94, 99, 101, 103, 106, 113, 115, 116, 123, 124, 127, 141, 142, 156, 157, 158, 159, 163, 170`
+`band_0, band_9, band_13, band_14, band_16, band_18, band_19, band_22, band_24, band_31, band_38, band_39, band_40, band_41, band_42, band_45, band_58, band_60, band_71, band_72, band_78, band_80, band_87, band_92, band_94, band_99, band_101, band_103, band_106, band_113, band_115, band_116, band_123, band_124, band_127, band_141, band_142, band_156, band_157, band_158, band_159, band_163, band_170`
 
 ### Ecorregión E12: "Costa sur 2"
 
 **Método 1:** Pool ampliado (114 bandas)
 
-`0, 2, 4, 8, 9, 10, 11, 12, 13, 14, 16, 18, 19, 21, 22, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 45, 46, 47, 50, 53, 55, 56, 60, 61, 62, 67, 69, 71, 78, 79, 80, 81, 83, 85, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 105, 106, 107, 109, 110, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 127, 129, 134, 135, 137, 139, 141, 143, 144, 145, 146, 148, 149, 151, 154, 155, 156, 157, 158, 159, 161, 162, 163, 164, 169, 170, 172, 178, 179, 180, 181`
+`band_0, band_2, band_4, band_8, band_9, band_10, band_11, band_12, band_13, band_14, band_16, band_18, band_19, band_21, band_22, band_24, band_25, band_26, band_27, band_28, band_31, band_32, band_33, band_34, band_35, band_36, band_37, band_38, band_39, band_40, band_41, band_42, band_44, band_45, band_46, band_47, band_50, band_53, band_55, band_56, band_60, band_61, band_62, band_67, band_69, band_71, band_78, band_79, band_80, band_81, band_83, band_85, band_88, band_89, band_90, band_91, band_92, band_93, band_94, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_105, band_106, band_107, band_109, band_110, band_115, band_116, band_118, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_127, band_129, band_134, band_135, band_137, band_139, band_141, band_143, band_144, band_145, band_146, band_148, band_149, band_151, band_154, band_155, band_156, band_157, band_158, band_159, band_161, band_162, band_163, band_164, band_169, band_170, band_172, band_178, band_179, band_180, band_181`
 
 ### Ecorregión E13: "Andes sur costa"
 
 **Método 1:** No supervisado @0.95 (51 bandas)
 
-`0, 8, 9, 10, 11, 12, 13, 14, 17, 24, 27, 28, 38, 39, 40, 41, 42, 46, 49, 50, 71, 72, 78, 80, 89, 90, 91, 92, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 107, 110, 119, 120, 121, 122, 123, 124, 125, 154, 169`
+`band_0, band_8, band_9, band_10, band_11, band_12, band_13, band_14, band_17, band_24, band_27, band_28, band_38, band_39, band_40, band_41, band_42, band_46, band_49, band_50, band_71, band_72, band_78, band_80, band_89, band_90, band_91, band_92, band_93, band_95, band_96, band_97, band_98, band_99, band_100, band_101, band_102, band_103, band_104, band_105, band_107, band_110, band_119, band_120, band_121, band_122, band_123, band_124, band_125, band_154, band_169`
 
 ### Ecorregión E14: "Estepa patagónica"
 
 **Método 1:** Boruta top-N (39 bandas)
 
-`22, 154, 51, 74, 38, 67, 99, 2, 163, 11, 12, 165, 45, 69, 177, 127, 76, 172, 40, 92, 80, 24, 134, 37, 23, 106, 133, 123, 170, 26, 136, 52, 180, 77, 81, 94, 101, 89, 9`
+`band_22, band_154, band_51, band_74, band_38, band_67, band_99, band_2, band_163, band_11, band_12, band_165, band_45, band_69, band_177, band_127, band_76, band_172, band_40, band_92, band_80, band_24, band_134, band_37, band_23, band_106, band_133, band_123, band_170, band_26, band_136, band_52, band_180, band_77, band_81, band_94, band_101, band_89, band_9`
 
 ### Ecorregión E15: "Bosque subpolar"
 
 **Método 1:** Pool ampliado (87 bandas)
 
-`0, 8, 9, 10, 11, 12, 13, 14, 16, 18, 19, 21, 22, 23, 30, 31, 33, 37, 38, 39, 41, 45, 46, 48, 50, 51, 59, 60, 61, 62, 67, 69, 71, 74, 76, 77, 78, 80, 81, 83, 85, 89, 90, 91, 92, 93, 94, 96, 97, 98, 102, 103, 104, 108, 112, 113, 114, 115, 116, 117, 118, 119, 120, 122, 123, 124, 125, 127, 129, 131, 133, 141, 143, 154, 155, 156, 157, 158, 159, 162, 163, 165, 170, 172, 177, 178, 180`
-
+`band_0, band_8, band_9, band_10, band_11, band_12, band_13, band_14, band_16, band_18, band_19, band_21, band_22, band_23, band_30, band_31, band_33, band_37, band_38, band_39, band_41, band_45, band_46, band_48, band_50, band_51, band_59, band_60, band_61, band_62, band_67, band_69, band_71, band_74, band_76, band_77, band_78, band_80, band_81, band_83, band_85, band_89, band_90, band_91, band_92, band_93, band_94, band_96, band_97, band_98, band_102, band_103, band_104, band_108, band_112, band_113, band_114, band_115, band_116, band_117, band_118, band_119, band_120, band_122, band_123, band_124, band_125, band_127, band_129, band_131, band_133, band_141, band_143, band_154, band_155, band_156, band_157, band_158, band_159, band_162, band_163, band_165, band_170, band_172, band_177, band_178, band_180`
